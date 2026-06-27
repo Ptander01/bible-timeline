@@ -33,7 +33,7 @@ function formatDateRange([s, e]) {
   return `${yearLabel(s)} – ${yearLabel(e)}`;
 }
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady }) {
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, visibleLayers }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
@@ -567,6 +567,17 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         return id === selectedId ? '#c9a84c' : baseColor;
       });
   }, [selectedId]);
+
+  // Toggle layer visibility without re-rendering D3
+  useEffect(() => {
+    if (!svgRef.current || !visibleLayers) return;
+    const svg = d3.select(svgRef.current);
+    svg.select('.figures').attr('display', visibleLayers.people   ? null : 'none');
+    svg.select('.events').attr('display',  visibleLayers.events   ? null : 'none');
+    svg.select('.books').attr('display',   visibleLayers.books    ? null : 'none');
+    svg.selectAll('.kings').attr('display',   visibleLayers.kings    ? null : 'none');
+    svg.select('.prophets').attr('display', visibleLayers.prophets ? null : 'none');
+  }, [visibleLayers]);
 
   function animateZoom(svgEl, target, dur = 400) {
     const z = zoomRef.current;

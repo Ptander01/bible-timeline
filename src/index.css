@@ -86,6 +86,63 @@ html, body, #root {
   color: var(--accent);
 }
 
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  background: rgba(10,13,26,0.98);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.filter-bar__label {
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-right: 4px;
+}
+
+.filter-bar__pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.filter-bar__pill:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.6);
+}
+.filter-bar__pill--on {
+  border-color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.06);
+}
+.filter-bar__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+.filter-bar__pill--on .filter-bar__dot {
+  opacity: 1;
+}
+
 /* ── Main timeline area ── */
 .timeline-container {
   flex: 1;

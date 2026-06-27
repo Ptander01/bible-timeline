@@ -2,11 +2,15 @@ import { useState, useRef, useCallback } from 'react';
 import BibleTimeline from './components/BibleTimeline';
 import DetailPanel from './components/DetailPanel';
 import EraNav from './components/EraNav';
+import FilterBar from './components/FilterBar';
 import data from './data/bible-data.json';
 
+const ALL_ON = { people: true, events: true, books: true, kings: true, prophets: true };
+
 export default function App() {
-  const [selected, setSelected]     = useState(null);
-  const [activeEraId, setActiveEraId] = useState(null);
+  const [selected, setSelected]         = useState(null);
+  const [activeEraId, setActiveEraId]   = useState(null);
+  const [visibleLayers, setVisibleLayers] = useState(ALL_ON);
   const zoomToEraFn = useRef(null);
 
   const handleZoomReady = useCallback((fn) => { zoomToEraFn.current = fn; }, []);
@@ -14,6 +18,10 @@ export default function App() {
   function handleEraSelect(era) {
     setActiveEraId(era.id);
     zoomToEraFn.current?.(era);
+  }
+
+  function handleToggleLayer(id) {
+    setVisibleLayers(prev => ({ ...prev, [id]: !prev[id] }));
   }
 
   function handleSelectBook(book) {
@@ -38,6 +46,7 @@ export default function App() {
       </header>
 
       <EraNav eras={data.eras} onSelect={handleEraSelect} activeEraId={activeEraId} />
+      <FilterBar visible={visibleLayers} onToggle={handleToggleLayer} />
 
       <div className="timeline-container">
         <BibleTimeline
@@ -46,6 +55,7 @@ export default function App() {
           onSelectBook={handleSelectBook}
           onSelectEvent={handleSelectEvent}
           selectedId={selected?.item?.id}
+          visibleLayers={visibleLayers}
         />
         <DetailPanel
           item={selected?.item}
