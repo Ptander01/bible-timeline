@@ -1,0 +1,31 @@
+:root {
+  --bg:         #0d1020;
+  --bg-panel:   rgba(13, 16, 32, 0.96);
+  --bg-card:    rgba(19, 24, 42, 0.98);
+  --border:     rgba(201, 168, 76, 0.2);
+  --border-lt:  rgba(201, 168, 76, 0.12);
+  --accent:     #c9a84c;
+  --accent-dim: rgba(201, 168, 76, 0.35);
+  --text:       #d4cfc0;
+  --text-dim:   #7a8ab0;
+  --text-gold:  #c9a84c;
+  --text-muted: #4a5470;
+  --teal:       #4A7C6F;
+  --purple:     #7B6FA0;
+  --red:        #8B4040;
+
+  /* era colors */
+  --era-primeval:         #2a1a3a;
+  --era-patriarchal:      #1a2a3a;
+  --era-exodus:           #1a3a2a;
+  --era-united:           #3a2a1a;
+  --era-divided:          #3a1a1a;
+  --era-exile:            #1a1a3a;
+  --era-intertestamental: #2a2a1a;
+  --era-kingdom:          #1a3a1a;
+  --era-church:           #3a1a2a;
+
+  --font-display: 'Cinzel', serif;
+  --font-body:    'Lora', serif;
+  --font-serif:   'Cormorant Garamond', serif;
+}
