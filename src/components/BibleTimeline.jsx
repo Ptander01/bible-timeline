@@ -1,7 +1,7 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import * as d3 from 'd3';
 
-const GENRE_COLORS = {
+export const GENRE_COLORS = {
   Law:      '#c07070',
   History:  '#7a9abf',
   Wisdom:   '#c9a84c',
@@ -38,6 +38,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
   const kRef     = useRef(1);
+  const [hoveredTip, setHoveredTip] = useState(null); // { label, sub, x, y }
 
 
   const W = 4000;  // logical SVG width — we zoom/pan within this
@@ -168,19 +169,36 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .text(era.label.toUpperCase());
     });
 
-    // ── OT / NT section labels ──
-    root.append('text')
-      .attr('x', MARGIN_L - 8).attr('y', OT_BOOK_Y + 5)
-      .attr('text-anchor', 'end')
-      .attr('fill', 'rgba(201,168,76,0.5)')
-      .attr('font-family', "'Cinzel', serif").attr('font-size', 9).attr('letter-spacing', 2)
-      .text('OLD TESTAMENT');
-    root.append('text')
-      .attr('x', MARGIN_L - 8).attr('y', NT_BOOK_Y + 5)
-      .attr('text-anchor', 'end')
-      .attr('fill', 'rgba(74,124,111,0.6)')
-      .attr('font-family', "'Cinzel', serif").attr('font-size', 9).attr('letter-spacing', 2)
-      .text('NEW TESTAMENT');
+    // ── Zone dividers (subtle horizontal rules between swim lanes) ──
+    const dividerG = root.append('g').attr('class', 'zone-dividers');
+    [190, 290].forEach(y => {
+      dividerG.append('line')
+        .attr('class', 'zone-divider')
+        .attr('x1', MARGIN_L).attr('x2', W - MARGIN_R)
+        .attr('y1', y).attr('y2', y)
+        .attr('stroke', 'rgba(255,255,255,0.06)')
+        .attr('stroke-width', 1)
+        .attr('pointer-events', 'none');
+    });
+
+    // ── Section labels (left rail) ──
+    const labelColor = 'rgba(201,168,76,0.4)';
+    const labelFont  = "'Cinzel', serif";
+    [
+      { text: 'OLD TESTAMENT', y: OT_BOOK_Y + 5,         fill: 'rgba(201,168,76,0.5)' },
+      { text: 'PEOPLE',        y: (FIG_Y + PROPH_MINOR_Y + PROPH_H) / 2 + 4, fill: labelColor },
+      { text: 'NEW TESTAMENT', y: NT_BOOK_Y + 5,         fill: 'rgba(74,124,111,0.6)' },
+    ].forEach(({ text, y, fill }) => {
+      root.append('text')
+        .attr('class', 'section-label')
+        .attr('x', MARGIN_L - 8).attr('y', y)
+        .attr('text-anchor', 'end')
+        .attr('fill', fill)
+        .attr('font-family', labelFont)
+        .attr('font-size', 9)
+        .attr('letter-spacing', 2)
+        .text(text);
+    });
 
     // ── Figures (patriarchs etc.) ──
     const figG = root.append('g').attr('class', 'figures');
@@ -239,8 +257,14 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
               type: 'king',
             });
           })
-          .on('mouseover', function() { d3.select(this).select('.king-bar').attr('opacity', 1); })
-          .on('mouseout',  function() { d3.select(this).select('.king-bar').attr('opacity', 0.7); });
+          .on('mouseover', function(event) {
+            d3.select(this).select('.king-bar').attr('opacity', 1);
+            setHoveredTip({ label: king.name, sub: `${yearLabel(king.start)} – ${yearLabel(king.end)}`, x: event.clientX + 14, y: event.clientY - 36 });
+          })
+          .on('mouseout', function() {
+            d3.select(this).select('.king-bar').attr('opacity', 0.7);
+            setHoveredTip(null);
+          });
 
         kg.append('rect')
           .attr('class', 'king-bar')
@@ -300,8 +324,14 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('class', 'proph-group')
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
-        .on('mouseover', function() { d3.select(this).select('.proph-bar').attr('opacity', 1); })
-        .on('mouseout',  function() { d3.select(this).select('.proph-bar').attr('opacity', 0.7); });
+        .on('mouseover', function(event) {
+          d3.select(this).select('.proph-bar').attr('opacity', 1);
+          setHoveredTip({ label: book.name, sub: formatDateRange(book.dateRange), x: event.clientX + 14, y: event.clientY - 36 });
+        })
+        .on('mouseout', function() {
+          d3.select(this).select('.proph-bar').attr('opacity', 0.7);
+          setHoveredTip(null);
+        });
 
       pg.append('rect')
         .attr('class', 'proph-bar')
@@ -429,11 +459,13 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('fill', 'transparent')
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectEvent && onSelectEvent(evt); })
-        .on('mouseover', function() {
+        .on('mouseover', function(event) {
           d3.select(this.previousSibling).attr('opacity', 1).attr('r', isMajor ? 5.5 : 4);
+          setHoveredTip({ label: evt.label, sub: yearLabel(evt.year), x: event.clientX + 14, y: event.clientY - 36 });
         })
         .on('mouseout', function() {
           d3.select(this.previousSibling).attr('opacity', isMajor ? 0.9 : 0.6).attr('r', isMajor ? 4 : 2.5);
+          setHoveredTip(null);
         });
 
       // label — only shown at sufficient zoom, managed in zoom handler
@@ -480,6 +512,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         svg.selectAll('.king-bar').attr('stroke-width', 0.5 / k).attr('rx', 2 / k);
         svg.selectAll('.king-label').attr('font-size', 7 / k).attr('display', k < 1.5 ? 'none' : null);
         svg.selectAll('.king-track-label').attr('font-size', 7 / k);
+        svg.selectAll('.section-label').attr('font-size', 9 / k);
+        svg.selectAll('.zone-divider').attr('stroke-width', 1 / k);
         svg.selectAll('.proph-bar').attr('stroke-width', 0.5 / k).attr('rx', 2 / k);
         svg.selectAll('.proph-label').attr('font-size', 6 / k).attr('display', k < 2 ? 'none' : null);
         svg.selectAll('.proph-track-label').attr('font-size', 7 / k);
@@ -633,6 +667,12 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         <button className="zoom-btn" onClick={() => handleZoom(0.5)} title="Zoom out">−</button>
         <button className="zoom-btn" onClick={handleReset} title="Reset" style={{ fontSize: 11, fontFamily: 'Cinzel, serif', letterSpacing: 1 }}>FIT</button>
       </div>
+      {hoveredTip && (
+        <div className="tl-tooltip" style={{ left: hoveredTip.x, top: hoveredTip.y }}>
+          <div className="tl-tooltip__label">{hoveredTip.label}</div>
+          {hoveredTip.sub && <div className="tl-tooltip__sub">{hoveredTip.sub}</div>}
+        </div>
+      )}
     </>
   );
 }

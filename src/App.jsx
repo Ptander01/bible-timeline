@@ -3,6 +3,7 @@ import BibleTimeline from './components/BibleTimeline';
 import DetailPanel from './components/DetailPanel';
 import EraNav from './components/EraNav';
 import FilterBar from './components/FilterBar';
+import GenreLegend from './components/GenreLegend';
 import data from './data/bible-data.json';
 
 const ALL_ON = { people: true, events: true, books: true, kings: true, prophets: true };
@@ -49,6 +50,7 @@ export default function App() {
       <FilterBar visible={visibleLayers} onToggle={handleToggleLayer} />
 
       <div className="timeline-container">
+        <GenreLegend />
         <BibleTimeline
           data={data}
           onZoomReady={handleZoomReady}
