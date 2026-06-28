@@ -1,9 +1,19 @@
 :root {
-  --bg:         #0d1020;
-  --bg-panel:   rgba(13, 16, 32, 0.96);
-  --bg-card:    rgba(19, 24, 42, 0.98);
+  --bg:         #0a0d1a;
+  --bg-panel:   rgba(10, 13, 26, 0.55);
+  --bg-card:    rgba(13, 16, 32, 0.65);
   --border:     rgba(201, 168, 76, 0.2);
-  --border-lt:  rgba(201, 168, 76, 0.12);
+  --border-lt:  rgba(201, 168, 76, 0.1);
+
+  /* glass */
+  --glass-bg:     rgba(13, 16, 32, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-shine:  rgba(255, 255, 255, 0.06);
+  --glass-blur:   blur(18px);
+
+  /* neumorphism shadows (dark base) */
+  --neu-out:  -2px -2px 6px rgba(255,255,255,0.035), 2px 2px 8px rgba(0,0,0,0.7);
+  --neu-in:   inset 2px 2px 5px rgba(0,0,0,0.6), inset -1px -1px 3px rgba(255,255,255,0.03);
   --accent:     #c9a84c;
   --accent-dim: rgba(201, 168, 76, 0.35);
   --text:       #d4cfc0;
