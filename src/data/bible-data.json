@@ -1,234 +1,2140 @@
 {
   "eras": [
-    { "id": "primeval",         "label": "Primeval History",            "start": -4000, "end": -2166, "color": "#3a2a4a", "shortLabel": "Primeval" },
-    { "id": "patriarchal",      "label": "Patriarchal History",         "start": -2166, "end": -1806, "color": "#2a3a4a", "shortLabel": "Patriarchs" },
-    { "id": "exodus",           "label": "Deliverance to Inheritance",  "start": -1806, "end": -1060, "color": "#2a4a3a", "shortLabel": "Exodus" },
-    { "id": "united",           "label": "United Monarchy",             "start": -1060, "end": -932,  "color": "#4a3a2a", "shortLabel": "United" },
-    { "id": "divided",          "label": "Divided Monarchy",            "start": -932,  "end": -587,  "color": "#3a2a2a", "shortLabel": "Divided" },
-    { "id": "exile",            "label": "Exile & Restoration",         "start": -587,  "end": -428,  "color": "#2a2a4a", "shortLabel": "Exile" },
-    { "id": "intertestamental", "label": "Intertestamental Period",     "start": -428,  "end": -3,    "color": "#3a3a2a", "shortLabel": "Inter." },
-    { "id": "kingdom",          "label": "The Kingdom Comes",           "start": -3,    "end": 33,    "color": "#2a4a2a", "shortLabel": "Kingdom" },
-    { "id": "church",           "label": "The Early Church",            "start": 33,    "end": 95,    "color": "#4a2a3a", "shortLabel": "Church" }
+    {
+      "id": "primeval",
+      "label": "Primeval History",
+      "start": -4000,
+      "end": -2166,
+      "color": "#3a2a4a",
+      "shortLabel": "Primeval"
+    },
+    {
+      "id": "patriarchal",
+      "label": "Patriarchal History",
+      "start": -2166,
+      "end": -1806,
+      "color": "#2a3a4a",
+      "shortLabel": "Patriarchs"
+    },
+    {
+      "id": "exodus",
+      "label": "Deliverance to Inheritance",
+      "start": -1806,
+      "end": -1060,
+      "color": "#2a4a3a",
+      "shortLabel": "Exodus"
+    },
+    {
+      "id": "united",
+      "label": "United Monarchy",
+      "start": -1060,
+      "end": -932,
+      "color": "#4a3a2a",
+      "shortLabel": "United"
+    },
+    {
+      "id": "divided",
+      "label": "Divided Monarchy",
+      "start": -932,
+      "end": -587,
+      "color": "#3a2a2a",
+      "shortLabel": "Divided"
+    },
+    {
+      "id": "exile",
+      "label": "Exile & Restoration",
+      "start": -587,
+      "end": -428,
+      "color": "#2a2a4a",
+      "shortLabel": "Exile"
+    },
+    {
+      "id": "intertestamental",
+      "label": "Intertestamental Period",
+      "start": -428,
+      "end": -3,
+      "color": "#3a3a2a",
+      "shortLabel": "Inter."
+    },
+    {
+      "id": "kingdom",
+      "label": "The Kingdom Comes",
+      "start": -3,
+      "end": 33,
+      "color": "#2a4a2a",
+      "shortLabel": "Kingdom"
+    },
+    {
+      "id": "church",
+      "label": "The Early Church",
+      "start": 33,
+      "end": 95,
+      "color": "#4a2a3a",
+      "shortLabel": "Church"
+    }
   ],
-
   "figures": [
-    { "id": "abraham",  "name": "Abraham",  "start": -2166, "end": -1991, "group": "patriarchs" },
-    { "id": "sarah",    "name": "Sarah",    "start": -2156, "end": -2029, "group": "patriarchs" },
-    { "id": "ishmael",  "name": "Ishmael",  "start": -2080, "end": -1943, "group": "patriarchs" },
-    { "id": "isaac",    "name": "Isaac",    "start": -2066, "end": -1886, "group": "patriarchs" },
-    { "id": "jacob",    "name": "Jacob",    "start": -2006, "end": -1859, "group": "patriarchs" },
-    { "id": "joseph",   "name": "Joseph",   "start": -1916, "end": -1806, "group": "patriarchs" },
-    { "id": "aaron",    "name": "Aaron",    "start": -1529, "end": -1407, "group": "exodus" },
-    { "id": "moses",    "name": "Moses",    "start": -1526, "end": -1406, "group": "exodus" },
-    { "id": "david",    "name": "David",    "start": -1039, "end": -969,  "group": "united" },
-    { "id": "solomon",  "name": "Solomon",  "start": -994,  "end": -932,  "group": "united" }
+    {
+      "id": "abraham",
+      "name": "Abraham",
+      "start": -2166,
+      "end": -1991,
+      "group": "patriarchs"
+    },
+    {
+      "id": "sarah",
+      "name": "Sarah",
+      "start": -2156,
+      "end": -2029,
+      "group": "patriarchs"
+    },
+    {
+      "id": "ishmael",
+      "name": "Ishmael",
+      "start": -2080,
+      "end": -1943,
+      "group": "patriarchs"
+    },
+    {
+      "id": "isaac",
+      "name": "Isaac",
+      "start": -2066,
+      "end": -1886,
+      "group": "patriarchs"
+    },
+    {
+      "id": "jacob",
+      "name": "Jacob",
+      "start": -2006,
+      "end": -1859,
+      "group": "patriarchs"
+    },
+    {
+      "id": "joseph",
+      "name": "Joseph",
+      "start": -1916,
+      "end": -1806,
+      "group": "patriarchs"
+    },
+    {
+      "id": "aaron",
+      "name": "Aaron",
+      "start": -1529,
+      "end": -1407,
+      "group": "exodus"
+    },
+    {
+      "id": "moses",
+      "name": "Moses",
+      "start": -1526,
+      "end": -1406,
+      "group": "exodus"
+    },
+    {
+      "id": "david",
+      "name": "David",
+      "start": -1039,
+      "end": -969,
+      "group": "united"
+    },
+    {
+      "id": "solomon",
+      "name": "Solomon",
+      "start": -994,
+      "end": -932,
+      "group": "united"
+    },
+    {
+      "id": "joshua",
+      "name": "Joshua",
+      "start": -1495,
+      "end": -1375,
+      "group": "judges"
+    },
+    {
+      "id": "samuel",
+      "name": "Samuel",
+      "start": -1105,
+      "end": -1022,
+      "group": "judges"
+    },
+    {
+      "id": "saul",
+      "name": "Saul",
+      "start": -1079,
+      "end": -1010,
+      "group": "kings"
+    },
+    {
+      "id": "elijah",
+      "name": "Elijah",
+      "start": -895,
+      "end": -845,
+      "group": "prophets"
+    },
+    {
+      "id": "elisha",
+      "name": "Elisha",
+      "start": -870,
+      "end": -797,
+      "group": "prophets"
+    },
+    {
+      "id": "jeremiah",
+      "name": "Jeremiah",
+      "start": -650,
+      "end": -570,
+      "group": "prophets"
+    },
+    {
+      "id": "daniel",
+      "name": "Daniel",
+      "start": -623,
+      "end": -536,
+      "group": "prophets"
+    },
+    {
+      "id": "ezra",
+      "name": "Ezra",
+      "start": -480,
+      "end": -440,
+      "group": "prophets"
+    },
+    {
+      "id": "nehemiah",
+      "name": "Nehemiah",
+      "start": -445,
+      "end": -420,
+      "group": "prophets"
+    },
+    {
+      "id": "john-baptist",
+      "name": "John the Baptist",
+      "start": -5,
+      "end": 29,
+      "group": "apostles"
+    },
+    {
+      "id": "jesus",
+      "name": "Jesus",
+      "start": -5,
+      "end": 30,
+      "group": "apostles"
+    },
+    {
+      "id": "paul",
+      "name": "Paul",
+      "start": 5,
+      "end": 67,
+      "group": "apostles"
+    },
+    {
+      "id": "peter",
+      "name": "Peter",
+      "start": 1,
+      "end": 67,
+      "group": "apostles"
+    }
   ],
-
   "events": [
-    { "id": "creation",          "label": "Creation",                          "year": -4000, "eraId": "primeval",      "type": "major" },
-    { "id": "fall",              "label": "The Fall",                          "year": -3900, "eraId": "primeval",      "type": "major" },
-    { "id": "flood",             "label": "The Flood",                         "year": -2400, "eraId": "primeval",      "type": "major" },
-    { "id": "babel",             "label": "Tower of Babel",                    "year": -2200, "eraId": "primeval",      "type": "major" },
-    { "id": "abram-born",        "label": "Abram born",                        "year": -2166, "eraId": "patriarchal",   "type": "birth" },
-    { "id": "abram-leaves",      "label": "Abram leaves Haran",                "year": -2091, "eraId": "patriarchal",   "type": "major" },
-    { "id": "abraham-renamed",   "label": "Abram renamed Abraham",             "year": -2067, "eraId": "patriarchal",   "type": "major" },
-    { "id": "isaac-born",        "label": "Isaac born",                        "year": -2066, "eraId": "patriarchal",   "type": "birth" },
-    { "id": "jacob-born",        "label": "Jacob & Esau born",                 "year": -2006, "eraId": "patriarchal",   "type": "birth" },
-    { "id": "joseph-born",       "label": "Joseph born",                       "year": -1916, "eraId": "patriarchal",   "type": "birth" },
-    { "id": "jacob-paddan",      "label": "Jacob flees to Paddan-aram",        "year": -1930, "eraId": "patriarchal",   "type": "event" },
-    { "id": "joseph-slavery",    "label": "Joseph sold into slavery",          "year": -1899, "eraId": "patriarchal",   "type": "event" },
-    { "id": "joseph-prison",     "label": "Joseph freed from prison",          "year": -1886, "eraId": "patriarchal",   "type": "event" },
-    { "id": "jacob-egypt",       "label": "Jacob's family enters Egypt",       "year": -1876, "eraId": "patriarchal",   "type": "major" },
-    { "id": "moses-born",        "label": "Moses born",                        "year": -1526, "eraId": "exodus",        "type": "birth" },
-    { "id": "moses-burning-bush","label": "Moses sees the burning bush",       "year": -1447, "eraId": "exodus",        "type": "major" },
-    { "id": "ten-plagues",       "label": "Ten plagues fall on Egypt",         "year": -1446, "eraId": "exodus",        "type": "major" },
-    { "id": "exodus-event",      "label": "The Exodus — Israel leaves Egypt",  "year": -1446, "eraId": "exodus",        "type": "major" },
-    { "id": "sinai",             "label": "Israel arrives at Mount Sinai",     "year": -1446, "eraId": "exodus",        "type": "major" },
-    { "id": "golden-calf",       "label": "Israel worships the golden calf",   "year": -1446, "eraId": "exodus",        "type": "event" },
-    { "id": "tabernacle",        "label": "Tabernacle erected",                "year": -1445, "eraId": "exodus",        "type": "major" },
-    { "id": "kadesh",            "label": "Israel arrives at Kadesh",          "year": -1407, "eraId": "exodus",        "type": "event" },
-    { "id": "joshua-conquests",  "label": "Joshua-led conquests",              "year": -1406, "eraId": "exodus",        "type": "major", "endYear": -1400 },
-    { "id": "saul-king",         "label": "Saul made king",                    "year": -1049, "eraId": "united",        "type": "major" },
-    { "id": "david-anointed",    "label": "David is anointed king",            "year": -1019, "eraId": "united",        "type": "major" },
-    { "id": "goliath",           "label": "David defeats Goliath",             "year": -1019, "eraId": "united",        "type": "event" },
-    { "id": "david-reigns",      "label": "David reigns over all Israel",      "year": -1002, "eraId": "united",        "type": "major" },
-    { "id": "jerusalem-conquered","label": "Jerusalem conquered",              "year": -1002, "eraId": "united",        "type": "major" },
-    { "id": "temple-construction","label": "Construction of temple",           "year": -967,  "eraId": "united",        "type": "major", "endYear": -961 },
-    { "id": "temple-complete",   "label": "Temple completed",                  "year": -961,  "eraId": "united",        "type": "major" },
-    { "id": "sheba-visit",       "label": "Queen of Sheba visits Solomon",     "year": -940,  "eraId": "united",        "type": "event" },
-    { "id": "kingdom-split",     "label": "Kingdom divides",                   "year": -932,  "eraId": "divided",       "type": "major" },
-    { "id": "elijah-prophets",   "label": "Elijah and Baal's Prophets",        "year": -870,  "eraId": "divided",       "type": "event" },
-    { "id": "amos-prophecy",     "label": "Amos 760",                          "year": -760,  "eraId": "divided",       "type": "event" },
-    { "id": "jonah-nineveh",     "label": "Jonah in Nineveh",                  "year": -750,  "eraId": "divided",       "type": "event" },
-    { "id": "isaiah-called",     "label": "Isaiah is called",                  "year": -740,  "eraId": "divided",       "type": "event" },
-    { "id": "assyria-sacks",     "label": "Assyria sacks Israel (N. Kingdom)", "year": -723,  "eraId": "divided",       "type": "major" },
-    { "id": "hezekiah-passover", "label": "Hezekiah celebrates Passover",      "year": -716,  "eraId": "divided",       "type": "event" },
-    { "id": "josiah-purges",     "label": "Josiah purges pagan practice",      "year": -629,  "eraId": "divided",       "type": "event" },
-    { "id": "jeremiah-called",   "label": "Jeremiah called to be a prophet",   "year": -629,  "eraId": "divided",       "type": "event" },
-    { "id": "babylon-sacks",     "label": "Babylon sacks Judah",               "year": -605,  "eraId": "divided",       "type": "major" },
-    { "id": "first-captives",    "label": "First Judeans taken captive (Daniel)","year": -605, "eraId": "divided",      "type": "event" },
-    { "id": "more-captives",     "label": "More Judeans taken captive (Ezekiel)","year": -597,"eraId": "divided",       "type": "event" },
-    { "id": "ezekiel-vision",    "label": "Ezekiel's first vision",            "year": -597,  "eraId": "divided",       "type": "event" },
-    { "id": "fiery-furnace",     "label": "The fiery furnace",                 "year": -593,  "eraId": "exile",         "type": "event" },
-    { "id": "daniel-vision1",    "label": "Daniel's first vision",             "year": -550,  "eraId": "exile",         "type": "event" },
-    { "id": "babylon-falls",     "label": "Babylon falls to the Persians",     "year": -539,  "eraId": "exile",         "type": "major" },
-    { "id": "lions-den",         "label": "Daniel in the lion's den",          "year": -538,  "eraId": "exile",         "type": "event" },
-    { "id": "cyrus-decree",      "label": "Cyrus issues his decree",           "year": -538,  "eraId": "exile",         "type": "major" },
-    { "id": "first-return",      "label": "First Judeans return to Jerusalem", "year": -537,  "eraId": "exile",         "type": "major" },
-    { "id": "temple-finished",   "label": "Temple work finished",              "year": -516,  "eraId": "exile",         "type": "major" },
-    { "id": "haggai-zechariah",  "label": "Haggai & Zechariah prophesy",       "year": -520,  "eraId": "exile",         "type": "event" },
-    { "id": "esther-queen",      "label": "Esther as Persian queen",           "year": -479,  "eraId": "exile",         "type": "event" },
-    { "id": "purim",             "label": "First Purim celebrated",            "year": -474,  "eraId": "exile",         "type": "event" },
-    { "id": "ezra-jerusalem",    "label": "Ezra arrives in Jerusalem",         "year": -458,  "eraId": "exile",         "type": "major" },
-    { "id": "nehemiah-governor", "label": "Nehemiah governor",                 "year": -445,  "eraId": "exile",         "type": "event" },
-    { "id": "malachi-prophecies","label": "Malachi's prophecies",              "year": -430,  "eraId": "exile",         "type": "event" },
-    { "id": "nehemiah-second",   "label": "Nehemiah's second term",            "year": -428,  "eraId": "exile",         "type": "event" },
-    { "id": "john-born",         "label": "John the Baptist born",             "year": -3,    "eraId": "kingdom",       "type": "birth" },
-    { "id": "jesus-born",        "label": "Jesus is born",                     "year": -2,    "eraId": "kingdom",       "type": "major" },
-    { "id": "nazareth-return",   "label": "Jesus' parents return to Nazareth", "year": -1,    "eraId": "kingdom",       "type": "event" },
-    { "id": "temple-12",         "label": "Jesus stays behind at temple",      "year": 11,    "eraId": "kingdom",       "type": "event" },
-    { "id": "john-baptizes",     "label": "John baptizes Jesus",               "year": 29,    "eraId": "kingdom",       "type": "major" },
-    { "id": "temptation",        "label": "Jesus tempted by Satan",            "year": 29,    "eraId": "kingdom",       "type": "event" },
-    { "id": "first-miracle",     "label": "Jesus performs first miracle",      "year": 29,    "eraId": "kingdom",       "type": "event" },
-    { "id": "sermon-mount",      "label": "Sermon on the Mount",               "year": 31,    "eraId": "kingdom",       "type": "event" },
-    { "id": "jesus-jerusalem-31","label": "Jesus in Jerusalem",                "year": 31,    "eraId": "kingdom",       "type": "event" },
-    { "id": "john-executed",     "label": "John executed",                     "year": 31,    "eraId": "kingdom",       "type": "event" },
-    { "id": "five-thousand",     "label": "Jesus feeds the five thousand",     "year": 32,    "eraId": "kingdom",       "type": "event" },
-    { "id": "transfiguration",   "label": "The transfiguration",               "year": 32,    "eraId": "kingdom",       "type": "major" },
-    { "id": "jesus-jerusalem-32","label": "Jesus in Jerusalem",                "year": 32,    "eraId": "kingdom",       "type": "event" },
-    { "id": "crucifixion",       "label": "Jesus crucified, buried & resurrected","year": 33, "eraId": "kingdom",       "type": "major" },
-    { "id": "pentecost",         "label": "Pentecost",                         "year": 33,    "eraId": "church",        "type": "major" },
-    { "id": "stephen-martyred",  "label": "Stephen martyred",                  "year": 36,    "eraId": "church",        "type": "major" },
-    { "id": "saul-converted",    "label": "Saul / Paul converted",             "year": 36,    "eraId": "church",        "type": "major" },
-    { "id": "cornelius",         "label": "Cornelius converted",               "year": 39,    "eraId": "church",        "type": "event" },
-    { "id": "james-executed",    "label": "James (son of Zebedee) executed",   "year": 42,    "eraId": "church",        "type": "event" },
-    { "id": "paul-barnabas",     "label": "Paul & Barnabas in Antioch",        "year": 38,    "eraId": "church",        "type": "event" },
-    { "id": "paul-journey1",     "label": "Paul's 1st missionary journey",     "year": 45,    "eraId": "church",        "type": "major", "endYear": 48 },
-    { "id": "paul-journey2",     "label": "Paul's 2nd missionary journey",     "year": 49,    "eraId": "church",        "type": "major", "endYear": 51 },
-    { "id": "paul-journey3",     "label": "Paul's 3rd missionary journey",     "year": 52,    "eraId": "church",        "type": "major", "endYear": 55 },
-    { "id": "paul-jerusalem",    "label": "Paul in Jerusalem",                 "year": 55,    "eraId": "church",        "type": "event" },
-    { "id": "paul-caesarea",     "label": "Paul imprisoned in Caesarea",       "year": 55,    "eraId": "church",        "type": "event" },
-    { "id": "paul-appeals",      "label": "Paul appeals to Caesar",            "year": 57,    "eraId": "church",        "type": "major" },
-    { "id": "paul-rome",         "label": "Paul in Rome",                      "year": 58,    "eraId": "church",        "type": "event" },
-    { "id": "james-brother",     "label": "James, brother of Jesus, martyred", "year": 62,    "eraId": "church",        "type": "event" },
-    { "id": "paul-troas",        "label": "Paul at Troas",                     "year": 66,    "eraId": "church",        "type": "event" },
-    { "id": "paul-arrested",     "label": "Paul arrested & sent to Rome",      "year": 67,    "eraId": "church",        "type": "event" },
-    { "id": "peter-martyred",    "label": "Peter martyred",                    "year": 68,    "eraId": "church",        "type": "major" },
-    { "id": "paul-martyred",     "label": "Paul martyred",                     "year": 68,    "eraId": "church",        "type": "major" },
-    { "id": "john-revelation",   "label": "John writes Revelation",            "year": 95,    "eraId": "church",        "type": "major" }
+    {
+      "id": "creation",
+      "label": "Creation",
+      "year": -4000,
+      "eraId": "primeval",
+      "type": "major"
+    },
+    {
+      "id": "fall",
+      "label": "The Fall",
+      "year": -3900,
+      "eraId": "primeval",
+      "type": "major"
+    },
+    {
+      "id": "flood",
+      "label": "The Flood",
+      "year": -2400,
+      "eraId": "primeval",
+      "type": "major"
+    },
+    {
+      "id": "babel",
+      "label": "Tower of Babel",
+      "year": -2200,
+      "eraId": "primeval",
+      "type": "major"
+    },
+    {
+      "id": "abram-born",
+      "label": "Abram born",
+      "year": -2166,
+      "eraId": "patriarchal",
+      "type": "birth"
+    },
+    {
+      "id": "abram-leaves",
+      "label": "Abram leaves Haran",
+      "year": -2091,
+      "eraId": "patriarchal",
+      "type": "major"
+    },
+    {
+      "id": "abraham-renamed",
+      "label": "Abram renamed Abraham",
+      "year": -2067,
+      "eraId": "patriarchal",
+      "type": "major"
+    },
+    {
+      "id": "isaac-born",
+      "label": "Isaac born",
+      "year": -2066,
+      "eraId": "patriarchal",
+      "type": "birth"
+    },
+    {
+      "id": "jacob-born",
+      "label": "Jacob & Esau born",
+      "year": -2006,
+      "eraId": "patriarchal",
+      "type": "birth"
+    },
+    {
+      "id": "joseph-born",
+      "label": "Joseph born",
+      "year": -1916,
+      "eraId": "patriarchal",
+      "type": "birth"
+    },
+    {
+      "id": "jacob-paddan",
+      "label": "Jacob flees to Paddan-aram",
+      "year": -1930,
+      "eraId": "patriarchal",
+      "type": "event"
+    },
+    {
+      "id": "joseph-slavery",
+      "label": "Joseph sold into slavery",
+      "year": -1899,
+      "eraId": "patriarchal",
+      "type": "event"
+    },
+    {
+      "id": "joseph-prison",
+      "label": "Joseph freed from prison",
+      "year": -1886,
+      "eraId": "patriarchal",
+      "type": "event"
+    },
+    {
+      "id": "jacob-egypt",
+      "label": "Jacob's family enters Egypt",
+      "year": -1876,
+      "eraId": "patriarchal",
+      "type": "major"
+    },
+    {
+      "id": "moses-born",
+      "label": "Moses born",
+      "year": -1526,
+      "eraId": "exodus",
+      "type": "birth"
+    },
+    {
+      "id": "moses-burning-bush",
+      "label": "Moses sees the burning bush",
+      "year": -1447,
+      "eraId": "exodus",
+      "type": "major"
+    },
+    {
+      "id": "ten-plagues",
+      "label": "Ten plagues fall on Egypt",
+      "year": -1446,
+      "eraId": "exodus",
+      "type": "major"
+    },
+    {
+      "id": "exodus-event",
+      "label": "The Exodus \u2014 Israel leaves Egypt",
+      "year": -1446,
+      "eraId": "exodus",
+      "type": "major"
+    },
+    {
+      "id": "sinai",
+      "label": "Israel arrives at Mount Sinai",
+      "year": -1446,
+      "eraId": "exodus",
+      "type": "major"
+    },
+    {
+      "id": "golden-calf",
+      "label": "Israel worships the golden calf",
+      "year": -1446,
+      "eraId": "exodus",
+      "type": "event"
+    },
+    {
+      "id": "tabernacle",
+      "label": "Tabernacle erected",
+      "year": -1445,
+      "eraId": "exodus",
+      "type": "major"
+    },
+    {
+      "id": "kadesh",
+      "label": "Israel arrives at Kadesh",
+      "year": -1407,
+      "eraId": "exodus",
+      "type": "event"
+    },
+    {
+      "id": "joshua-conquests",
+      "label": "Joshua-led conquests",
+      "year": -1406,
+      "eraId": "exodus",
+      "type": "major",
+      "endYear": -1400
+    },
+    {
+      "id": "saul-king",
+      "label": "Saul made king",
+      "year": -1049,
+      "eraId": "united",
+      "type": "major"
+    },
+    {
+      "id": "david-anointed",
+      "label": "David is anointed king",
+      "year": -1019,
+      "eraId": "united",
+      "type": "major"
+    },
+    {
+      "id": "goliath",
+      "label": "David defeats Goliath",
+      "year": -1019,
+      "eraId": "united",
+      "type": "event"
+    },
+    {
+      "id": "david-reigns",
+      "label": "David reigns over all Israel",
+      "year": -1002,
+      "eraId": "united",
+      "type": "major"
+    },
+    {
+      "id": "jerusalem-conquered",
+      "label": "Jerusalem conquered",
+      "year": -1002,
+      "eraId": "united",
+      "type": "major"
+    },
+    {
+      "id": "temple-construction",
+      "label": "Construction of temple",
+      "year": -967,
+      "eraId": "united",
+      "type": "major",
+      "endYear": -961
+    },
+    {
+      "id": "temple-complete",
+      "label": "Temple completed",
+      "year": -961,
+      "eraId": "united",
+      "type": "major"
+    },
+    {
+      "id": "sheba-visit",
+      "label": "Queen of Sheba visits Solomon",
+      "year": -940,
+      "eraId": "united",
+      "type": "event"
+    },
+    {
+      "id": "kingdom-split",
+      "label": "Kingdom divides",
+      "year": -932,
+      "eraId": "divided",
+      "type": "major"
+    },
+    {
+      "id": "elijah-prophets",
+      "label": "Elijah and Baal's Prophets",
+      "year": -870,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "amos-prophecy",
+      "label": "Amos 760",
+      "year": -760,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "jonah-nineveh",
+      "label": "Jonah in Nineveh",
+      "year": -750,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "isaiah-called",
+      "label": "Isaiah is called",
+      "year": -740,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "assyria-sacks",
+      "label": "Assyria sacks Israel (N. Kingdom)",
+      "year": -723,
+      "eraId": "divided",
+      "type": "major"
+    },
+    {
+      "id": "hezekiah-passover",
+      "label": "Hezekiah celebrates Passover",
+      "year": -716,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "josiah-purges",
+      "label": "Josiah purges pagan practice",
+      "year": -629,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "jeremiah-called",
+      "label": "Jeremiah called to be a prophet",
+      "year": -629,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "babylon-sacks",
+      "label": "Babylon sacks Judah",
+      "year": -605,
+      "eraId": "divided",
+      "type": "major"
+    },
+    {
+      "id": "first-captives",
+      "label": "First Judeans taken captive (Daniel)",
+      "year": -605,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "more-captives",
+      "label": "More Judeans taken captive (Ezekiel)",
+      "year": -597,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "ezekiel-vision",
+      "label": "Ezekiel's first vision",
+      "year": -597,
+      "eraId": "divided",
+      "type": "event"
+    },
+    {
+      "id": "fiery-furnace",
+      "label": "The fiery furnace",
+      "year": -593,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "daniel-vision1",
+      "label": "Daniel's first vision",
+      "year": -550,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "babylon-falls",
+      "label": "Babylon falls to the Persians",
+      "year": -539,
+      "eraId": "exile",
+      "type": "major"
+    },
+    {
+      "id": "lions-den",
+      "label": "Daniel in the lion's den",
+      "year": -538,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "cyrus-decree",
+      "label": "Cyrus issues his decree",
+      "year": -538,
+      "eraId": "exile",
+      "type": "major"
+    },
+    {
+      "id": "first-return",
+      "label": "First Judeans return to Jerusalem",
+      "year": -537,
+      "eraId": "exile",
+      "type": "major"
+    },
+    {
+      "id": "temple-finished",
+      "label": "Temple work finished",
+      "year": -516,
+      "eraId": "exile",
+      "type": "major"
+    },
+    {
+      "id": "haggai-zechariah",
+      "label": "Haggai & Zechariah prophesy",
+      "year": -520,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "esther-queen",
+      "label": "Esther as Persian queen",
+      "year": -479,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "purim",
+      "label": "First Purim celebrated",
+      "year": -474,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "ezra-jerusalem",
+      "label": "Ezra arrives in Jerusalem",
+      "year": -458,
+      "eraId": "exile",
+      "type": "major"
+    },
+    {
+      "id": "nehemiah-governor",
+      "label": "Nehemiah governor",
+      "year": -445,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "malachi-prophecies",
+      "label": "Malachi's prophecies",
+      "year": -430,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "nehemiah-second",
+      "label": "Nehemiah's second term",
+      "year": -428,
+      "eraId": "exile",
+      "type": "event"
+    },
+    {
+      "id": "john-born",
+      "label": "John the Baptist born",
+      "year": -3,
+      "eraId": "kingdom",
+      "type": "birth"
+    },
+    {
+      "id": "jesus-born",
+      "label": "Jesus is born",
+      "year": -2,
+      "eraId": "kingdom",
+      "type": "major"
+    },
+    {
+      "id": "nazareth-return",
+      "label": "Jesus' parents return to Nazareth",
+      "year": -1,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "temple-12",
+      "label": "Jesus stays behind at temple",
+      "year": 11,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "john-baptizes",
+      "label": "John baptizes Jesus",
+      "year": 29,
+      "eraId": "kingdom",
+      "type": "major"
+    },
+    {
+      "id": "temptation",
+      "label": "Jesus tempted by Satan",
+      "year": 29,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "first-miracle",
+      "label": "Jesus performs first miracle",
+      "year": 29,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "sermon-mount",
+      "label": "Sermon on the Mount",
+      "year": 31,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "jesus-jerusalem-31",
+      "label": "Jesus in Jerusalem",
+      "year": 31,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "john-executed",
+      "label": "John executed",
+      "year": 31,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "five-thousand",
+      "label": "Jesus feeds the five thousand",
+      "year": 32,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "transfiguration",
+      "label": "The transfiguration",
+      "year": 32,
+      "eraId": "kingdom",
+      "type": "major"
+    },
+    {
+      "id": "jesus-jerusalem-32",
+      "label": "Jesus in Jerusalem",
+      "year": 32,
+      "eraId": "kingdom",
+      "type": "event"
+    },
+    {
+      "id": "crucifixion",
+      "label": "Jesus crucified, buried & resurrected",
+      "year": 33,
+      "eraId": "kingdom",
+      "type": "major"
+    },
+    {
+      "id": "pentecost",
+      "label": "Pentecost",
+      "year": 33,
+      "eraId": "church",
+      "type": "major"
+    },
+    {
+      "id": "stephen-martyred",
+      "label": "Stephen martyred",
+      "year": 36,
+      "eraId": "church",
+      "type": "major"
+    },
+    {
+      "id": "saul-converted",
+      "label": "Saul / Paul converted",
+      "year": 36,
+      "eraId": "church",
+      "type": "major"
+    },
+    {
+      "id": "cornelius",
+      "label": "Cornelius converted",
+      "year": 39,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "james-executed",
+      "label": "James (son of Zebedee) executed",
+      "year": 42,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "paul-barnabas",
+      "label": "Paul & Barnabas in Antioch",
+      "year": 38,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "paul-journey1",
+      "label": "Paul's 1st missionary journey",
+      "year": 45,
+      "eraId": "church",
+      "type": "major",
+      "endYear": 48
+    },
+    {
+      "id": "paul-journey2",
+      "label": "Paul's 2nd missionary journey",
+      "year": 49,
+      "eraId": "church",
+      "type": "major",
+      "endYear": 51
+    },
+    {
+      "id": "paul-journey3",
+      "label": "Paul's 3rd missionary journey",
+      "year": 52,
+      "eraId": "church",
+      "type": "major",
+      "endYear": 55
+    },
+    {
+      "id": "paul-jerusalem",
+      "label": "Paul in Jerusalem",
+      "year": 55,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "paul-caesarea",
+      "label": "Paul imprisoned in Caesarea",
+      "year": 55,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "paul-appeals",
+      "label": "Paul appeals to Caesar",
+      "year": 57,
+      "eraId": "church",
+      "type": "major"
+    },
+    {
+      "id": "paul-rome",
+      "label": "Paul in Rome",
+      "year": 58,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "james-brother",
+      "label": "James, brother of Jesus, martyred",
+      "year": 62,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "paul-troas",
+      "label": "Paul at Troas",
+      "year": 66,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "paul-arrested",
+      "label": "Paul arrested & sent to Rome",
+      "year": 67,
+      "eraId": "church",
+      "type": "event"
+    },
+    {
+      "id": "peter-martyred",
+      "label": "Peter martyred",
+      "year": 68,
+      "eraId": "church",
+      "type": "major"
+    },
+    {
+      "id": "paul-martyred",
+      "label": "Paul martyred",
+      "year": 68,
+      "eraId": "church",
+      "type": "major"
+    },
+    {
+      "id": "john-revelation",
+      "label": "John writes Revelation",
+      "year": 95,
+      "eraId": "church",
+      "type": "major"
+    }
   ],
-
   "books": [
-    { "id": "genesis",       "abbrev": "Gen",   "name": "Genesis",          "testament": "OT", "genre": "Law",          "dateWritten": -1450, "dateRange": [-1450, -1400], "eraId": "exodus",           "author": "Moses",          "theme": "Beginnings — creation, fall, flood, patriarchs", "keyVerse": "In the beginning, God created the heavens and the earth. (1:1)" },
-    { "id": "exodus",        "abbrev": "Exod",  "name": "Exodus",           "testament": "OT", "genre": "Law",          "dateWritten": -1450, "dateRange": [-1446, -1445], "eraId": "exodus",           "author": "Moses",          "theme": "Redemption from slavery; covenant at Sinai", "keyVerse": "I am the LORD your God, who brought you out of Egypt. (20:2)" },
-    { "id": "leviticus",     "abbrev": "Lev",   "name": "Leviticus",        "testament": "OT", "genre": "Law",          "dateWritten": -1450, "dateRange": [-1445, -1445], "eraId": "exodus",           "author": "Moses",          "theme": "Holiness and worship of God", "keyVerse": "Be holy, for I the LORD your God am holy. (19:2)" },
-    { "id": "numbers",       "abbrev": "Num",   "name": "Numbers",          "testament": "OT", "genre": "Law",          "dateWritten": -1450, "dateRange": [-1445, -1407], "eraId": "exodus",           "author": "Moses",          "theme": "Wilderness wanderings; faithfulness and rebellion", "keyVerse": "The LORD bless you and keep you. (6:24)" },
-    { "id": "deuteronomy",   "abbrev": "Deut",  "name": "Deuteronomy",      "testament": "OT", "genre": "Law",          "dateWritten": -1406, "dateRange": [-1407, -1406], "eraId": "exodus",           "author": "Moses",          "theme": "Covenant renewal on the plains of Moab", "keyVerse": "Hear, O Israel: The LORD our God, the LORD is one. (6:4)" },
-    { "id": "joshua",        "abbrev": "Josh",  "name": "Joshua",           "testament": "OT", "genre": "History",      "dateWritten": -1380, "dateRange": [-1406, -1380], "eraId": "exodus",           "author": "Joshua",         "theme": "Conquest and settlement of Canaan", "keyVerse": "Be strong and courageous. Do not be frightened. (1:9)" },
-    { "id": "judges",        "abbrev": "Judg",  "name": "Judges",           "testament": "OT", "genre": "History",      "dateWritten": -1000, "dateRange": [-1375, -1050], "eraId": "exodus",           "author": "Samuel (trad.)", "theme": "Cycles of apostasy, oppression, and deliverance", "keyVerse": "In those days there was no king in Israel. (21:25)" },
-    { "id": "ruth",          "abbrev": "Ruth",  "name": "Ruth",             "testament": "OT", "genre": "History",      "dateWritten": -1000, "dateRange": [-1131, -1109], "eraId": "exodus",           "author": "Samuel (trad.)", "theme": "Loyalty, redemption, and the lineage of David", "keyVerse": "Where you go I will go. (1:16)" },
-    { "id": "1samuel",       "abbrev": "1Sam",  "name": "1 Samuel",         "testament": "OT", "genre": "History",      "dateWritten": -930,  "dateRange": [-1105, -1010], "eraId": "united",           "author": "Samuel, Nathan, Gad", "theme": "Samuel, Saul, and the rise of David", "keyVerse": "The LORD does not look at outward appearance... the LORD looks at the heart. (16:7)" },
-    { "id": "2samuel",       "abbrev": "2Sam",  "name": "2 Samuel",         "testament": "OT", "genre": "History",      "dateWritten": -930,  "dateRange": [-1010, -970],  "eraId": "united",           "author": "Nathan, Gad",    "theme": "David's reign — triumph and tragedy", "keyVerse": "Your house and your kingdom will endure forever. (7:16)" },
-    { "id": "1kings",        "abbrev": "1Kgs",  "name": "1 Kings",          "testament": "OT", "genre": "History",      "dateWritten": -560,  "dateRange": [-970, -853],   "eraId": "divided",          "author": "Unknown",        "theme": "Solomon's glory and the division of the kingdom", "keyVerse": "The fear of the LORD is the beginning of wisdom. (Prov 1:7)" },
-    { "id": "2kings",        "abbrev": "2Kgs",  "name": "2 Kings",          "testament": "OT", "genre": "History",      "dateWritten": -560,  "dateRange": [-853, -586],   "eraId": "divided",          "author": "Unknown",        "theme": "The fall of Israel and Judah", "keyVerse": "He did what was right in the eyes of the LORD. (18:3)" },
-    { "id": "1chronicles",   "abbrev": "1Chr",  "name": "1 Chronicles",     "testament": "OT", "genre": "History",      "dateWritten": -450,  "dateRange": [-970, -960],   "eraId": "united",           "author": "Ezra (trad.)",   "theme": "David's reign refocused on worship and the temple", "keyVerse": "Yours, O LORD, is the greatness and the power. (29:11)" },
-    { "id": "2chronicles",   "abbrev": "2Chr",  "name": "2 Chronicles",     "testament": "OT", "genre": "History",      "dateWritten": -450,  "dateRange": [-960, -586],   "eraId": "divided",          "author": "Ezra (trad.)",   "theme": "The temple, the kings, and hope for restoration", "keyVerse": "If my people humble themselves and pray… I will heal their land. (7:14)" },
-    { "id": "ezra",          "abbrev": "Ezra",  "name": "Ezra",             "testament": "OT", "genre": "History",      "dateWritten": -440,  "dateRange": [-537, -458],   "eraId": "exile",            "author": "Ezra",           "theme": "Return from exile and rebuilding", "keyVerse": "The gracious hand of his God was on him. (7:9)" },
-    { "id": "nehemiah",      "abbrev": "Neh",   "name": "Nehemiah",         "testament": "OT", "genre": "History",      "dateWritten": -430,  "dateRange": [-445, -428],   "eraId": "exile",            "author": "Nehemiah",       "theme": "Rebuilding Jerusalem's walls and community", "keyVerse": "The joy of the LORD is your strength. (8:10)" },
-    { "id": "esther",        "abbrev": "Esth",  "name": "Esther",           "testament": "OT", "genre": "History",      "dateWritten": -460,  "dateRange": [-479, -474],   "eraId": "exile",            "author": "Unknown",        "theme": "God's hidden providence preserving his people", "keyVerse": "Who knows whether you have not come to the kingdom for such a time as this? (4:14)" },
-    { "id": "job",           "abbrev": "Job",   "name": "Job",              "testament": "OT", "genre": "Wisdom",       "dateWritten": -2000, "dateRange": [-1900, -1700], "eraId": "patriarchal",      "author": "Unknown",        "theme": "Suffering and the sovereignty of God", "keyVerse": "I know that my Redeemer lives. (19:25)" },
-    { "id": "psalms",        "abbrev": "Ps",    "name": "Psalms",           "testament": "OT", "genre": "Poetry",       "dateWritten": -1000, "dateRange": [-1440, -430],  "eraId": "united",           "author": "David and others", "theme": "Israel's hymnal — praise, lament, trust", "keyVerse": "The LORD is my shepherd; I shall not want. (23:1)" },
-    { "id": "proverbs",      "abbrev": "Prov",  "name": "Proverbs",         "testament": "OT", "genre": "Wisdom",       "dateWritten": -950,  "dateRange": [-950, -700],   "eraId": "united",           "author": "Solomon and others", "theme": "Practical wisdom for daily life", "keyVerse": "Trust in the LORD with all your heart. (3:5)" },
-    { "id": "ecclesiastes",  "abbrev": "Eccl",  "name": "Ecclesiastes",     "testament": "OT", "genre": "Wisdom",       "dateWritten": -935,  "dateRange": [-935, -935],   "eraId": "united",           "author": "Solomon (trad.)", "theme": "The meaning of life under the sun", "keyVerse": "Fear God and keep his commandments. (12:13)" },
-    { "id": "songofsolomon", "abbrev": "Song",  "name": "Song of Solomon",  "testament": "OT", "genre": "Poetry",       "dateWritten": -950,  "dateRange": [-965, -950],   "eraId": "united",           "author": "Solomon",        "theme": "Love, marriage, and covenant relationship", "keyVerse": "I am my beloved's and my beloved is mine. (6:3)" },
-    { "id": "isaiah",        "abbrev": "Isa",   "name": "Isaiah",           "testament": "OT", "genre": "Prophecy",     "dateWritten": -700,  "dateRange": [-740, -681],   "eraId": "divided",          "author": "Isaiah",         "theme": "Judgment and salvation — the Servant who saves", "keyVerse": "But he was wounded for our transgressions. (53:5)" },
-    { "id": "jeremiah",      "abbrev": "Jer",   "name": "Jeremiah",         "testament": "OT", "genre": "Prophecy",     "dateWritten": -585,  "dateRange": [-629, -586],   "eraId": "divided",          "author": "Jeremiah",       "theme": "Judgment on Judah; the new covenant", "keyVerse": "I will put my law within them and write it on their hearts. (31:33)" },
-    { "id": "lamentations",  "abbrev": "Lam",   "name": "Lamentations",     "testament": "OT", "genre": "Poetry",       "dateWritten": -586,  "dateRange": [-586, -586],   "eraId": "exile",            "author": "Jeremiah",       "theme": "Grief over the destruction of Jerusalem", "keyVerse": "The steadfast love of the LORD never ceases. (3:22)" },
-    { "id": "ezekiel",       "abbrev": "Ezek",  "name": "Ezekiel",          "testament": "OT", "genre": "Prophecy",     "dateWritten": -571,  "dateRange": [-597, -571],   "eraId": "exile",            "author": "Ezekiel",        "theme": "God's glory departs and returns; valley of dry bones", "keyVerse": "I will give you a new heart and put a new spirit in you. (36:26)" },
-    { "id": "daniel",        "abbrev": "Dan",   "name": "Daniel",           "testament": "OT", "genre": "Prophecy",     "dateWritten": -536,  "dateRange": [-605, -536],   "eraId": "exile",            "author": "Daniel",         "theme": "God's sovereignty over empires; visions of the end", "keyVerse": "He changes times and seasons; he deposes kings. (2:21)" },
-    { "id": "hosea",         "abbrev": "Hos",   "name": "Hosea",            "testament": "OT", "genre": "Prophecy",     "dateWritten": -720,  "dateRange": [-760, -722],   "eraId": "divided",          "author": "Hosea",          "theme": "God's unfailing love for unfaithful Israel", "keyVerse": "I will betroth you to me forever. (2:19)" },
-    { "id": "joel",          "abbrev": "Joel",  "name": "Joel",             "testament": "OT", "genre": "Prophecy",     "dateWritten": -835,  "dateRange": [-835, -796],   "eraId": "divided",          "author": "Joel",           "theme": "The Day of the LORD; outpouring of the Spirit", "keyVerse": "I will pour out my Spirit on all people. (2:28)" },
-    { "id": "amos",          "abbrev": "Amos",  "name": "Amos",             "testament": "OT", "genre": "Prophecy",     "dateWritten": -760,  "dateRange": [-760, -750],   "eraId": "divided",          "author": "Amos",           "theme": "Justice for the poor; judgment on Israel", "keyVerse": "Let justice roll on like a river. (5:24)" },
-    { "id": "obadiah",       "abbrev": "Obad",  "name": "Obadiah",          "testament": "OT", "genre": "Prophecy",     "dateWritten": -586,  "dateRange": [-586, -586],   "eraId": "exile",            "author": "Obadiah",        "theme": "Judgment on Edom for betraying Israel", "keyVerse": "The day of the LORD is near for all nations. (v.15)" },
-    { "id": "jonah",         "abbrev": "Jonah", "name": "Jonah",            "testament": "OT", "genre": "Prophecy",     "dateWritten": -760,  "dateRange": [-760, -750],   "eraId": "divided",          "author": "Jonah",          "theme": "God's mercy extends beyond Israel", "keyVerse": "Salvation comes from the LORD. (2:9)" },
-    { "id": "micah",         "abbrev": "Mic",   "name": "Micah",            "testament": "OT", "genre": "Prophecy",     "dateWritten": -700,  "dateRange": [-735, -700],   "eraId": "divided",          "author": "Micah",          "theme": "Justice, mercy, humility; Messiah from Bethlehem", "keyVerse": "Act justly, love mercy, walk humbly with your God. (6:8)" },
-    { "id": "nahum",         "abbrev": "Nah",   "name": "Nahum",            "testament": "OT", "genre": "Prophecy",     "dateWritten": -663,  "dateRange": [-663, -612],   "eraId": "divided",          "author": "Nahum",          "theme": "God's judgment on Nineveh", "keyVerse": "The LORD is good, a refuge in times of trouble. (1:7)" },
-    { "id": "habakkuk",      "abbrev": "Hab",   "name": "Habakkuk",         "testament": "OT", "genre": "Prophecy",     "dateWritten": -607,  "dateRange": [-607, -605],   "eraId": "divided",          "author": "Habakkuk",       "theme": "Living by faith when evil seems to prevail", "keyVerse": "The righteous shall live by his faith. (2:4)" },
-    { "id": "zephaniah",     "abbrev": "Zeph",  "name": "Zephaniah",        "testament": "OT", "genre": "Prophecy",     "dateWritten": -630,  "dateRange": [-640, -620],   "eraId": "divided",          "author": "Zephaniah",      "theme": "The Day of the LORD; a remnant shall be saved", "keyVerse": "The LORD your God is in your midst. (3:17)" },
-    { "id": "haggai",        "abbrev": "Hag",   "name": "Haggai",           "testament": "OT", "genre": "Prophecy",     "dateWritten": -520,  "dateRange": [-520, -520],   "eraId": "exile",            "author": "Haggai",         "theme": "Rebuilding the temple; priorities and blessing", "keyVerse": "I am with you, declares the LORD. (1:13)" },
-    { "id": "zechariah",     "abbrev": "Zech",  "name": "Zechariah",        "testament": "OT", "genre": "Prophecy",     "dateWritten": -480,  "dateRange": [-520, -480],   "eraId": "exile",            "author": "Zechariah",      "theme": "Visions of restoration; the coming King", "keyVerse": "Rejoice greatly, O daughter of Zion…your king comes to you. (9:9)" },
-    { "id": "malachi",       "abbrev": "Mal",   "name": "Malachi",          "testament": "OT", "genre": "Prophecy",     "dateWritten": -430,  "dateRange": [-435, -430],   "eraId": "exile",            "author": "Malachi",        "theme": "Covenant faithfulness; the coming messenger", "keyVerse": "Return to me, and I will return to you. (3:7)" },
-    { "id": "matthew",       "abbrev": "Matt",  "name": "Matthew",          "testament": "NT", "genre": "Gospel",       "dateWritten": 60,    "dateRange": [55, 65],       "eraId": "church",           "author": "Matthew",        "theme": "Jesus as the Jewish Messiah and King", "keyVerse": "All authority in heaven and on earth has been given to me. (28:18)" },
-    { "id": "mark",          "abbrev": "Mark",  "name": "Mark",             "testament": "NT", "genre": "Gospel",       "dateWritten": 55,    "dateRange": [50, 60],       "eraId": "church",           "author": "Mark",           "theme": "Jesus as the Servant — the Son of God in action", "keyVerse": "The Son of Man came not to be served but to serve. (10:45)" },
-    { "id": "luke",          "abbrev": "Luke",  "name": "Luke",             "testament": "NT", "genre": "Gospel",       "dateWritten": 62,    "dateRange": [58, 65],       "eraId": "church",           "author": "Luke",           "theme": "Jesus as the Savior of all humanity", "keyVerse": "The Son of Man came to seek and to save the lost. (19:10)" },
-    { "id": "john",          "abbrev": "John",  "name": "John",             "testament": "NT", "genre": "Gospel",       "dateWritten": 90,    "dateRange": [85, 95],       "eraId": "church",           "author": "John",           "theme": "Jesus as the divine Word — believe and have life", "keyVerse": "In the beginning was the Word. (1:1)" },
-    { "id": "acts",          "abbrev": "Acts",  "name": "Acts",             "testament": "NT", "genre": "History",      "dateWritten": 63,    "dateRange": [62, 65],       "eraId": "church",           "author": "Luke",           "theme": "The Spirit-empowered spread of the gospel", "keyVerse": "You will be my witnesses…to the ends of the earth. (1:8)" },
-    { "id": "romans",        "abbrev": "Rom",   "name": "Romans",           "testament": "NT", "genre": "Epistle",      "dateWritten": 57,    "dateRange": [56, 57],       "eraId": "church",           "author": "Paul",           "theme": "The righteousness of God — salvation by faith", "keyVerse": "The righteous shall live by faith. (1:17)" },
-    { "id": "1corinthians",  "abbrev": "1Cor",  "name": "1 Corinthians",    "testament": "NT", "genre": "Epistle",      "dateWritten": 55,    "dateRange": [54, 55],       "eraId": "church",           "author": "Paul",           "theme": "Unity, holiness, and gifts in the church", "keyVerse": "Love never fails. (13:8)" },
-    { "id": "2corinthians",  "abbrev": "2Cor",  "name": "2 Corinthians",    "testament": "NT", "genre": "Epistle",      "dateWritten": 56,    "dateRange": [55, 56],       "eraId": "church",           "author": "Paul",           "theme": "Comfort in suffering; Paul's apostolic authority", "keyVerse": "My grace is sufficient for you. (12:9)" },
-    { "id": "galatians",     "abbrev": "Gal",   "name": "Galatians",        "testament": "NT", "genre": "Epistle",      "dateWritten": 49,    "dateRange": [48, 49],       "eraId": "church",           "author": "Paul",           "theme": "Freedom from the law — justified by faith alone", "keyVerse": "It is for freedom that Christ has set us free. (5:1)" },
-    { "id": "ephesians",     "abbrev": "Eph",   "name": "Ephesians",        "testament": "NT", "genre": "Epistle",      "dateWritten": 62,    "dateRange": [60, 62],       "eraId": "church",           "author": "Paul",           "theme": "The church as the body of Christ; spiritual armor", "keyVerse": "Put on the full armor of God. (6:11)" },
-    { "id": "philippians",   "abbrev": "Phil",  "name": "Philippians",      "testament": "NT", "genre": "Epistle",      "dateWritten": 62,    "dateRange": [60, 62],       "eraId": "church",           "author": "Paul",           "theme": "Joy in Christ regardless of circumstances", "keyVerse": "I can do all things through him who strengthens me. (4:13)" },
-    { "id": "colossians",    "abbrev": "Col",   "name": "Colossians",       "testament": "NT", "genre": "Epistle",      "dateWritten": 62,    "dateRange": [60, 62],       "eraId": "church",           "author": "Paul",           "theme": "Christ's supremacy over all creation", "keyVerse": "He is before all things, and in him all things hold together. (1:17)" },
-    { "id": "1thessalonians","abbrev": "1Thes", "name": "1 Thessalonians",  "testament": "NT", "genre": "Epistle",      "dateWritten": 51,    "dateRange": [50, 51],       "eraId": "church",           "author": "Paul",           "theme": "Hope in Christ's return; holy living", "keyVerse": "The Lord himself will descend from heaven. (4:16)" },
-    { "id": "2thessalonians","abbrev": "2Thes", "name": "2 Thessalonians",  "testament": "NT", "genre": "Epistle",      "dateWritten": 51,    "dateRange": [51, 52],       "eraId": "church",           "author": "Paul",           "theme": "Encouragement amid persecution; the Day of the Lord", "keyVerse": "Stand firm and hold to the traditions. (2:15)" },
-    { "id": "1timothy",      "abbrev": "1Tim",  "name": "1 Timothy",        "testament": "NT", "genre": "Epistle",      "dateWritten": 63,    "dateRange": [62, 64],       "eraId": "church",           "author": "Paul",           "theme": "Instructions for the church and its leaders", "keyVerse": "Fight the good fight of the faith. (6:12)" },
-    { "id": "2timothy",      "abbrev": "2Tim",  "name": "2 Timothy",        "testament": "NT", "genre": "Epistle",      "dateWritten": 67,    "dateRange": [66, 67],       "eraId": "church",           "author": "Paul",           "theme": "Paul's final charge — guard the gospel", "keyVerse": "All Scripture is God-breathed and is useful. (3:16)" },
-    { "id": "titus",         "abbrev": "Titus", "name": "Titus",            "testament": "NT", "genre": "Epistle",      "dateWritten": 63,    "dateRange": [62, 64],       "eraId": "church",           "author": "Paul",           "theme": "Sound doctrine and godly living in the church", "keyVerse": "Our great God and Savior Jesus Christ…gave himself for us. (2:13–14)" },
-    { "id": "philemon",      "abbrev": "Phlm",  "name": "Philemon",         "testament": "NT", "genre": "Epistle",      "dateWritten": 62,    "dateRange": [60, 62],       "eraId": "church",           "author": "Paul",           "theme": "Reconciliation and forgiveness in Christ", "keyVerse": "Receive him as you would receive me. (v.17)" },
-    { "id": "hebrews",       "abbrev": "Heb",   "name": "Hebrews",          "testament": "NT", "genre": "Epistle",      "dateWritten": 65,    "dateRange": [64, 68],       "eraId": "church",           "author": "Unknown",        "theme": "Jesus as the superior High Priest; persevere in faith", "keyVerse": "Jesus Christ is the same yesterday, today, and forever. (13:8)" },
-    { "id": "james",         "abbrev": "Jas",   "name": "James",            "testament": "NT", "genre": "Epistle",      "dateWritten": 48,    "dateRange": [45, 49],       "eraId": "church",           "author": "James",          "theme": "Faith without works is dead", "keyVerse": "Faith without works is dead. (2:26)" },
-    { "id": "1peter",        "abbrev": "1Pet",  "name": "1 Peter",          "testament": "NT", "genre": "Epistle",      "dateWritten": 64,    "dateRange": [62, 65],       "eraId": "church",           "author": "Peter",          "theme": "Hope and holiness amid suffering", "keyVerse": "Cast all your anxiety on him because he cares for you. (5:7)" },
-    { "id": "2peter",        "abbrev": "2Pet",  "name": "2 Peter",          "testament": "NT", "genre": "Epistle",      "dateWritten": 67,    "dateRange": [65, 68],       "eraId": "church",           "author": "Peter",          "theme": "Warning against false teachers; remember the truth", "keyVerse": "Grow in the grace and knowledge of our Lord Jesus Christ. (3:18)" },
-    { "id": "1john",         "abbrev": "1Jn",   "name": "1 John",           "testament": "NT", "genre": "Epistle",      "dateWritten": 90,    "dateRange": [85, 95],       "eraId": "church",           "author": "John",           "theme": "Fellowship with God; love one another", "keyVerse": "God is love. (4:8)" },
-    { "id": "2john",         "abbrev": "2Jn",   "name": "2 John",           "testament": "NT", "genre": "Epistle",      "dateWritten": 90,    "dateRange": [85, 95],       "eraId": "church",           "author": "John",           "theme": "Walk in truth and love; beware of deceivers", "keyVerse": "Walk in love. (v.6)" },
-    { "id": "3john",         "abbrev": "3Jn",   "name": "3 John",           "testament": "NT", "genre": "Epistle",      "dateWritten": 90,    "dateRange": [85, 95],       "eraId": "church",           "author": "John",           "theme": "Support faithful workers; reject pride in the church", "keyVerse": "Beloved, do not imitate evil but imitate good. (v.11)" },
-    { "id": "jude",          "abbrev": "Jude",  "name": "Jude",             "testament": "NT", "genre": "Epistle",      "dateWritten": 65,    "dateRange": [64, 68],       "eraId": "church",           "author": "Jude",           "theme": "Contend for the faith against false teachers", "keyVerse": "Contend for the faith once delivered to the saints. (v.3)" },
-    { "id": "revelation",    "abbrev": "Rev",   "name": "Revelation",       "testament": "NT", "genre": "Prophecy",     "dateWritten": 95,    "dateRange": [94, 96],       "eraId": "church",           "author": "John",           "theme": "The Lamb conquers; new heaven and new earth", "keyVerse": "Behold, I am making all things new. (21:5)" }
+    {
+      "id": "genesis",
+      "abbrev": "Gen",
+      "name": "Genesis",
+      "testament": "OT",
+      "genre": "Law",
+      "dateWritten": -1450,
+      "dateRange": [
+        -1450,
+        -1400
+      ],
+      "eraId": "exodus",
+      "author": "Moses",
+      "theme": "Beginnings \u2014 creation, fall, flood, patriarchs",
+      "keyVerse": "In the beginning, God created the heavens and the earth. (1:1)"
+    },
+    {
+      "id": "exodus",
+      "abbrev": "Exod",
+      "name": "Exodus",
+      "testament": "OT",
+      "genre": "Law",
+      "dateWritten": -1450,
+      "dateRange": [
+        -1446,
+        -1445
+      ],
+      "eraId": "exodus",
+      "author": "Moses",
+      "theme": "Redemption from slavery; covenant at Sinai",
+      "keyVerse": "I am the LORD your God, who brought you out of Egypt. (20:2)"
+    },
+    {
+      "id": "leviticus",
+      "abbrev": "Lev",
+      "name": "Leviticus",
+      "testament": "OT",
+      "genre": "Law",
+      "dateWritten": -1450,
+      "dateRange": [
+        -1445,
+        -1445
+      ],
+      "eraId": "exodus",
+      "author": "Moses",
+      "theme": "Holiness and worship of God",
+      "keyVerse": "Be holy, for I the LORD your God am holy. (19:2)"
+    },
+    {
+      "id": "numbers",
+      "abbrev": "Num",
+      "name": "Numbers",
+      "testament": "OT",
+      "genre": "Law",
+      "dateWritten": -1450,
+      "dateRange": [
+        -1445,
+        -1407
+      ],
+      "eraId": "exodus",
+      "author": "Moses",
+      "theme": "Wilderness wanderings; faithfulness and rebellion",
+      "keyVerse": "The LORD bless you and keep you. (6:24)"
+    },
+    {
+      "id": "deuteronomy",
+      "abbrev": "Deut",
+      "name": "Deuteronomy",
+      "testament": "OT",
+      "genre": "Law",
+      "dateWritten": -1406,
+      "dateRange": [
+        -1407,
+        -1406
+      ],
+      "eraId": "exodus",
+      "author": "Moses",
+      "theme": "Covenant renewal on the plains of Moab",
+      "keyVerse": "Hear, O Israel: The LORD our God, the LORD is one. (6:4)"
+    },
+    {
+      "id": "joshua",
+      "abbrev": "Josh",
+      "name": "Joshua",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -1380,
+      "dateRange": [
+        -1406,
+        -1380
+      ],
+      "eraId": "exodus",
+      "author": "Joshua",
+      "theme": "Conquest and settlement of Canaan",
+      "keyVerse": "Be strong and courageous. Do not be frightened. (1:9)"
+    },
+    {
+      "id": "judges",
+      "abbrev": "Judg",
+      "name": "Judges",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -1000,
+      "dateRange": [
+        -1375,
+        -1050
+      ],
+      "eraId": "exodus",
+      "author": "Samuel (trad.)",
+      "theme": "Cycles of apostasy, oppression, and deliverance",
+      "keyVerse": "In those days there was no king in Israel. (21:25)"
+    },
+    {
+      "id": "ruth",
+      "abbrev": "Ruth",
+      "name": "Ruth",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -1000,
+      "dateRange": [
+        -1131,
+        -1109
+      ],
+      "eraId": "exodus",
+      "author": "Samuel (trad.)",
+      "theme": "Loyalty, redemption, and the lineage of David",
+      "keyVerse": "Where you go I will go. (1:16)"
+    },
+    {
+      "id": "1samuel",
+      "abbrev": "1Sam",
+      "name": "1 Samuel",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -930,
+      "dateRange": [
+        -1105,
+        -1010
+      ],
+      "eraId": "united",
+      "author": "Samuel, Nathan, Gad",
+      "theme": "Samuel, Saul, and the rise of David",
+      "keyVerse": "The LORD does not look at outward appearance... the LORD looks at the heart. (16:7)"
+    },
+    {
+      "id": "2samuel",
+      "abbrev": "2Sam",
+      "name": "2 Samuel",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -930,
+      "dateRange": [
+        -1010,
+        -970
+      ],
+      "eraId": "united",
+      "author": "Nathan, Gad",
+      "theme": "David's reign \u2014 triumph and tragedy",
+      "keyVerse": "Your house and your kingdom will endure forever. (7:16)"
+    },
+    {
+      "id": "1kings",
+      "abbrev": "1Kgs",
+      "name": "1 Kings",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -560,
+      "dateRange": [
+        -970,
+        -853
+      ],
+      "eraId": "divided",
+      "author": "Unknown",
+      "theme": "Solomon's glory and the division of the kingdom",
+      "keyVerse": "The fear of the LORD is the beginning of wisdom. (Prov 1:7)"
+    },
+    {
+      "id": "2kings",
+      "abbrev": "2Kgs",
+      "name": "2 Kings",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -560,
+      "dateRange": [
+        -853,
+        -586
+      ],
+      "eraId": "divided",
+      "author": "Unknown",
+      "theme": "The fall of Israel and Judah",
+      "keyVerse": "He did what was right in the eyes of the LORD. (18:3)"
+    },
+    {
+      "id": "1chronicles",
+      "abbrev": "1Chr",
+      "name": "1 Chronicles",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -450,
+      "dateRange": [
+        -970,
+        -960
+      ],
+      "eraId": "united",
+      "author": "Ezra (trad.)",
+      "theme": "David's reign refocused on worship and the temple",
+      "keyVerse": "Yours, O LORD, is the greatness and the power. (29:11)"
+    },
+    {
+      "id": "2chronicles",
+      "abbrev": "2Chr",
+      "name": "2 Chronicles",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -450,
+      "dateRange": [
+        -960,
+        -586
+      ],
+      "eraId": "divided",
+      "author": "Ezra (trad.)",
+      "theme": "The temple, the kings, and hope for restoration",
+      "keyVerse": "If my people humble themselves and pray\u2026 I will heal their land. (7:14)"
+    },
+    {
+      "id": "ezra",
+      "abbrev": "Ezra",
+      "name": "Ezra",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -440,
+      "dateRange": [
+        -537,
+        -458
+      ],
+      "eraId": "exile",
+      "author": "Ezra",
+      "theme": "Return from exile and rebuilding",
+      "keyVerse": "The gracious hand of his God was on him. (7:9)"
+    },
+    {
+      "id": "nehemiah",
+      "abbrev": "Neh",
+      "name": "Nehemiah",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -430,
+      "dateRange": [
+        -445,
+        -428
+      ],
+      "eraId": "exile",
+      "author": "Nehemiah",
+      "theme": "Rebuilding Jerusalem's walls and community",
+      "keyVerse": "The joy of the LORD is your strength. (8:10)"
+    },
+    {
+      "id": "esther",
+      "abbrev": "Esth",
+      "name": "Esther",
+      "testament": "OT",
+      "genre": "History",
+      "dateWritten": -460,
+      "dateRange": [
+        -479,
+        -474
+      ],
+      "eraId": "exile",
+      "author": "Unknown",
+      "theme": "God's hidden providence preserving his people",
+      "keyVerse": "Who knows whether you have not come to the kingdom for such a time as this? (4:14)"
+    },
+    {
+      "id": "job",
+      "abbrev": "Job",
+      "name": "Job",
+      "testament": "OT",
+      "genre": "Wisdom",
+      "dateWritten": -2000,
+      "dateRange": [
+        -1900,
+        -1700
+      ],
+      "eraId": "patriarchal",
+      "author": "Unknown",
+      "theme": "Suffering and the sovereignty of God",
+      "keyVerse": "I know that my Redeemer lives. (19:25)"
+    },
+    {
+      "id": "psalms",
+      "abbrev": "Ps",
+      "name": "Psalms",
+      "testament": "OT",
+      "genre": "Poetry",
+      "dateWritten": -1000,
+      "dateRange": [
+        -1440,
+        -430
+      ],
+      "eraId": "united",
+      "author": "David and others",
+      "theme": "Israel's hymnal \u2014 praise, lament, trust",
+      "keyVerse": "The LORD is my shepherd; I shall not want. (23:1)"
+    },
+    {
+      "id": "proverbs",
+      "abbrev": "Prov",
+      "name": "Proverbs",
+      "testament": "OT",
+      "genre": "Wisdom",
+      "dateWritten": -950,
+      "dateRange": [
+        -950,
+        -700
+      ],
+      "eraId": "united",
+      "author": "Solomon and others",
+      "theme": "Practical wisdom for daily life",
+      "keyVerse": "Trust in the LORD with all your heart. (3:5)"
+    },
+    {
+      "id": "ecclesiastes",
+      "abbrev": "Eccl",
+      "name": "Ecclesiastes",
+      "testament": "OT",
+      "genre": "Wisdom",
+      "dateWritten": -935,
+      "dateRange": [
+        -935,
+        -935
+      ],
+      "eraId": "united",
+      "author": "Solomon (trad.)",
+      "theme": "The meaning of life under the sun",
+      "keyVerse": "Fear God and keep his commandments. (12:13)"
+    },
+    {
+      "id": "songofsolomon",
+      "abbrev": "Song",
+      "name": "Song of Solomon",
+      "testament": "OT",
+      "genre": "Poetry",
+      "dateWritten": -950,
+      "dateRange": [
+        -965,
+        -950
+      ],
+      "eraId": "united",
+      "author": "Solomon",
+      "theme": "Love, marriage, and covenant relationship",
+      "keyVerse": "I am my beloved's and my beloved is mine. (6:3)"
+    },
+    {
+      "id": "isaiah",
+      "abbrev": "Isa",
+      "name": "Isaiah",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -700,
+      "dateRange": [
+        -740,
+        -681
+      ],
+      "eraId": "divided",
+      "author": "Isaiah",
+      "theme": "Judgment and salvation \u2014 the Servant who saves",
+      "keyVerse": "But he was wounded for our transgressions. (53:5)"
+    },
+    {
+      "id": "jeremiah",
+      "abbrev": "Jer",
+      "name": "Jeremiah",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -585,
+      "dateRange": [
+        -629,
+        -586
+      ],
+      "eraId": "divided",
+      "author": "Jeremiah",
+      "theme": "Judgment on Judah; the new covenant",
+      "keyVerse": "I will put my law within them and write it on their hearts. (31:33)"
+    },
+    {
+      "id": "lamentations",
+      "abbrev": "Lam",
+      "name": "Lamentations",
+      "testament": "OT",
+      "genre": "Poetry",
+      "dateWritten": -586,
+      "dateRange": [
+        -586,
+        -586
+      ],
+      "eraId": "exile",
+      "author": "Jeremiah",
+      "theme": "Grief over the destruction of Jerusalem",
+      "keyVerse": "The steadfast love of the LORD never ceases. (3:22)"
+    },
+    {
+      "id": "ezekiel",
+      "abbrev": "Ezek",
+      "name": "Ezekiel",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -571,
+      "dateRange": [
+        -597,
+        -571
+      ],
+      "eraId": "exile",
+      "author": "Ezekiel",
+      "theme": "God's glory departs and returns; valley of dry bones",
+      "keyVerse": "I will give you a new heart and put a new spirit in you. (36:26)"
+    },
+    {
+      "id": "daniel",
+      "abbrev": "Dan",
+      "name": "Daniel",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -536,
+      "dateRange": [
+        -605,
+        -536
+      ],
+      "eraId": "exile",
+      "author": "Daniel",
+      "theme": "God's sovereignty over empires; visions of the end",
+      "keyVerse": "He changes times and seasons; he deposes kings. (2:21)"
+    },
+    {
+      "id": "hosea",
+      "abbrev": "Hos",
+      "name": "Hosea",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -720,
+      "dateRange": [
+        -760,
+        -722
+      ],
+      "eraId": "divided",
+      "author": "Hosea",
+      "theme": "God's unfailing love for unfaithful Israel",
+      "keyVerse": "I will betroth you to me forever. (2:19)"
+    },
+    {
+      "id": "joel",
+      "abbrev": "Joel",
+      "name": "Joel",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -835,
+      "dateRange": [
+        -835,
+        -796
+      ],
+      "eraId": "divided",
+      "author": "Joel",
+      "theme": "The Day of the LORD; outpouring of the Spirit",
+      "keyVerse": "I will pour out my Spirit on all people. (2:28)"
+    },
+    {
+      "id": "amos",
+      "abbrev": "Amos",
+      "name": "Amos",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -760,
+      "dateRange": [
+        -760,
+        -750
+      ],
+      "eraId": "divided",
+      "author": "Amos",
+      "theme": "Justice for the poor; judgment on Israel",
+      "keyVerse": "Let justice roll on like a river. (5:24)"
+    },
+    {
+      "id": "obadiah",
+      "abbrev": "Obad",
+      "name": "Obadiah",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -586,
+      "dateRange": [
+        -586,
+        -586
+      ],
+      "eraId": "exile",
+      "author": "Obadiah",
+      "theme": "Judgment on Edom for betraying Israel",
+      "keyVerse": "The day of the LORD is near for all nations. (v.15)"
+    },
+    {
+      "id": "jonah",
+      "abbrev": "Jonah",
+      "name": "Jonah",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -760,
+      "dateRange": [
+        -760,
+        -750
+      ],
+      "eraId": "divided",
+      "author": "Jonah",
+      "theme": "God's mercy extends beyond Israel",
+      "keyVerse": "Salvation comes from the LORD. (2:9)"
+    },
+    {
+      "id": "micah",
+      "abbrev": "Mic",
+      "name": "Micah",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -700,
+      "dateRange": [
+        -735,
+        -700
+      ],
+      "eraId": "divided",
+      "author": "Micah",
+      "theme": "Justice, mercy, humility; Messiah from Bethlehem",
+      "keyVerse": "Act justly, love mercy, walk humbly with your God. (6:8)"
+    },
+    {
+      "id": "nahum",
+      "abbrev": "Nah",
+      "name": "Nahum",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -663,
+      "dateRange": [
+        -663,
+        -612
+      ],
+      "eraId": "divided",
+      "author": "Nahum",
+      "theme": "God's judgment on Nineveh",
+      "keyVerse": "The LORD is good, a refuge in times of trouble. (1:7)"
+    },
+    {
+      "id": "habakkuk",
+      "abbrev": "Hab",
+      "name": "Habakkuk",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -607,
+      "dateRange": [
+        -607,
+        -605
+      ],
+      "eraId": "divided",
+      "author": "Habakkuk",
+      "theme": "Living by faith when evil seems to prevail",
+      "keyVerse": "The righteous shall live by his faith. (2:4)"
+    },
+    {
+      "id": "zephaniah",
+      "abbrev": "Zeph",
+      "name": "Zephaniah",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -630,
+      "dateRange": [
+        -640,
+        -620
+      ],
+      "eraId": "divided",
+      "author": "Zephaniah",
+      "theme": "The Day of the LORD; a remnant shall be saved",
+      "keyVerse": "The LORD your God is in your midst. (3:17)"
+    },
+    {
+      "id": "haggai",
+      "abbrev": "Hag",
+      "name": "Haggai",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -520,
+      "dateRange": [
+        -520,
+        -520
+      ],
+      "eraId": "exile",
+      "author": "Haggai",
+      "theme": "Rebuilding the temple; priorities and blessing",
+      "keyVerse": "I am with you, declares the LORD. (1:13)"
+    },
+    {
+      "id": "zechariah",
+      "abbrev": "Zech",
+      "name": "Zechariah",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -480,
+      "dateRange": [
+        -520,
+        -480
+      ],
+      "eraId": "exile",
+      "author": "Zechariah",
+      "theme": "Visions of restoration; the coming King",
+      "keyVerse": "Rejoice greatly, O daughter of Zion\u2026your king comes to you. (9:9)"
+    },
+    {
+      "id": "malachi",
+      "abbrev": "Mal",
+      "name": "Malachi",
+      "testament": "OT",
+      "genre": "Prophecy",
+      "dateWritten": -430,
+      "dateRange": [
+        -435,
+        -430
+      ],
+      "eraId": "exile",
+      "author": "Malachi",
+      "theme": "Covenant faithfulness; the coming messenger",
+      "keyVerse": "Return to me, and I will return to you. (3:7)"
+    },
+    {
+      "id": "matthew",
+      "abbrev": "Matt",
+      "name": "Matthew",
+      "testament": "NT",
+      "genre": "Gospel",
+      "dateWritten": 60,
+      "dateRange": [
+        55,
+        65
+      ],
+      "eraId": "church",
+      "author": "Matthew",
+      "theme": "Jesus as the Jewish Messiah and King",
+      "keyVerse": "All authority in heaven and on earth has been given to me. (28:18)"
+    },
+    {
+      "id": "mark",
+      "abbrev": "Mark",
+      "name": "Mark",
+      "testament": "NT",
+      "genre": "Gospel",
+      "dateWritten": 55,
+      "dateRange": [
+        50,
+        60
+      ],
+      "eraId": "church",
+      "author": "Mark",
+      "theme": "Jesus as the Servant \u2014 the Son of God in action",
+      "keyVerse": "The Son of Man came not to be served but to serve. (10:45)"
+    },
+    {
+      "id": "luke",
+      "abbrev": "Luke",
+      "name": "Luke",
+      "testament": "NT",
+      "genre": "Gospel",
+      "dateWritten": 62,
+      "dateRange": [
+        58,
+        65
+      ],
+      "eraId": "church",
+      "author": "Luke",
+      "theme": "Jesus as the Savior of all humanity",
+      "keyVerse": "The Son of Man came to seek and to save the lost. (19:10)"
+    },
+    {
+      "id": "john",
+      "abbrev": "John",
+      "name": "John",
+      "testament": "NT",
+      "genre": "Gospel",
+      "dateWritten": 90,
+      "dateRange": [
+        85,
+        95
+      ],
+      "eraId": "church",
+      "author": "John",
+      "theme": "Jesus as the divine Word \u2014 believe and have life",
+      "keyVerse": "In the beginning was the Word. (1:1)"
+    },
+    {
+      "id": "acts",
+      "abbrev": "Acts",
+      "name": "Acts",
+      "testament": "NT",
+      "genre": "History",
+      "dateWritten": 63,
+      "dateRange": [
+        62,
+        65
+      ],
+      "eraId": "church",
+      "author": "Luke",
+      "theme": "The Spirit-empowered spread of the gospel",
+      "keyVerse": "You will be my witnesses\u2026to the ends of the earth. (1:8)"
+    },
+    {
+      "id": "romans",
+      "abbrev": "Rom",
+      "name": "Romans",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 57,
+      "dateRange": [
+        56,
+        57
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "The righteousness of God \u2014 salvation by faith",
+      "keyVerse": "The righteous shall live by faith. (1:17)"
+    },
+    {
+      "id": "1corinthians",
+      "abbrev": "1Cor",
+      "name": "1 Corinthians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 55,
+      "dateRange": [
+        54,
+        55
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Unity, holiness, and gifts in the church",
+      "keyVerse": "Love never fails. (13:8)"
+    },
+    {
+      "id": "2corinthians",
+      "abbrev": "2Cor",
+      "name": "2 Corinthians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 56,
+      "dateRange": [
+        55,
+        56
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Comfort in suffering; Paul's apostolic authority",
+      "keyVerse": "My grace is sufficient for you. (12:9)"
+    },
+    {
+      "id": "galatians",
+      "abbrev": "Gal",
+      "name": "Galatians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 49,
+      "dateRange": [
+        48,
+        49
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Freedom from the law \u2014 justified by faith alone",
+      "keyVerse": "It is for freedom that Christ has set us free. (5:1)"
+    },
+    {
+      "id": "ephesians",
+      "abbrev": "Eph",
+      "name": "Ephesians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 62,
+      "dateRange": [
+        60,
+        62
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "The church as the body of Christ; spiritual armor",
+      "keyVerse": "Put on the full armor of God. (6:11)"
+    },
+    {
+      "id": "philippians",
+      "abbrev": "Phil",
+      "name": "Philippians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 62,
+      "dateRange": [
+        60,
+        62
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Joy in Christ regardless of circumstances",
+      "keyVerse": "I can do all things through him who strengthens me. (4:13)"
+    },
+    {
+      "id": "colossians",
+      "abbrev": "Col",
+      "name": "Colossians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 62,
+      "dateRange": [
+        60,
+        62
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Christ's supremacy over all creation",
+      "keyVerse": "He is before all things, and in him all things hold together. (1:17)"
+    },
+    {
+      "id": "1thessalonians",
+      "abbrev": "1Thes",
+      "name": "1 Thessalonians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 51,
+      "dateRange": [
+        50,
+        51
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Hope in Christ's return; holy living",
+      "keyVerse": "The Lord himself will descend from heaven. (4:16)"
+    },
+    {
+      "id": "2thessalonians",
+      "abbrev": "2Thes",
+      "name": "2 Thessalonians",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 51,
+      "dateRange": [
+        51,
+        52
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Encouragement amid persecution; the Day of the Lord",
+      "keyVerse": "Stand firm and hold to the traditions. (2:15)"
+    },
+    {
+      "id": "1timothy",
+      "abbrev": "1Tim",
+      "name": "1 Timothy",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 63,
+      "dateRange": [
+        62,
+        64
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Instructions for the church and its leaders",
+      "keyVerse": "Fight the good fight of the faith. (6:12)"
+    },
+    {
+      "id": "2timothy",
+      "abbrev": "2Tim",
+      "name": "2 Timothy",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 67,
+      "dateRange": [
+        66,
+        67
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Paul's final charge \u2014 guard the gospel",
+      "keyVerse": "All Scripture is God-breathed and is useful. (3:16)"
+    },
+    {
+      "id": "titus",
+      "abbrev": "Titus",
+      "name": "Titus",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 63,
+      "dateRange": [
+        62,
+        64
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Sound doctrine and godly living in the church",
+      "keyVerse": "Our great God and Savior Jesus Christ\u2026gave himself for us. (2:13\u201314)"
+    },
+    {
+      "id": "philemon",
+      "abbrev": "Phlm",
+      "name": "Philemon",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 62,
+      "dateRange": [
+        60,
+        62
+      ],
+      "eraId": "church",
+      "author": "Paul",
+      "theme": "Reconciliation and forgiveness in Christ",
+      "keyVerse": "Receive him as you would receive me. (v.17)"
+    },
+    {
+      "id": "hebrews",
+      "abbrev": "Heb",
+      "name": "Hebrews",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 65,
+      "dateRange": [
+        64,
+        68
+      ],
+      "eraId": "church",
+      "author": "Unknown",
+      "theme": "Jesus as the superior High Priest; persevere in faith",
+      "keyVerse": "Jesus Christ is the same yesterday, today, and forever. (13:8)"
+    },
+    {
+      "id": "james",
+      "abbrev": "Jas",
+      "name": "James",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 48,
+      "dateRange": [
+        45,
+        49
+      ],
+      "eraId": "church",
+      "author": "James",
+      "theme": "Faith without works is dead",
+      "keyVerse": "Faith without works is dead. (2:26)"
+    },
+    {
+      "id": "1peter",
+      "abbrev": "1Pet",
+      "name": "1 Peter",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 64,
+      "dateRange": [
+        62,
+        65
+      ],
+      "eraId": "church",
+      "author": "Peter",
+      "theme": "Hope and holiness amid suffering",
+      "keyVerse": "Cast all your anxiety on him because he cares for you. (5:7)"
+    },
+    {
+      "id": "2peter",
+      "abbrev": "2Pet",
+      "name": "2 Peter",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 67,
+      "dateRange": [
+        65,
+        68
+      ],
+      "eraId": "church",
+      "author": "Peter",
+      "theme": "Warning against false teachers; remember the truth",
+      "keyVerse": "Grow in the grace and knowledge of our Lord Jesus Christ. (3:18)"
+    },
+    {
+      "id": "1john",
+      "abbrev": "1Jn",
+      "name": "1 John",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 90,
+      "dateRange": [
+        85,
+        95
+      ],
+      "eraId": "church",
+      "author": "John",
+      "theme": "Fellowship with God; love one another",
+      "keyVerse": "God is love. (4:8)"
+    },
+    {
+      "id": "2john",
+      "abbrev": "2Jn",
+      "name": "2 John",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 90,
+      "dateRange": [
+        85,
+        95
+      ],
+      "eraId": "church",
+      "author": "John",
+      "theme": "Walk in truth and love; beware of deceivers",
+      "keyVerse": "Walk in love. (v.6)"
+    },
+    {
+      "id": "3john",
+      "abbrev": "3Jn",
+      "name": "3 John",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 90,
+      "dateRange": [
+        85,
+        95
+      ],
+      "eraId": "church",
+      "author": "John",
+      "theme": "Support faithful workers; reject pride in the church",
+      "keyVerse": "Beloved, do not imitate evil but imitate good. (v.11)"
+    },
+    {
+      "id": "jude",
+      "abbrev": "Jude",
+      "name": "Jude",
+      "testament": "NT",
+      "genre": "Epistle",
+      "dateWritten": 65,
+      "dateRange": [
+        64,
+        68
+      ],
+      "eraId": "church",
+      "author": "Jude",
+      "theme": "Contend for the faith against false teachers",
+      "keyVerse": "Contend for the faith once delivered to the saints. (v.3)"
+    },
+    {
+      "id": "revelation",
+      "abbrev": "Rev",
+      "name": "Revelation",
+      "testament": "NT",
+      "genre": "Prophecy",
+      "dateWritten": 95,
+      "dateRange": [
+        94,
+        96
+      ],
+      "eraId": "church",
+      "author": "John",
+      "theme": "The Lamb conquers; new heaven and new earth",
+      "keyVerse": "Behold, I am making all things new. (21:5)"
+    }
   ],
-
   "kingsIsrael": [
-    { "name": "Jeroboam I",  "start": -931, "end": -908 },
-    { "name": "Nadab",       "start": -908, "end": -907 },
-    { "name": "Baasha",      "start": -907, "end": -884 },
-    { "name": "Elah",        "start": -884, "end": -883 },
-    { "name": "Zimri",       "start": -883, "end": -883 },
-    { "name": "Omri",        "start": -883, "end": -872 },
-    { "name": "Ahab",        "start": -872, "end": -853 },
-    { "name": "Ahaziah",     "start": -853, "end": -852 },
-    { "name": "Joram",       "start": -852, "end": -841 },
-    { "name": "Jehu",        "start": -841, "end": -814 },
-    { "name": "Jehoahaz",    "start": -814, "end": -798 },
-    { "name": "Jehoash",     "start": -798, "end": -782 },
-    { "name": "Jeroboam II", "start": -782, "end": -753 },
-    { "name": "Zechariah",   "start": -753, "end": -752 },
-    { "name": "Shallum",     "start": -752, "end": -752 },
-    { "name": "Menahem",     "start": -752, "end": -742 },
-    { "name": "Pekahiah",    "start": -742, "end": -740 },
-    { "name": "Pekah",       "start": -740, "end": -731 },
-    { "name": "Hoshea",      "start": -731, "end": -723 }
+    {
+      "name": "Jeroboam I",
+      "start": -931,
+      "end": -908
+    },
+    {
+      "name": "Nadab",
+      "start": -908,
+      "end": -907
+    },
+    {
+      "name": "Baasha",
+      "start": -907,
+      "end": -884
+    },
+    {
+      "name": "Elah",
+      "start": -884,
+      "end": -883
+    },
+    {
+      "name": "Zimri",
+      "start": -883,
+      "end": -883
+    },
+    {
+      "name": "Omri",
+      "start": -883,
+      "end": -872
+    },
+    {
+      "name": "Ahab",
+      "start": -872,
+      "end": -853
+    },
+    {
+      "name": "Ahaziah",
+      "start": -853,
+      "end": -852
+    },
+    {
+      "name": "Joram",
+      "start": -852,
+      "end": -841
+    },
+    {
+      "name": "Jehu",
+      "start": -841,
+      "end": -814
+    },
+    {
+      "name": "Jehoahaz",
+      "start": -814,
+      "end": -798
+    },
+    {
+      "name": "Jehoash",
+      "start": -798,
+      "end": -782
+    },
+    {
+      "name": "Jeroboam II",
+      "start": -782,
+      "end": -753
+    },
+    {
+      "name": "Zechariah",
+      "start": -753,
+      "end": -752
+    },
+    {
+      "name": "Shallum",
+      "start": -752,
+      "end": -752
+    },
+    {
+      "name": "Menahem",
+      "start": -752,
+      "end": -742
+    },
+    {
+      "name": "Pekahiah",
+      "start": -742,
+      "end": -740
+    },
+    {
+      "name": "Pekah",
+      "start": -740,
+      "end": -731
+    },
+    {
+      "name": "Hoshea",
+      "start": -731,
+      "end": -723
+    }
   ],
-
   "kingsJudah": [
-    { "name": "Rehoboam",    "start": -932, "end": -915 },
-    { "name": "Abijah",      "start": -915, "end": -912 },
-    { "name": "Asa",         "start": -912, "end": -871 },
-    { "name": "Jehoshaphat", "start": -871, "end": -849 },
-    { "name": "Jehoram",     "start": -849, "end": -842 },
-    { "name": "Ahaziah",     "start": -842, "end": -841 },
-    { "name": "Athaliah",    "start": -841, "end": -835 },
-    { "name": "Joash",       "start": -835, "end": -796 },
-    { "name": "Amaziah",     "start": -796, "end": -767 },
-    { "name": "Uzziah",      "start": -767, "end": -740 },
-    { "name": "Jotham",      "start": -740, "end": -732 },
-    { "name": "Ahaz",        "start": -732, "end": -716 },
-    { "name": "Hezekiah",    "start": -716, "end": -687 },
-    { "name": "Manasseh",    "start": -687, "end": -643 },
-    { "name": "Amon",        "start": -643, "end": -641 },
-    { "name": "Josiah",      "start": -641, "end": -609 },
-    { "name": "Jehoahaz",    "start": -609, "end": -609 },
-    { "name": "Jehoiakim",   "start": -609, "end": -598 },
-    { "name": "Jehoiachin",  "start": -598, "end": -597 },
-    { "name": "Zedekiah",    "start": -597, "end": -586 }
+    {
+      "name": "Rehoboam",
+      "start": -932,
+      "end": -915
+    },
+    {
+      "name": "Abijah",
+      "start": -915,
+      "end": -912
+    },
+    {
+      "name": "Asa",
+      "start": -912,
+      "end": -871
+    },
+    {
+      "name": "Jehoshaphat",
+      "start": -871,
+      "end": -849
+    },
+    {
+      "name": "Jehoram",
+      "start": -849,
+      "end": -842
+    },
+    {
+      "name": "Ahaziah",
+      "start": -842,
+      "end": -841
+    },
+    {
+      "name": "Athaliah",
+      "start": -841,
+      "end": -835
+    },
+    {
+      "name": "Joash",
+      "start": -835,
+      "end": -796
+    },
+    {
+      "name": "Amaziah",
+      "start": -796,
+      "end": -767
+    },
+    {
+      "name": "Uzziah",
+      "start": -767,
+      "end": -740
+    },
+    {
+      "name": "Jotham",
+      "start": -740,
+      "end": -732
+    },
+    {
+      "name": "Ahaz",
+      "start": -732,
+      "end": -716
+    },
+    {
+      "name": "Hezekiah",
+      "start": -716,
+      "end": -687
+    },
+    {
+      "name": "Manasseh",
+      "start": -687,
+      "end": -643
+    },
+    {
+      "name": "Amon",
+      "start": -643,
+      "end": -641
+    },
+    {
+      "name": "Josiah",
+      "start": -641,
+      "end": -609
+    },
+    {
+      "name": "Jehoahaz",
+      "start": -609,
+      "end": -609
+    },
+    {
+      "name": "Jehoiakim",
+      "start": -609,
+      "end": -598
+    },
+    {
+      "name": "Jehoiachin",
+      "start": -598,
+      "end": -597
+    },
+    {
+      "name": "Zedekiah",
+      "start": -597,
+      "end": -586
+    }
   ]
 }

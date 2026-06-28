@@ -33,7 +33,15 @@ function formatDateRange([s, e]) {
   return `${yearLabel(s)} – ${yearLabel(e)}`;
 }
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, visibleLayers }) {
+const GROUP_COLOR = {
+  patriarchs: '#c9a84c',
+  judges:     '#9a7ec8',
+  kings:      '#c4a06b',
+  prophets:   '#4A7C6F',
+  apostles:   '#5aaa70',
+};
+
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, visibleLayers, searchQuery, onPanEra, onPanStart }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
@@ -200,22 +208,37 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .text(text);
     });
 
-    // ── Figures (patriarchs etc.) ──
+    // ── Figures ──
     const figG = root.append('g').attr('class', 'figures');
-    data.figures.forEach((fig, i) => {
+    // Greedy row-pack so overlapping figures don't stack
+    const figRows = [];
+    const sortedFigs = [...data.figures].sort((a, b) => a.start - b.start);
+    sortedFigs.forEach(fig => {
       const x1 = xScale(fig.start);
-      const x2 = xScale(fig.end);
-      const y  = FIG_Y + (i % 3) * (FIG_H + 2);
-      figG.append('rect')
+      const x2 = Math.max(x1 + 2, xScale(fig.end));
+      let row = figRows.findIndex(r => r <= x1 - 4);
+      if (row === -1) { figRows.push(0); row = figRows.length - 1; }
+      figRows[row] = x2;
+      const color = GROUP_COLOR[fig.group] || '#c9a84c';
+      const y = FIG_Y + row * (FIG_H + 3);
+      const fg = figG.append('g')
+        .attr('class', 'fig-group')
+        .attr('data-name', fig.name.toLowerCase());
+      fg.append('rect')
+        .attr('class', 'fig-bar')
         .attr('x', x1).attr('y', y - FIG_H / 2)
         .attr('width', Math.max(2, x2 - x1)).attr('height', FIG_H)
-        .attr('fill', 'rgba(201,168,76,0.25)')
+        .attr('fill', color + '30')
+        .attr('stroke', color + '88')
+        .attr('stroke-width', 0.6)
         .attr('rx', FIG_H / 2);
-      figG.append('text')
+      fg.append('text')
+        .attr('class', 'fig-label')
         .attr('x', (x1 + x2) / 2).attr('y', y + 4)
         .attr('text-anchor', 'middle')
-        .attr('fill', 'rgba(201,168,76,0.7)')
+        .attr('fill', color + 'cc')
         .attr('font-family', "'Cinzel', serif").attr('font-size', 7)
+        .attr('pointer-events', 'none')
         .text(fig.name);
     });
 
@@ -507,7 +530,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           .attr('stroke-width', 1 / k)
           .attr('rx', (BOOK_H / 2) / k);
         svg.selectAll('.book-capsule text').attr('font-size', 7.5 / k);
-        svg.selectAll('.figures text').attr('font-size', 7 / k);
+        svg.selectAll('.fig-label').attr('font-size', 7 / k).attr('display', k < 0.8 ? 'none' : null);
+        svg.selectAll('.fig-bar').attr('stroke-width', 0.6 / k).attr('rx', (FIG_H / 2) / k);
         svg.selectAll('.evt-hit').attr('r', 10 / k);
         svg.selectAll('.king-bar').attr('stroke-width', 0.5 / k).attr('rx', 2 / k);
         svg.selectAll('.king-label').attr('font-size', 7 / k).attr('display', k < 1.5 ? 'none' : null);
@@ -529,7 +553,20 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         drawTicks(k);
         svg.selectAll('.ticks text').attr('font-size', 9 / k);
         svg.selectAll('.ticks line').attr('stroke-width', 0.5 / k);
+
+        // Era indicator: find which era the viewport center is over
+        if (onPanEra && svgRef.current) {
+          const svgW = svgRef.current.clientWidth || 1280;
+          const centerYear = xScale.invert((svgW / 2 - t.x) / k);
+          const era = data.eras.find(er => centerYear >= er.start && centerYear <= er.end);
+          if (era) onPanEra(era.id);
+        }
       });
+
+    // Fire onPanStart when user begins dragging so auto-era can resume
+    zoom.on('start', (e) => {
+      if (e.sourceEvent && e.sourceEvent.type === 'mousedown') onPanStart?.();
+    });
 
     zoomRef.current = zoom;
     svg.call(zoom);
@@ -601,6 +638,39 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         return id === selectedId ? '#c9a84c' : baseColor;
       });
   }, [selectedId]);
+
+  // Search: highlight matching elements, dim everything else
+  useEffect(() => {
+    if (!svgRef.current) return;
+    const svg = d3.select(svgRef.current);
+    const q = (searchQuery || '').trim().toLowerCase();
+    if (!q) {
+      svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-hit')
+        .attr('opacity', null);
+      return;
+    }
+    svg.selectAll('.book-capsule').attr('opacity', function() {
+      const id = d3.select(this).attr('data-id') || '';
+      const label = this.querySelector('text')?.textContent?.toLowerCase() || '';
+      return (id.includes(q) || label.includes(q)) ? 1 : 0.12;
+    });
+    svg.selectAll('.fig-group').attr('opacity', function() {
+      const name = d3.select(this).attr('data-name') || '';
+      return name.includes(q) ? 1 : 0.12;
+    });
+    svg.selectAll('.king-group').attr('opacity', function() {
+      const label = this.querySelector('.king-label')?.textContent?.toLowerCase() || '';
+      return label.includes(q) ? 1 : 0.12;
+    });
+    svg.selectAll('.proph-group').attr('opacity', function() {
+      const label = this.querySelector('.proph-label')?.textContent?.toLowerCase() || '';
+      return label.includes(q) ? 1 : 0.12;
+    });
+    svg.selectAll('.evt-hit').attr('opacity', function() {
+      const label = this.previousSibling?.previousSibling?.textContent?.toLowerCase() || '';
+      return label.includes(q) ? 1 : 0.12;
+    });
+  }, [searchQuery]);
 
   // Toggle layer visibility without re-rendering D3
   useEffect(() => {

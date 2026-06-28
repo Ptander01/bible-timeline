@@ -47,11 +47,59 @@ html, body, #root {
 }
 
 .app-header .hint {
-  margin-left: auto;
   font-size: 11px;
   color: var(--text-muted);
   letter-spacing: 0.5px;
 }
+
+/* ── Search bar ── */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 4px 12px;
+  width: 240px;
+  box-shadow: var(--neu-in);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-bar:focus-within {
+  border-color: rgba(201,168,76,0.35);
+  box-shadow: var(--neu-in), 0 0 16px rgba(201,168,76,0.1);
+}
+.search-bar__icon {
+  width: 13px;
+  height: 13px;
+  color: rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+.search-bar:focus-within .search-bar__icon { color: rgba(201,168,76,0.6); }
+.search-bar__input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.7);
+  min-width: 0;
+}
+.search-bar__input::placeholder { color: rgba(255,255,255,0.2); }
+.search-bar__clear {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.15s;
+}
+.search-bar__clear:hover { color: var(--accent); }
 
 /* ── Era nav pills ── */
 .era-nav {

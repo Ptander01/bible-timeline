@@ -1,24 +1,68 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import BibleTimeline from './components/BibleTimeline';
 import DetailPanel from './components/DetailPanel';
 import EraNav from './components/EraNav';
 import FilterBar from './components/FilterBar';
 import GenreLegend from './components/GenreLegend';
+import SearchBar from './components/SearchBar';
 import data from './data/bible-data.json';
 
 const ALL_ON = { people: true, events: true, books: true, kings: true, prophets: true };
 
-export default function App() {
-  const [selected, setSelected]         = useState(null);
-  const [activeEraId, setActiveEraId]   = useState(null);
-  const [visibleLayers, setVisibleLayers] = useState(ALL_ON);
-  const zoomToEraFn = useRef(null);
+function readUrlParams() {
+  const p = new URLSearchParams(window.location.search);
+  return { eraId: p.get('era'), selId: p.get('sel') };
+}
 
-  const handleZoomReady = useCallback((fn) => { zoomToEraFn.current = fn; }, []);
+function writeUrlParams(eraId, selId) {
+  const p = new URLSearchParams();
+  if (eraId) p.set('era', eraId);
+  if (selId) p.set('sel', selId);
+  const str = p.toString();
+  window.history.replaceState(null, '', str ? `?${str}` : window.location.pathname);
+}
+
+export default function App() {
+  const [selected, setSelected]           = useState(null);
+  const [activeEraId, setActiveEraId]     = useState(null);
+  const [visibleLayers, setVisibleLayers] = useState(ALL_ON);
+  const [searchQuery, setSearchQuery]     = useState('');
+  const zoomToEraFn   = useRef(null);
+  const userPickedEra = useRef(false); // true when user clicked a pill → don't auto-override
+
+  const handleZoomReady = useCallback((fn) => {
+    zoomToEraFn.current = fn;
+    // Restore URL state once zoom is ready
+    const { eraId, selId } = readUrlParams();
+    if (eraId) {
+      const era = data.eras.find(e => e.id === eraId);
+      if (era) { setActiveEraId(eraId); fn(era); userPickedEra.current = true; }
+    }
+    if (selId) {
+      const book = data.books.find(b => b.id === selId);
+      if (book) setSelected({ item: book, type: 'book' });
+    }
+  }, []);
+
+  // Sync URL whenever era or selection changes
+  useEffect(() => {
+    writeUrlParams(activeEraId, selected?.item?.id ?? null);
+  }, [activeEraId, selected]);
 
   function handleEraSelect(era) {
+    userPickedEra.current = true;
     setActiveEraId(era.id);
     zoomToEraFn.current?.(era);
+  }
+
+  // Called by BibleTimeline as user pans — updates era indicator without overriding user clicks
+  function handlePanEra(eraId) {
+    if (!userPickedEra.current) setActiveEraId(eraId);
+  }
+
+  // After user pans manually, re-enable auto-era detection
+  function handlePanStart() {
+    userPickedEra.current = false;
   }
 
   function handleToggleLayer(id) {
@@ -32,7 +76,7 @@ export default function App() {
   }
 
   function handleSelectEvent(evt) {
-    const type = evt.type === 'king' ? 'king' : 'event';
+    const type = evt.type === 'king' ? 'king' : evt.type === 'prophet' ? 'book' : 'event';
     setSelected(prev =>
       prev?.item?.id === evt.id ? null : { item: evt, type }
     );
@@ -43,7 +87,8 @@ export default function App() {
       <header className="app-header">
         <h1>Bible Timeline</h1>
         <span className="subtitle">ESV Chronological · ~4000 BC – AD 95</span>
-        <span className="hint">Scroll to zoom · drag to pan · click a book or event for details</span>
+        <SearchBar onSearch={setSearchQuery} />
+        <span className="hint">Scroll to zoom · drag to pan · click for details</span>
       </header>
 
       <EraNav eras={data.eras} onSelect={handleEraSelect} activeEraId={activeEraId} />
@@ -58,6 +103,9 @@ export default function App() {
           onSelectEvent={handleSelectEvent}
           selectedId={selected?.item?.id}
           visibleLayers={visibleLayers}
+          searchQuery={searchQuery}
+          onPanEra={handlePanEra}
+          onPanStart={handlePanStart}
         />
         <DetailPanel
           item={selected?.item}
