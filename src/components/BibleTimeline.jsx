@@ -122,22 +122,22 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     feMerge.append('feMergeNode').attr('in', 'blur');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
-    // Vertical gradients for glassy book capsules — one per genre
-    const fillAlpha  = isDark ? 0.30 : 0.18;
-    const fillAlpha2 = isDark ? 0.18 : 0.10;
+    // Solid-fill glassy gradients — top catch-light → base color → deeper shade
     Object.entries(GENRE_COLORS).forEach(([genre, hex]) => {
       const grad = defs.append('linearGradient')
         .attr('id', `book-grad-${genre.toLowerCase()}`)
         .attr('x1', '0%').attr('y1', '0%')
         .attr('x2', '0%').attr('y2', '100%');
-      // Parse hex to r,g,b
       const r = parseInt(hex.slice(1,3),16);
       const g = parseInt(hex.slice(3,5),16);
       const b = parseInt(hex.slice(5,7),16);
-      grad.append('stop').attr('offset', '0%')
-        .attr('stop-color', `rgba(${r},${g},${b},${fillAlpha})`);
-      grad.append('stop').attr('offset', '100%')
-        .attr('stop-color', `rgba(${r},${g},${b},${fillAlpha2})`);
+      // Top: slightly lighter catch-light
+      const rL = Math.min(255, r + 38); const gL = Math.min(255, g + 38); const bL = Math.min(255, b + 38);
+      // Bottom: slightly deeper shadow
+      const rD = Math.max(0, r - 22);   const gD = Math.max(0, g - 22);   const bD = Math.max(0, b - 22);
+      grad.append('stop').attr('offset',  '0%').attr('stop-color', `rgb(${rL},${gL},${bL})`).attr('stop-opacity', 0.96);
+      grad.append('stop').attr('offset', '45%').attr('stop-color', `rgb(${r},${g},${b})`).attr('stop-opacity', 0.92);
+      grad.append('stop').attr('offset','100%').attr('stop-color', `rgb(${rD},${gD},${bD})`).attr('stop-opacity', 0.90);
     });
 
     // Root group for zoom
@@ -475,27 +475,37 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           const gradId = `book-grad-${(book.genre || '').toLowerCase()}`;
 
           // Body — gradient fill with full-opacity border
+          // Body — solid gradient fill, white rim for glass edge
           g.append('rect')
             .attr('x', book._x1).attr('y', y)
             .attr('width', w).attr('height', BOOK_H)
             .attr('fill', `url(#${gradId})`)
-            .attr('stroke', color)
-            .attr('stroke-width', 1)
+            .attr('stroke', 'rgba(255,255,255,0.18)')
+            .attr('stroke-width', 0.75)
             .attr('rx', rx);
 
-          // Specular shine — top-half white sheen for glassy depth
+          // Glass catch-light — upper sheen
           g.append('rect')
             .attr('x', book._x1 + 1).attr('y', y + 1)
-            .attr('width', Math.max(0, w - 2)).attr('height', BOOK_H * 0.45)
-            .attr('fill', isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.42)')
+            .attr('width', Math.max(0, w - 2)).attr('height', BOOK_H * 0.40)
+            .attr('fill', 'rgba(255,255,255,0.18)')
             .attr('rx', rx)
             .attr('pointer-events', 'none');
 
+          // Bottom depth shadow (thin, dark edge)
+          g.append('rect')
+            .attr('x', book._x1 + 1).attr('y', y + BOOK_H - 2)
+            .attr('width', Math.max(0, w - 2)).attr('height', 2)
+            .attr('fill', 'rgba(0,0,0,0.25)')
+            .attr('rx', 0)
+            .attr('pointer-events', 'none');
+
+          // Label — white on solid dark fill
           g.append('text')
             .attr('x', (book._x1 + book._x2) / 2)
             .attr('y', y + BOOK_H / 2 + 3.5)
             .attr('text-anchor', 'middle')
-            .attr('fill', isDark ? color : color)
+            .attr('fill', 'rgba(255,255,255,0.90)')
             .attr('font-family', "'Cinzel', serif")
             .attr('font-size', 7.5)
             .attr('pointer-events', 'none')

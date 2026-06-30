@@ -539,8 +539,8 @@ html, body, #root {
   height: 9px;
   border-radius: 3px;
   flex-shrink: 0;
-  opacity: 0.9;
-  box-shadow: 0 0 6px currentColor;
+  opacity: 1;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.20);
 }
 .genre-legend__label {
   font-family: var(--font-display);
