@@ -513,6 +513,16 @@ html, body, #root {
     inset -1px 0 0 rgba(0,0,0,0.35),
     inset 0  0   0 1px rgba(255,255,255,0.04);
 }
+.genre-legend__title {
+  font-family: var(--font-display);
+  font-size: 7.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.55);
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid rgba(201,168,76,0.14);
+}
 .genre-legend__item {
   display: flex;
   align-items: center;
@@ -819,7 +829,10 @@ html, body, #root {
     inset  1px 0 0 rgba(255,255,255,0.38),
     inset -1px 0 0 rgba(110,70,20,0.08);
 }
-[data-theme="light"] .genre-legend__title { color: rgba(80,52,18,0.55); }
+[data-theme="light"] .genre-legend__title {
+  color: rgba(80,52,18,0.60);
+  border-bottom-color: rgba(110,70,20,0.16);
+}
 [data-theme="light"] .genre-legend__label { color: rgba(50,30,10,0.80); }
 
 /* Zoom buttons */

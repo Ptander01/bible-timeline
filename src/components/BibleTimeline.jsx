@@ -2,13 +2,13 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import * as d3 from 'd3';
 
 export const GENRE_COLORS = {
-  Law:      '#c07070',
-  History:  '#7a9abf',
-  Wisdom:   '#c9a84c',
-  Poetry:   '#b09ac0',
-  Prophecy: '#4A7C6F',
-  Gospel:   '#5aaa70',
-  Epistle:  '#8878c0',
+  Law:      '#8B2020',  // deep burgundy
+  History:  '#1E4080',  // navy
+  Wisdom:   '#8B6418',  // dark amber
+  Poetry:   '#4A2480',  // deep indigo
+  Prophecy: '#1A5C3A',  // pine green
+  Gospel:   '#1A6B35',  // forest green
+  Epistle:  '#3A1F70',  // deep violet
 };
 
 const ERA_FILL_DARK = {
@@ -114,13 +114,31 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       evtMinor:        isDark ? 'rgba(122,138,176,0.7)'   : 'rgba(90,72,48,0.65)',
     };
 
-    // Defs: era gradients + glow
+    // Defs: glow filter + per-genre book-capsule gradients
     const defs = svg.append('defs');
     defs.append('filter').attr('id', 'glow')
       .append('feGaussianBlur').attr('stdDeviation', 2.5).attr('result', 'blur');
     const feMerge = defs.select('#glow').append('feMerge');
     feMerge.append('feMergeNode').attr('in', 'blur');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+    // Vertical gradients for glassy book capsules — one per genre
+    const fillAlpha  = isDark ? 0.30 : 0.18;
+    const fillAlpha2 = isDark ? 0.18 : 0.10;
+    Object.entries(GENRE_COLORS).forEach(([genre, hex]) => {
+      const grad = defs.append('linearGradient')
+        .attr('id', `book-grad-${genre.toLowerCase()}`)
+        .attr('x1', '0%').attr('y1', '0%')
+        .attr('x2', '0%').attr('y2', '100%');
+      // Parse hex to r,g,b
+      const r = parseInt(hex.slice(1,3),16);
+      const g = parseInt(hex.slice(3,5),16);
+      const b = parseInt(hex.slice(5,7),16);
+      grad.append('stop').attr('offset', '0%')
+        .attr('stop-color', `rgba(${r},${g},${b},${fillAlpha})`);
+      grad.append('stop').attr('offset', '100%')
+        .attr('stop-color', `rgba(${r},${g},${b},${fillAlpha2})`);
+    });
 
     // Root group for zoom
     const root = svg.append('g').attr('class', 'root');
@@ -440,26 +458,39 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
             .attr('data-id', book.id)
             .attr('cursor', 'pointer')
             .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
-            .on('mouseenter', function(e) {
-              d3.select(this).select('rect').attr('filter', 'brightness(1.4)');
+            .on('mouseenter', function() {
+              d3.select(this).selectAll('rect').attr('filter', 'brightness(1.35)');
             })
             .on('mouseleave', function() {
-              d3.select(this).select('rect').attr('filter', null);
+              d3.select(this).selectAll('rect').attr('filter', null);
             });
 
+          const rx = BOOK_H / 2;
+          const w  = book._x2 - book._x1;
+          const gradId = `book-grad-${(book.genre || '').toLowerCase()}`;
+
+          // Body — gradient fill with full-opacity border
           g.append('rect')
             .attr('x', book._x1).attr('y', y)
-            .attr('width', book._x2 - book._x1).attr('height', BOOK_H)
-            .attr('fill', color + '33')
-            .attr('stroke', color + '88')
+            .attr('width', w).attr('height', BOOK_H)
+            .attr('fill', `url(#${gradId})`)
+            .attr('stroke', color)
             .attr('stroke-width', 1)
-            .attr('rx', BOOK_H / 2);
+            .attr('rx', rx);
+
+          // Specular shine — top-half white sheen for glassy depth
+          g.append('rect')
+            .attr('x', book._x1 + 1).attr('y', y + 1)
+            .attr('width', Math.max(0, w - 2)).attr('height', BOOK_H * 0.45)
+            .attr('fill', isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.42)')
+            .attr('rx', rx)
+            .attr('pointer-events', 'none');
 
           g.append('text')
             .attr('x', (book._x1 + book._x2) / 2)
             .attr('y', y + BOOK_H / 2 + 3.5)
             .attr('text-anchor', 'middle')
-            .attr('fill', color)
+            .attr('fill', isDark ? color : color)
             .attr('font-family', "'Cinzel', serif")
             .attr('font-size', 7.5)
             .attr('pointer-events', 'none')
