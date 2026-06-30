@@ -122,23 +122,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     feMerge.append('feMergeNode').attr('in', 'blur');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
-    // Solid-fill glassy gradients — top catch-light → base color → deeper shade
-    Object.entries(GENRE_COLORS).forEach(([genre, hex]) => {
-      const grad = defs.append('linearGradient')
-        .attr('id', `book-grad-${genre.toLowerCase()}`)
-        .attr('x1', '0%').attr('y1', '0%')
-        .attr('x2', '0%').attr('y2', '100%');
-      const r = parseInt(hex.slice(1,3),16);
-      const g = parseInt(hex.slice(3,5),16);
-      const b = parseInt(hex.slice(5,7),16);
-      // Top: slightly lighter catch-light
-      const rL = Math.min(255, r + 38); const gL = Math.min(255, g + 38); const bL = Math.min(255, b + 38);
-      // Bottom: slightly deeper shadow
-      const rD = Math.max(0, r - 22);   const gD = Math.max(0, g - 22);   const bD = Math.max(0, b - 22);
-      grad.append('stop').attr('offset',  '0%').attr('stop-color', `rgb(${rL},${gL},${bL})`).attr('stop-opacity', 0.96);
-      grad.append('stop').attr('offset', '45%').attr('stop-color', `rgb(${r},${g},${b})`).attr('stop-opacity', 0.92);
-      grad.append('stop').attr('offset','100%').attr('stop-color', `rgb(${rD},${gD},${bD})`).attr('stop-opacity', 0.90);
-    });
+    // (book capsule gradients replaced by inline CSS on foreignObject divs)
 
     // Root group for zoom
     const root = svg.append('g').attr('class', 'root');
@@ -464,52 +448,64 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
             .attr('cursor', 'pointer')
             .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
             .on('mouseenter', function() {
-              d3.select(this).select('rect').attr('filter', 'brightness(1.28)');
+              d3.select(this).select('div').style('filter', 'brightness(1.22)');
             })
             .on('mouseleave', function() {
-              d3.select(this).select('rect').attr('filter', null);
+              d3.select(this).select('div').style('filter', null);
             });
 
           const rx = BOOK_H / 2;
           const w  = book._x2 - book._x1;
-          const gradId = `book-grad-${(book.genre || '').toLowerCase()}`;
 
-          // Body — gradient fill with full-opacity border
-          // Body — solid gradient fill + white rim stroke
+          // Compute color variants for CSS gradient
+          const cr = parseInt(color.slice(1,3),16);
+          const cgv = parseInt(color.slice(3,5),16);
+          const cb = parseInt(color.slice(5,7),16);
+          const rL = Math.min(255,cr+40), gL = Math.min(255,cgv+40), bL = Math.min(255,cb+40);
+          const rD = Math.max(0,cr-20),   gD = Math.max(0,cgv-20),   bD = Math.max(0,cb-20);
+          const bgGrad = `linear-gradient(160deg,rgb(${rL},${gL},${bL}) 0%,rgb(${cr},${cgv},${cb}) 45%,rgb(${rD},${gD},${bD}) 100%)`;
+          const outerDrop = isDark
+            ? '0 3px 10px rgba(0,0,0,0.58),0 1px 3px rgba(0,0,0,0.40)'
+            : '0 2px 7px rgba(50,28,8,0.28),0 1px 2px rgba(50,28,8,0.16)';
+          const pillShadow = `${outerDrop},inset 0 1px 0 rgba(255,255,255,0.22),inset 0 -1px 0 rgba(0,0,0,0.38),inset 0 0 0 1px rgba(255,255,255,0.08)`;
+
+          // foreignObject → real HTML div with exact same CSS as filter pills, just genre colors
+          const SHPAD = 12;
+          const fo = g.append('foreignObject')
+            .attr('x', book._x1 - SHPAD).attr('y', y - SHPAD)
+            .attr('width', w + SHPAD * 2).attr('height', BOOK_H + SHPAD * 2)
+            .attr('pointer-events', 'none');
+
+          fo.append('xhtml:div')
+            .style('width', `${w}px`)
+            .style('height', `${BOOK_H}px`)
+            .style('margin', `${SHPAD}px 0 0 ${SHPAD}px`)
+            .style('border-radius', `${rx}px`)
+            .style('background', bgGrad)
+            .style('box-shadow', pillShadow)
+            .style('box-sizing', 'border-box')
+            .style('display', 'flex')
+            .style('align-items', 'center')
+            .style('justify-content', 'center')
+            .style('overflow', 'hidden')
+            .style('pointer-events', 'none')
+            .append('xhtml:span')
+              .attr('class', 'book-pill-label')
+              .style('font-family', "'Cinzel', serif")
+              .style('font-size', `${7.5 / kRef.current}px`)
+              .style('color', 'rgba(255,255,255,0.88)')
+              .style('letter-spacing', '0.5px')
+              .style('white-space', 'nowrap')
+              .style('pointer-events', 'none')
+              .text(book.abbrev);
+
+          // Transparent hit rect — provides click + hover target for the g handlers
           g.append('rect')
             .attr('x', book._x1).attr('y', y)
             .attr('width', w).attr('height', BOOK_H)
-            .attr('fill', `url(#${gradId})`)
-            .attr('stroke', 'rgba(255,255,255,0.15)')
-            .attr('stroke-width', 0.75)
-            .attr('rx', rx);
-
-          // Inset top specular — 1.5px bright line (simulates inset 0 1px 0 rgba(255,255,255,0.22))
-          g.append('rect')
-            .attr('x', book._x1 + rx).attr('y', y + 1)
-            .attr('width', Math.max(0, w - rx * 2)).attr('height', 1.5)
-            .attr('fill', 'rgba(255,255,255,0.26)')
-            .attr('rx', 0)
-            .attr('pointer-events', 'none');
-
-          // Inset bottom depth — 1.5px dark line (simulates inset 0 -1px 0 rgba(0,0,0,0.32))
-          g.append('rect')
-            .attr('x', book._x1 + rx).attr('y', y + BOOK_H - 2.5)
-            .attr('width', Math.max(0, w - rx * 2)).attr('height', 1.5)
-            .attr('fill', 'rgba(0,0,0,0.32)')
-            .attr('rx', 0)
-            .attr('pointer-events', 'none');
-
-          // Label — white on solid dark fill
-          g.append('text')
-            .attr('x', (book._x1 + book._x2) / 2)
-            .attr('y', y + BOOK_H / 2 + 3.5)
-            .attr('text-anchor', 'middle')
-            .attr('fill', 'rgba(255,255,255,0.88)')
-            .attr('font-family', "'Cinzel', serif")
-            .attr('font-size', 7.5)
-            .attr('pointer-events', 'none')
-            .text(book.abbrev);
+            .attr('fill', 'transparent')
+            .attr('rx', rx)
+            .attr('stroke', 'none');
         });
       });
     }
@@ -602,10 +598,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         svg.selectAll('.ticks text').attr('font-size', 9 / k);
         svg.selectAll('.ticks line').attr('stroke-width', 0.5 / k);
         svg.selectAll('.axis-line').attr('stroke-width', 1 / k);
-        svg.selectAll('.book-capsule rect')
-          .attr('stroke-width', 1 / k)
-          .attr('rx', (BOOK_H / 2) / k);
-        svg.selectAll('.book-capsule text').attr('font-size', 7.5 / k);
+        svg.selectAll('.book-pill-label').style('font-size', `${7.5 / k}px`);
         svg.selectAll('.fig-label').attr('font-size', 7 / k).attr('display', k < 0.8 ? 'none' : null);
         svg.selectAll('.fig-bar').attr('stroke-width', 0.6 / k).attr('rx', (FIG_H / 2) / k);
         svg.selectAll('.evt-hit').attr('r', 10 / k);
