@@ -464,10 +464,10 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
             .attr('cursor', 'pointer')
             .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
             .on('mouseenter', function() {
-              d3.select(this).selectAll('rect').attr('filter', 'brightness(1.35)');
+              d3.select(this).select('rect').attr('filter', 'brightness(1.28)');
             })
             .on('mouseleave', function() {
-              d3.select(this).selectAll('rect').attr('filter', null);
+              d3.select(this).select('rect').attr('filter', null);
             });
 
           const rx = BOOK_H / 2;
@@ -475,28 +475,28 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           const gradId = `book-grad-${(book.genre || '').toLowerCase()}`;
 
           // Body — gradient fill with full-opacity border
-          // Body — solid gradient fill, white rim for glass edge
+          // Body — solid gradient fill + white rim stroke
           g.append('rect')
             .attr('x', book._x1).attr('y', y)
             .attr('width', w).attr('height', BOOK_H)
             .attr('fill', `url(#${gradId})`)
-            .attr('stroke', 'rgba(255,255,255,0.18)')
+            .attr('stroke', 'rgba(255,255,255,0.15)')
             .attr('stroke-width', 0.75)
             .attr('rx', rx);
 
-          // Glass catch-light — upper sheen
+          // Inset top specular — 1.5px bright line (simulates inset 0 1px 0 rgba(255,255,255,0.22))
           g.append('rect')
-            .attr('x', book._x1 + 1).attr('y', y + 1)
-            .attr('width', Math.max(0, w - 2)).attr('height', BOOK_H * 0.40)
-            .attr('fill', 'rgba(255,255,255,0.18)')
-            .attr('rx', rx)
+            .attr('x', book._x1 + rx).attr('y', y + 1)
+            .attr('width', Math.max(0, w - rx * 2)).attr('height', 1.5)
+            .attr('fill', 'rgba(255,255,255,0.26)')
+            .attr('rx', 0)
             .attr('pointer-events', 'none');
 
-          // Bottom depth shadow (thin, dark edge)
+          // Inset bottom depth — 1.5px dark line (simulates inset 0 -1px 0 rgba(0,0,0,0.32))
           g.append('rect')
-            .attr('x', book._x1 + 1).attr('y', y + BOOK_H - 2)
-            .attr('width', Math.max(0, w - 2)).attr('height', 2)
-            .attr('fill', 'rgba(0,0,0,0.25)')
+            .attr('x', book._x1 + rx).attr('y', y + BOOK_H - 2.5)
+            .attr('width', Math.max(0, w - rx * 2)).attr('height', 1.5)
+            .attr('fill', 'rgba(0,0,0,0.32)')
             .attr('rx', 0)
             .attr('pointer-events', 'none');
 
@@ -505,7 +505,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
             .attr('x', (book._x1 + book._x2) / 2)
             .attr('y', y + BOOK_H / 2 + 3.5)
             .attr('text-anchor', 'middle')
-            .attr('fill', 'rgba(255,255,255,0.90)')
+            .attr('fill', 'rgba(255,255,255,0.88)')
             .attr('font-family', "'Cinzel', serif")
             .attr('font-size', 7.5)
             .attr('pointer-events', 'none')

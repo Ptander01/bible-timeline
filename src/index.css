@@ -709,8 +709,12 @@ html, body, #root {
 }
 
 /* ── SVG element depth (CSS drop-shadows on D3 elements) ── */
-.book-capsule rect {
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55));
+/* Outer drop shadow on the group (not per-rect, so the stacked rects share one shadow) */
+.book-capsule {
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.60)) drop-shadow(0 1px 3px rgba(0,0,0,0.40));
+}
+[data-theme="light"] .book-capsule {
+  filter: drop-shadow(0 3px 8px rgba(60,35,10,0.32)) drop-shadow(0 1px 2px rgba(60,35,10,0.18));
 }
 .king-group .king-bar {
   filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
@@ -898,10 +902,7 @@ html, body, #root {
   border-left-color: rgba(47,107,90,0.55);
 }
 
-/* SVG drop-shadows — softer on light bg */
-[data-theme="light"] .book-capsule rect {
-  filter: drop-shadow(0 1px 3px rgba(110,70,20,0.25));
-}
+/* SVG drop-shadows — softer on light bg (book-capsule handled on group above) */
 [data-theme="light"] .king-group .king-bar {
   filter: drop-shadow(0 1px 2px rgba(110,70,20,0.22));
 }
