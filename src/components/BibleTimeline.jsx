@@ -11,7 +11,7 @@ export const GENRE_COLORS = {
   Epistle:  '#8878c0',
 };
 
-const ERA_FILL = {
+const ERA_FILL_DARK = {
   primeval:         'rgba(42,26,58,0.35)',
   patriarchal:      'rgba(26,42,58,0.35)',
   exodus:           'rgba(26,58,42,0.35)',
@@ -21,6 +21,18 @@ const ERA_FILL = {
   intertestamental: 'rgba(42,42,26,0.35)',
   kingdom:          'rgba(26,58,26,0.35)',
   church:           'rgba(58,26,42,0.35)',
+};
+
+const ERA_FILL_LIGHT = {
+  primeval:         'rgba(110,60,130,0.07)',
+  patriarchal:      'rgba(50,80,120,0.07)',
+  exodus:           'rgba(40,100,70,0.07)',
+  united:           'rgba(120,80,30,0.07)',
+  divided:          'rgba(130,50,50,0.07)',
+  exile:            'rgba(50,50,120,0.07)',
+  intertestamental: 'rgba(100,90,30,0.07)',
+  kingdom:          'rgba(30,100,40,0.07)',
+  church:           'rgba(130,40,80,0.07)',
 };
 
 function yearLabel(y) {
@@ -41,7 +53,7 @@ const GROUP_COLOR = {
   apostles:   '#5aaa70',
 };
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, visibleLayers, searchQuery, onPanEra, onPanStart }) {
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, visibleLayers, searchQuery, onPanEra, onPanStart, theme }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
@@ -83,6 +95,25 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
+    // Theme-aware color scheme
+    const isDark = theme !== 'light';
+    const CS = {
+      eraFill:         isDark ? ERA_FILL_DARK : ERA_FILL_LIGHT,
+      eraDivider:      isDark ? 'rgba(201,168,76,0.15)'   : 'rgba(140,90,28,0.20)',
+      axis:            isDark ? 'rgba(201,168,76,0.25)'   : 'rgba(140,90,28,0.30)',
+      tickStroke:      isDark ? 'rgba(201,168,76,0.2)'    : 'rgba(140,90,28,0.22)',
+      tickText:        isDark ? 'rgba(122,138,176,0.7)'   : 'rgba(90,58,20,0.65)',
+      eraLabel:        isDark ? 'rgba(201,168,76,0.35)'   : 'rgba(120,75,22,0.58)',
+      zoneDivider:     isDark ? 'rgba(255,255,255,0.06)'  : 'rgba(0,0,0,0.07)',
+      sectionOT:       isDark ? 'rgba(201,168,76,0.5)'    : 'rgba(110,68,18,0.65)',
+      sectionPeople:   isDark ? 'rgba(201,168,76,0.4)'    : 'rgba(110,68,18,0.55)',
+      sectionNT:       isDark ? 'rgba(74,124,111,0.6)'    : 'rgba(35,85,65,0.65)',
+      prophTrack:      isDark ? '#a09060aa'               : 'rgba(100,65,18,0.65)',
+      kingTrackLabel:  (col)  => isDark ? col + 'aa'      : col,
+      evtMajor:        isDark ? '#c9a84c'                 : '#7a5218',
+      evtMinor:        isDark ? 'rgba(122,138,176,0.7)'   : 'rgba(90,72,48,0.65)',
+    };
+
     // Defs: era gradients + glow
     const defs = svg.append('defs');
     defs.append('filter').attr('id', 'glow')
@@ -103,7 +134,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       eraG.append('rect')
         .attr('x', x1).attr('y', AXIS_Y - ERA_H)
         .attr('width', x2 - x1).attr('height', ERA_H * 2)
-        .attr('fill', ERA_FILL[era.id] || 'rgba(40,40,60,0.3)')
+        .attr('fill', CS.eraFill[era.id] || (isDark ? 'rgba(40,40,60,0.3)' : 'rgba(100,80,40,0.06)'))
         .attr('rx', 0);
 
       // Era divider lines
@@ -111,7 +142,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         eraG.append('line')
           .attr('x1', x1).attr('x2', x1)
           .attr('y1', AXIS_Y - ERA_H).attr('y2', AXIS_Y + ERA_H)
-          .attr('stroke', 'rgba(201,168,76,0.15)').attr('stroke-width', 1);
+          .attr('stroke', CS.eraDivider).attr('stroke-width', 1);
       }
     });
 
@@ -120,7 +151,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       .attr('class', 'axis-line')
       .attr('x1', MARGIN_L).attr('x2', W - MARGIN_R)
       .attr('y1', AXIS_Y).attr('y2', AXIS_Y)
-      .attr('stroke', 'rgba(201,168,76,0.25)').attr('stroke-width', 1);
+      .attr('stroke', CS.axis).attr('stroke-width', 1);
 
     // ── Year ticks — adaptive ──
     const ticksG = root.append('g').attr('class', 'ticks');
@@ -146,11 +177,11 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         ticksG.append('line')
           .attr('x1', x).attr('x2', x)
           .attr('y1', AXIS_Y - 6).attr('y2', AXIS_Y + 6)
-          .attr('stroke', 'rgba(201,168,76,0.2)').attr('stroke-width', 0.5);
+          .attr('stroke', CS.tickStroke).attr('stroke-width', 0.5);
         ticksG.append('text')
           .attr('x', x).attr('y', AXIS_Y + 18)
           .attr('text-anchor', 'middle')
-          .attr('fill', 'rgba(122,138,176,0.7)')
+          .attr('fill', CS.tickText)
           .attr('font-family', "'Cinzel', serif")
           .attr('font-size', 9)
           .text(yearLabel(y));
@@ -170,7 +201,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('x', cx)
         .attr('y', AXIS_Y - 14)
         .attr('text-anchor', 'middle')
-        .attr('fill', 'rgba(201,168,76,0.35)')
+        .attr('fill', CS.eraLabel)
         .attr('font-family', "'Cinzel', serif")
         .attr('font-size', 11)
         .attr('letter-spacing', 2)
@@ -184,18 +215,17 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('class', 'zone-divider')
         .attr('x1', MARGIN_L).attr('x2', W - MARGIN_R)
         .attr('y1', y).attr('y2', y)
-        .attr('stroke', 'rgba(255,255,255,0.06)')
+        .attr('stroke', CS.zoneDivider)
         .attr('stroke-width', 1)
         .attr('pointer-events', 'none');
     });
 
     // ── Section labels (left rail) ──
-    const labelColor = 'rgba(201,168,76,0.4)';
     const labelFont  = "'Cinzel', serif";
     [
-      { text: 'OLD TESTAMENT', y: OT_BOOK_Y + 5,         fill: 'rgba(201,168,76,0.5)' },
-      { text: 'PEOPLE',        y: (FIG_Y + PROPH_MINOR_Y + PROPH_H) / 2 + 4, fill: labelColor },
-      { text: 'NEW TESTAMENT', y: NT_BOOK_Y + 5,         fill: 'rgba(74,124,111,0.6)' },
+      { text: 'OLD TESTAMENT', y: OT_BOOK_Y + 5,         fill: CS.sectionOT },
+      { text: 'PEOPLE',        y: (FIG_Y + PROPH_MINOR_Y + PROPH_H) / 2 + 4, fill: CS.sectionPeople },
+      { text: 'NEW TESTAMENT', y: NT_BOOK_Y + 5,         fill: CS.sectionNT },
     ].forEach(({ text, y, fill }) => {
       root.append('text')
         .attr('class', 'section-label')
@@ -255,7 +285,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('x', xScale(-932) - 4)
         .attr('y', trackY + KING_H / 2 + 3)
         .attr('text-anchor', 'end')
-        .attr('fill', color + 'aa')
+        .attr('fill', CS.kingTrackLabel(color))
         .attr('font-family', "'Cinzel', serif")
         .attr('font-size', 7)
         .attr('letter-spacing', 1)
@@ -329,7 +359,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       .attr('x', xScale(-932) - 4)
       .attr('y', (PROPH_MAJOR_Y + PROPH_MINOR_Y) / 2 + PROPH_H / 2 + 1)
       .attr('text-anchor', 'end')
-      .attr('fill', '#a09060aa')
+      .attr('fill', CS.prophTrack)
       .attr('font-family', "'Cinzel', serif")
       .attr('font-size', 7)
       .attr('letter-spacing', 1)
@@ -456,7 +486,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         : EVENT_BOT + (belowIdx % 3) * 14;
       if (goAbove) aboveIdx++; else belowIdx++;
 
-      const color = isMajor ? '#c9a84c' : 'rgba(122,138,176,0.7)';
+      const color = isMajor ? CS.evtMajor : CS.evtMinor;
 
       // connector line to axis
       evtG.append('line')
@@ -621,7 +651,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       d3.select(svgEl).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(initScale));
     }, 0);
 
-  }, [data]);
+  }, [data, theme]);
 
   // Highlight selected book
   useEffect(() => {

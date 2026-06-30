@@ -11,9 +11,52 @@
   --glass-shine:  rgba(255, 255, 255, 0.06);
   --glass-blur:   blur(18px);
 
-  /* neumorphism shadows (dark base) */
-  --neu-out:  -2px -2px 6px rgba(255,255,255,0.035), 2px 2px 8px rgba(0,0,0,0.7);
-  --neu-in:   inset 2px 2px 5px rgba(0,0,0,0.6), inset -1px -1px 3px rgba(255,255,255,0.03);
+  /*
+   * 3D lip system — extracted from the cinematic toggle reference.
+   *
+   * --lip-out  : lifted surface. outer drop + top specular + bottom depth + rim.
+   * --lip-in   : pressed/active surface. deep inset track, blocks light.
+   * --lip-hover: transitional — slightly more lift + accent rim glow.
+   *
+   * Pill material gradient vars for consistent surface feel:
+   * --pill-bg        : resting dark material (lighter at top-left)
+   * --pill-bg-active : inverted — darker at top (sunken/pressed)
+   */
+  --lip-out:
+    0 6px 18px rgba(0,0,0,0.65),
+    0 2px 5px  rgba(0,0,0,0.45),
+    inset 0  1px 0 rgba(255,255,255,0.09),   /* top specular */
+    inset 0 -1px 0 rgba(0,0,0,0.50),          /* bottom depth */
+    inset 0  0   0 1px rgba(255,255,255,0.04); /* outer rim */
+
+  --lip-hover:
+    0 8px 22px rgba(0,0,0,0.70),
+    0 3px 7px  rgba(0,0,0,0.50),
+    inset 0  1px 0 rgba(255,255,255,0.13),
+    inset 0 -1px 0 rgba(0,0,0,0.55),
+    inset 0  0   0 1px rgba(255,255,255,0.07),
+    0 0 14px rgba(201,168,76,0.12);
+
+  --lip-in:
+    inset 0  4px 14px rgba(0,0,0,0.90),
+    inset 0  2px  5px rgba(0,0,0,0.65),
+    inset 0 -1px  3px rgba(255,255,255,0.025),
+    inset 0  0    0 1px rgba(255,255,255,0.03);
+
+  --lip-in-gold:
+    inset 0  4px 14px rgba(0,0,0,0.90),
+    inset 0  2px  5px rgba(0,0,0,0.65),
+    inset 0 -1px  3px rgba(255,255,255,0.025),
+    inset 0  0    0 1px rgba(201,168,76,0.25),
+    0 0 18px rgba(201,168,76,0.20);
+
+  --pill-bg:        linear-gradient(160deg, #1c2038 0%, #111626 55%, #0d1020 100%);
+  --pill-bg-active: linear-gradient(160deg, #0a0c16 0%, #0e1222 55%, #141930 100%);
+
+  /* legacy compat (used by some zoom-btn rules) */
+  --neu-out: var(--lip-out);
+  --neu-in:  var(--lip-in);
+
   --accent:     #c9a84c;
   --accent-dim: rgba(201, 168, 76, 0.35);
   --text:       #d4cfc0;
@@ -38,4 +81,59 @@
   --font-display: 'Cinzel', serif;
   --font-body:    'Lora', serif;
   --font-serif:   'Cormorant Garamond', serif;
+}
+
+/* ── Parchment light theme ─────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:         #f0e4c8;
+  --bg-panel:   rgba(232, 216, 174, 0.82);
+  --bg-card:    rgba(224, 208, 168, 0.88);
+  --border:     rgba(130, 85, 28, 0.28);
+  --border-lt:  rgba(130, 85, 28, 0.16);
+
+  --glass-bg:     rgba(235, 220, 182, 0.80);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-shine:  rgba(255, 255, 255, 0.40);
+
+  --accent:     #7a5218;
+  --accent-dim: rgba(122, 82, 24, 0.40);
+  --text:       #2a1808;
+  --text-dim:   #5a3f24;
+  --text-muted: #8a7055;
+  --text-gold:  #7a5218;
+  --teal:       #2f6b5a;
+  --purple:     #5a4d80;
+  --red:        #7a3030;
+
+  /* Parchment lip system — warm clay neumorphism */
+  --lip-out:
+    0 4px 14px rgba(110,70,20,0.20),
+    0 1px 4px  rgba(110,70,20,0.14),
+    inset 0  1px 0 rgba(255,255,255,0.72),
+    inset 0 -1px 0 rgba(110,70,20,0.18),
+    inset 0  0   0 1px rgba(255,255,255,0.28);
+  --lip-hover:
+    0 5px 18px rgba(110,70,20,0.24),
+    0 2px 6px  rgba(110,70,20,0.16),
+    inset 0  1px 0 rgba(255,255,255,0.82),
+    inset 0 -1px 0 rgba(110,70,20,0.22),
+    inset 0  0   0 1px rgba(255,255,255,0.38),
+    0 0 10px rgba(110,70,20,0.08);
+  --lip-in:
+    inset 0  3px 10px rgba(110,70,20,0.20),
+    inset 0  1px  4px rgba(110,70,20,0.14),
+    inset 0 -1px  2px rgba(255,255,255,0.65),
+    inset 0  0    0 1px rgba(255,255,255,0.22);
+  --lip-in-gold:
+    inset 0  3px 10px rgba(110,70,20,0.20),
+    inset 0  1px  4px rgba(110,70,20,0.14),
+    inset 0 -1px  2px rgba(255,255,255,0.65),
+    inset 0  0    0 1px rgba(130,85,28,0.35),
+    0 0 12px rgba(130,85,28,0.14);
+
+  --pill-bg:        linear-gradient(150deg, #ece0c0 0%, #e4d4a8 50%, #dccca0 100%);
+  --pill-bg-active: linear-gradient(150deg, #d8cca0 0%, #e4d4a8 50%, #ece0c0 100%);
+
+  --neu-out: var(--lip-out);
+  --neu-in:  var(--lip-in);
 }

@@ -5,6 +5,7 @@ import EraNav from './components/EraNav';
 import FilterBar from './components/FilterBar';
 import GenreLegend from './components/GenreLegend';
 import SearchBar from './components/SearchBar';
+import ThemeToggle from './components/ThemeToggle';
 import data from './data/bible-data.json';
 
 const ALL_ON = { people: true, events: true, books: true, kings: true, prophets: true };
@@ -27,8 +28,14 @@ export default function App() {
   const [activeEraId, setActiveEraId]     = useState(null);
   const [visibleLayers, setVisibleLayers] = useState(ALL_ON);
   const [searchQuery, setSearchQuery]     = useState('');
+  const [theme, setTheme]                 = useState(() => localStorage.getItem('bt-theme') || 'dark');
   const zoomToEraFn   = useRef(null);
   const userPickedEra = useRef(false); // true when user clicked a pill → don't auto-override
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('bt-theme', theme);
+  }, [theme]);
 
   const handleZoomReady = useCallback((fn) => {
     zoomToEraFn.current = fn;
@@ -89,6 +96,7 @@ export default function App() {
         <span className="subtitle">ESV Chronological · ~4000 BC – AD 95</span>
         <SearchBar onSearch={setSearchQuery} />
         <span className="hint">Scroll to zoom · drag to pan · click for details</span>
+        <ThemeToggle theme={theme} onToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} />
       </header>
 
       <EraNav eras={data.eras} onSelect={handleEraSelect} activeEraId={activeEraId} />
@@ -106,6 +114,7 @@ export default function App() {
           searchQuery={searchQuery}
           onPanEra={handlePanEra}
           onPanStart={handlePanStart}
+          theme={theme}
         />
         <DetailPanel
           item={selected?.item}
