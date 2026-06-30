@@ -708,14 +708,7 @@ html, body, #root {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
-/* ── SVG element depth (CSS drop-shadows on D3 elements) ── */
-/* book-capsule: outer shadow now lives in inline box-shadow on the foreignObject div */
-.king-group .king-bar {
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
-}
-.proph-group .proph-bar {
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-}
+/* ── SVG element depth — all bars now use foreignObject box-shadow ── */
 
 /* ══════════════════════════════════════════════════════════════
    PARCHMENT LIGHT THEME

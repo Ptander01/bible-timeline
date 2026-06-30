@@ -245,6 +245,46 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .text(text);
     });
 
+    // ── Track pill helper (figures / kings / prophets) ──
+    // Same CSS structure as book pills but semi-transparent so they read as data tracks.
+    function makeTrackFO(parent, x, y, w, h, hex, { rx = 3, alpha = 0.40, labelClass, fontSize = 7, labelText = '' } = {}) {
+      const cr = parseInt(hex.slice(1,3),16), cg = parseInt(hex.slice(3,5),16), cb = parseInt(hex.slice(5,7),16);
+      const rL = Math.min(255,cr+35), gL = Math.min(255,cg+35), bL = Math.min(255,cb+35);
+      const rD = Math.max(0,cr-18),   gD = Math.max(0,cg-18),   bD = Math.max(0,cb-18);
+      const aT = Math.min(1, alpha + 0.08);
+      const aM = alpha;
+      const aB = Math.max(0, alpha - 0.06);
+      const bg = `linear-gradient(160deg,rgba(${rL},${gL},${bL},${aT}) 0%,rgba(${cr},${cg},${cb},${aM}) 45%,rgba(${rD},${gD},${bD},${aB}) 100%)`;
+      const outerDrop = isDark
+        ? '0 2px 8px rgba(0,0,0,0.45),0 1px 2px rgba(0,0,0,0.28)'
+        : '0 1px 5px rgba(50,28,8,0.20),0 1px 1px rgba(50,28,8,0.12)';
+      const shadow = `${outerDrop},inset 0 1px 0 rgba(255,255,255,0.20),inset 0 -1px 0 rgba(0,0,0,0.26),inset 0 0 0 1px rgba(255,255,255,0.07)`;
+      const SHPAD = 8;
+      const fo = parent.append('foreignObject')
+        .attr('x', x - SHPAD).attr('y', y - SHPAD)
+        .attr('width', w + SHPAD * 2).attr('height', h + SHPAD * 2)
+        .attr('pointer-events', 'none');
+      fo.append('xhtml:div')
+        .style('width', `${w}px`).style('height', `${h}px`)
+        .style('margin', `${SHPAD}px 0 0 ${SHPAD}px`)
+        .style('border-radius', `${rx}px`)
+        .style('background', bg)
+        .style('box-shadow', shadow)
+        .style('box-sizing', 'border-box')
+        .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
+        .style('overflow', 'hidden').style('pointer-events', 'none')
+        .append('xhtml:span')
+          .attr('class', labelClass)
+          .style('font-family', "'Cinzel', serif")
+          .style('font-size', `${fontSize / kRef.current}px`)
+          .style('color', 'rgba(255,255,255,0.80)')
+          .style('letter-spacing', '0.5px')
+          .style('white-space', 'nowrap')
+          .style('pointer-events', 'none')
+          .text(labelText);
+      return fo;
+    }
+
     // ── Figures ──
     const figG = root.append('g').attr('class', 'figures');
     // Greedy row-pack so overlapping figures don't stack
@@ -257,26 +297,18 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       if (row === -1) { figRows.push(0); row = figRows.length - 1; }
       figRows[row] = x2;
       const color = GROUP_COLOR[fig.group] || '#c9a84c';
-      const y = FIG_Y + row * (FIG_H + 3);
+      const fy = FIG_Y + row * (FIG_H + 3);
+      const fw = Math.max(4, x2 - x1);
       const fg = figG.append('g')
         .attr('class', 'fig-group')
         .attr('data-name', fig.name.toLowerCase());
+      makeTrackFO(fg, x1, fy - FIG_H / 2, fw, FIG_H, color,
+        { rx: FIG_H / 2, alpha: 0.42, labelClass: 'fig-pill-label', fontSize: 7, labelText: fig.name });
+      // transparent hit rect
       fg.append('rect')
-        .attr('class', 'fig-bar')
-        .attr('x', x1).attr('y', y - FIG_H / 2)
-        .attr('width', Math.max(2, x2 - x1)).attr('height', FIG_H)
-        .attr('fill', color + '30')
-        .attr('stroke', color + '88')
-        .attr('stroke-width', 0.6)
-        .attr('rx', FIG_H / 2);
-      fg.append('text')
-        .attr('class', 'fig-label')
-        .attr('x', (x1 + x2) / 2).attr('y', y + 4)
-        .attr('text-anchor', 'middle')
-        .attr('fill', color + 'cc')
-        .attr('font-family', "'Cinzel', serif").attr('font-size', 7)
-        .attr('pointer-events', 'none')
-        .text(fig.name);
+        .attr('x', x1).attr('y', fy - FIG_H / 2)
+        .attr('width', fw).attr('height', FIG_H)
+        .attr('fill', 'transparent').attr('rx', FIG_H / 2).attr('stroke', 'none');
     });
 
     // ── Kings of Israel & Judah ──
@@ -318,34 +350,21 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
             });
           })
           .on('mouseover', function(event) {
-            d3.select(this).select('.king-bar').attr('opacity', 1);
+            d3.select(this).select('div').style('filter', 'brightness(1.22)');
             setHoveredTip({ label: king.name, sub: `${yearLabel(king.start)} – ${yearLabel(king.end)}`, x: event.clientX + 14, y: event.clientY - 36 });
           })
           .on('mouseout', function() {
-            d3.select(this).select('.king-bar').attr('opacity', 0.7);
+            d3.select(this).select('div').style('filter', null);
             setHoveredTip(null);
           });
 
+        makeTrackFO(kg, x1, trackY, w, KING_H, color,
+          { rx: 3, alpha: 0.45, labelClass: 'king-pill-label', fontSize: 7, labelText: king.name });
+        // transparent hit rect
         kg.append('rect')
-          .attr('class', 'king-bar')
           .attr('x', x1).attr('y', trackY)
           .attr('width', w).attr('height', KING_H)
-          .attr('fill', color + '44')
-          .attr('stroke', color + 'bb')
-          .attr('stroke-width', 0.5)
-          .attr('rx', 2)
-          .attr('opacity', 0.7);
-
-        kg.append('text')
-          .attr('class', 'king-label')
-          .attr('x', x1 + w / 2)
-          .attr('y', trackY + KING_H / 2 + 3)
-          .attr('text-anchor', 'middle')
-          .attr('fill', color)
-          .attr('font-family', "'Cinzel', serif")
-          .attr('font-size', 7)
-          .attr('pointer-events', 'none')
-          .text(king.name);
+          .attr('fill', 'transparent').attr('rx', 3).attr('stroke', 'none');
       });
     }
 
@@ -385,34 +404,21 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
         .on('mouseover', function(event) {
-          d3.select(this).select('.proph-bar').attr('opacity', 1);
+          d3.select(this).select('div').style('filter', 'brightness(1.22)');
           setHoveredTip({ label: book.name, sub: formatDateRange(book.dateRange), x: event.clientX + 14, y: event.clientY - 36 });
         })
         .on('mouseout', function() {
-          d3.select(this).select('.proph-bar').attr('opacity', 0.7);
+          d3.select(this).select('div').style('filter', null);
           setHoveredTip(null);
         });
 
+      makeTrackFO(pg, x1, trackY, w, PROPH_H, color,
+        { rx: 3, alpha: 0.42, labelClass: 'proph-pill-label', fontSize: 6, labelText: book.abbrev || book.name });
+      // transparent hit rect
       pg.append('rect')
-        .attr('class', 'proph-bar')
         .attr('x', x1).attr('y', trackY)
         .attr('width', w).attr('height', PROPH_H)
-        .attr('fill', color + '44')
-        .attr('stroke', color + 'cc')
-        .attr('stroke-width', 0.5)
-        .attr('rx', 2)
-        .attr('opacity', 0.7);
-
-      pg.append('text')
-        .attr('class', 'proph-label')
-        .attr('x', x1 + w / 2)
-        .attr('y', trackY + PROPH_H / 2 + 2.5)
-        .attr('text-anchor', 'middle')
-        .attr('fill', color)
-        .attr('font-family', "'Cinzel', serif")
-        .attr('font-size', 6)
-        .attr('pointer-events', 'none')
-        .text(book.abbrev || book.name);
+        .attr('fill', 'transparent').attr('rx', 3).attr('stroke', 'none');
     });
 
     // ── Books ──
@@ -599,19 +605,16 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         svg.selectAll('.ticks line').attr('stroke-width', 0.5 / k);
         svg.selectAll('.axis-line').attr('stroke-width', 1 / k);
         svg.selectAll('.book-pill-label').style('font-size', `${7.5 / k}px`);
-        svg.selectAll('.fig-label').attr('font-size', 7 / k).attr('display', k < 0.8 ? 'none' : null);
-        svg.selectAll('.fig-bar').attr('stroke-width', 0.6 / k).attr('rx', (FIG_H / 2) / k);
+        svg.selectAll('.fig-pill-label').style('font-size', `${7 / k}px`).style('display', k < 0.8 ? 'none' : null);
         svg.selectAll('.evt-hit').attr('r', 10 / k);
-        svg.selectAll('.king-bar').attr('stroke-width', 0.5 / k).attr('rx', 2 / k);
-        svg.selectAll('.king-label').attr('font-size', 7 / k).attr('display', k < 1.5 ? 'none' : null);
+        svg.selectAll('.king-pill-label').style('font-size', `${7 / k}px`).style('display', k < 1.5 ? 'none' : null);
         svg.selectAll('.king-track-label').attr('font-size', 7 / k);
         // Lane labels live outside root — update y-position only
         svg.selectAll('.lane-label').attr('y', function() {
           return t.applyY(+d3.select(this).attr('data-y')) + 4;
         });
         svg.selectAll('.zone-divider').attr('stroke-width', 1 / k);
-        svg.selectAll('.proph-bar').attr('stroke-width', 0.5 / k).attr('rx', 2 / k);
-        svg.selectAll('.proph-label').attr('font-size', 6 / k).attr('display', k < 2 ? 'none' : null);
+        svg.selectAll('.proph-pill-label').style('font-size', `${6 / k}px`).style('display', k < 2 ? 'none' : null);
         svg.selectAll('.proph-track-label').attr('font-size', 7 / k);
 
         // hide event labels when zoomed out
