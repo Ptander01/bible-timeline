@@ -238,21 +238,26 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('pointer-events', 'none');
     });
 
-    // ── Section labels (left rail) ──
-    const labelFont  = "'Cinzel', serif";
+    // ── Lane labels — sticky left rail (outside root, y-only tracks zoom) ──
+    const labelsOverlay = svg.append('g').attr('class', 'labels-overlay').attr('pointer-events', 'none');
+    const dimEvt = isDark ? 'rgba(122,138,176,0.38)' : 'rgba(80,55,20,0.32)';
     [
-      { text: 'OLD TESTAMENT', y: OT_BOOK_Y + 5,         fill: CS.sectionOT },
-      { text: 'PEOPLE',        y: (FIG_Y + PROPH_MINOR_Y + PROPH_H) / 2 + 4, fill: CS.sectionPeople },
-      { text: 'NEW TESTAMENT', y: NT_BOOK_Y + 5,         fill: CS.sectionNT },
-    ].forEach(({ text, y, fill }) => {
-      root.append('text')
-        .attr('class', 'section-label')
-        .attr('x', MARGIN_L - 8).attr('y', y)
-        .attr('text-anchor', 'end')
+      { text: 'EVENTS',   dataY: EVENT_TOP,  fill: dimEvt },
+      { text: 'OT BOOKS', dataY: OT_BOOK_Y,  fill: CS.sectionOT },
+      { text: 'FIGURES',  dataY: (FIG_Y + PROPH_MINOR_Y + PROPH_H) / 2, fill: CS.sectionPeople },
+      { text: 'NT BOOKS', dataY: NT_BOOK_Y,  fill: CS.sectionNT },
+    ].forEach(({ text, dataY, fill }) => {
+      labelsOverlay.append('text')
+        .attr('class', 'lane-label')
+        .attr('data-y', dataY)
+        .attr('x', 6)
+        .attr('y', 0)
+        .attr('text-anchor', 'start')
         .attr('fill', fill)
-        .attr('font-family', labelFont)
-        .attr('font-size', 9)
+        .attr('font-family', "'Cinzel', serif")
+        .attr('font-size', 7)
         .attr('letter-spacing', 2)
+        .attr('opacity', 0.85)
         .text(text);
     });
 
@@ -597,7 +602,10 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         svg.selectAll('.king-bar').attr('stroke-width', 0.5 / k).attr('rx', 2 / k);
         svg.selectAll('.king-label').attr('font-size', 7 / k).attr('display', k < 1.5 ? 'none' : null);
         svg.selectAll('.king-track-label').attr('font-size', 7 / k);
-        svg.selectAll('.section-label').attr('font-size', 9 / k);
+        // Lane labels live outside root — update y-position only
+        svg.selectAll('.lane-label').attr('y', function() {
+          return t.applyY(+d3.select(this).attr('data-y')) + 4;
+        });
         svg.selectAll('.zone-divider').attr('stroke-width', 1 / k);
         svg.selectAll('.proph-bar').attr('stroke-width', 0.5 / k).attr('rx', 2 / k);
         svg.selectAll('.proph-label').attr('font-size', 6 / k).attr('display', k < 2 ? 'none' : null);

@@ -125,7 +125,11 @@ export default function App() {
 
       <div className="era-legend">
         {data.eras.map(era => (
-          <div key={era.id} className="era-legend-item" title={era.label}>
+          <div
+            key={era.id}
+            className={`era-legend-item${activeEraId === era.id ? ' era-legend-item--active' : ''}`}
+            title={era.label}
+          >
             {era.shortLabel}
           </div>
         ))}
