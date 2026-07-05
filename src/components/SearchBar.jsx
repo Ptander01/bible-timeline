@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-export default function SearchBar({ onSearch, onSubmit }) {
+export default function SearchBar({ onSearch, onSubmit, matchCount }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
 
@@ -40,6 +40,14 @@ export default function SearchBar({ onSearch, onSubmit }) {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
+      {query && matchCount != null && (
+        <span
+          className={`search-bar__count${matchCount === 0 ? ' search-bar__count--none' : ''}`}
+          title={matchCount > 0 ? 'Press Enter to jump to the first match' : 'No matches'}
+        >
+          {matchCount === 0 ? 'no matches' : `${matchCount} ↵`}
+        </span>
+      )}
       {query && (
         <button className="search-bar__clear" onClick={handleClear} aria-label="Clear">×</button>
       )}

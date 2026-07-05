@@ -1,4 +1,4 @@
-import { GENRE_COLORS } from './BibleTimeline';
+import { GENRE_COLORS } from '../genreColors';
 
 export default function GenreLegend() {
   return (

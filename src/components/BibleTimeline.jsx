@@ -1,15 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import * as d3 from 'd3';
-
-export const GENRE_COLORS = {
-  Law:      '#8B2020',  // deep burgundy
-  History:  '#1E4080',  // navy
-  Wisdom:   '#8B6418',  // dark amber
-  Poetry:   '#4A2480',  // deep indigo
-  Prophecy: '#1A5C3A',  // pine green
-  Gospel:   '#1A6B35',  // forest green
-  Epistle:  '#3A1F70',  // deep violet
-};
+import { GENRE_COLORS } from '../genreColors';
 
 const ERA_FILL_DARK = {
   primeval:         'rgba(42,26,58,0.35)',
@@ -65,7 +56,7 @@ const IS_COARSE = typeof window !== 'undefined' && window.matchMedia?.('(pointer
 const EVT_HIT_R = IS_COARSE ? 15 : 10;
 const HIT_PAD   = IS_COARSE ? 5 : 0;
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, visibleLayers, searchQuery, onPanEra, onPanStart, theme }) {
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, onMatchCount, visibleLayers, searchQuery, onPanEra, onPanStart, theme }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
@@ -153,10 +144,13 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     data.eras.forEach(era => {
       const x1 = xScale(era.start);
       const x2 = xScale(era.end);
+      const bandFill = CS.eraFill[era.id] || (isDark ? 'rgba(40,40,60,0.3)' : 'rgba(100,80,40,0.06)');
       eraG.append('rect')
+        .attr('data-era-band', era.id)
+        .attr('data-base-fill', bandFill)
         .attr('x', x1).attr('y', AXIS_Y - ERA_H)
         .attr('width', x2 - x1).attr('height', ERA_H * 2)
-        .attr('fill', CS.eraFill[era.id] || (isDark ? 'rgba(40,40,60,0.3)' : 'rgba(100,80,40,0.06)'))
+        .attr('fill', bandFill)
         .attr('rx', 0);
 
       // Era divider lines
@@ -816,7 +810,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
   }, [data, theme]);
 
-  // Highlight selected book — gold ring on the hit rect + brightness lift on the pill div
+  // Highlight selected book — gold ring on the hit rect + brightness lift on the pill div,
+  // plus a lift on the era band the book belongs to
   useEffect(() => {
     selectedIdRef.current = selectedId;
     if (!gRef.current) return;
@@ -829,7 +824,24 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('vector-effect', 'non-scaling-stroke');
       g.select('div').style('filter', isSel ? 'brightness(1.25) saturate(1.1)' : null);
     });
-  }, [selectedId, theme]);
+
+    const isDark = theme !== 'light';
+    const eraId = data.books.find(b => b.id === selectedId)?.eraId ?? null;
+    d3.select(gRef.current).selectAll('[data-era-band]').each(function() {
+      const band = d3.select(this);
+      const active = eraId !== null && band.attr('data-era-band') === eraId;
+      const base = band.attr('data-base-fill');
+      band.attr('fill', active
+        ? base.replace(/[\d.]+\)$/, isDark ? '0.62)' : '0.16)')
+        : base);
+    });
+    d3.select(svgRef.current).selectAll('.era-label-text')
+      .attr('fill', function() {
+        const active = eraId !== null && d3.select(this).attr('data-era') === eraId;
+        if (active) return isDark ? 'rgba(233,200,108,0.85)' : 'rgba(120,75,22,0.95)';
+        return isDark ? 'rgba(201,168,76,0.35)' : 'rgba(120,75,22,0.58)';
+      });
+  }, [selectedId, theme, data]);
 
   // Search: highlight matching elements, dim everything else
   useEffect(() => {
@@ -839,8 +851,19 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     if (!q) {
       svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group')
         .attr('opacity', null);
+      onMatchCount?.(null);
       return;
     }
+
+    // Unique entity count (prophet bars excluded — they duplicate prophecy books)
+    const m = (s) => s.toLowerCase().includes(q);
+    const count =
+      data.books.filter(b => m(`${b.name} ${b.abbrev || ''} ${b.id}`)).length +
+      data.figures.filter(f => m(f.name)).length +
+      data.kingsIsrael.filter(kg => m(kg.name)).length +
+      data.kingsJudah.filter(kg => m(kg.name)).length +
+      data.events.filter(ev => m(ev.label)).length;
+    onMatchCount?.(count);
     function matchByName() {
       const id = d3.select(this).attr('data-id') || '';
       const name = d3.select(this).attr('data-name') || '';
