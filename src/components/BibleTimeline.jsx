@@ -53,11 +53,26 @@ const GROUP_COLOR = {
   apostles:   '#5aaa70',
 };
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, visibleLayers, searchQuery, onPanEra, onPanStart, theme }) {
+// Minimap era slice color: reuse the era band hue at higher alpha so slices read at 22px tall
+function mmEraFill(eraId, isDark) {
+  const src = (isDark ? ERA_FILL_DARK : ERA_FILL_LIGHT)[eraId];
+  if (!src) return isDark ? 'rgba(80,80,110,0.6)' : 'rgba(120,100,60,0.35)';
+  return src.replace(/[\d.]+\)$/, isDark ? '0.75)' : '0.40)');
+}
+
+// Coarse-pointer (touch) devices get larger hit targets
+const IS_COARSE = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
+const EVT_HIT_R = IS_COARSE ? 15 : 10;
+const HIT_PAD   = IS_COARSE ? 5 : 0;
+
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, visibleLayers, searchQuery, onPanEra, onPanStart, theme }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
   const kRef     = useRef(1);
+  const selectedIdRef = useRef(null); // mirror of selectedId for D3 event closures
+  const mmViewRef = useRef(null);     // minimap viewport window rect
+  const mmDragRef = useRef(false);    // true while scrubbing the minimap
   const [hoveredTip, setHoveredTip] = useState(null); // { label, sub, x, y }
 
 
@@ -85,6 +100,11 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
   const DOMAIN_START = -4100;
   const DOMAIN_END   = 100;
+
+  // Minimap logical dimensions
+  const MM_W = 220;
+  const MM_H = 22;
+  const mmX = (year) => (year - DOMAIN_START) / (DOMAIN_END - DOMAIN_START) * MM_W;
 
   const xScale = d3.scaleLinear()
     .domain([DOMAIN_START, DOMAIN_END])
@@ -160,8 +180,6 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     // We'll redraw ticks on zoom; store ref
     function drawTicks(k) {
       ticksG.selectAll('*').remove();
-      const [vStart, vEnd] = xScale.domain();
-      const range = vEnd - vStart;
       // pick interval based on zoom
       let interval = 500;
       if (k > 0.5)  interval = 200;
@@ -306,8 +324,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         { rx: FIG_H / 2, alpha: 0.42, labelClass: 'fig-pill-label', fontSize: 7, labelText: fig.name });
       // transparent hit rect
       fg.append('rect')
-        .attr('x', x1).attr('y', fy - FIG_H / 2)
-        .attr('width', fw).attr('height', FIG_H)
+        .attr('x', x1).attr('y', fy - FIG_H / 2 - HIT_PAD)
+        .attr('width', fw).attr('height', FIG_H + HIT_PAD * 2)
         .attr('fill', 'transparent').attr('rx', FIG_H / 2).attr('stroke', 'none');
     });
 
@@ -336,6 +354,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         const w  = Math.max(x2 - x1, 1);
         const kg = g.append('g')
           .attr('class', 'king-group')
+          .attr('data-name', king.name.toLowerCase())
           .attr('cursor', 'pointer')
           .on('click', (e) => {
             e.stopPropagation();
@@ -362,8 +381,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           { rx: 3, alpha: 0.45, labelClass: 'king-pill-label', fontSize: 7, labelText: king.name });
         // transparent hit rect
         kg.append('rect')
-          .attr('x', x1).attr('y', trackY)
-          .attr('width', w).attr('height', KING_H)
+          .attr('x', x1).attr('y', trackY - HIT_PAD)
+          .attr('width', w).attr('height', KING_H + HIT_PAD * 2)
           .attr('fill', 'transparent').attr('rx', 3).attr('stroke', 'none');
       });
     }
@@ -401,6 +420,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
       const pg = prophG.append('g')
         .attr('class', 'proph-group')
+        .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
         .on('mouseover', function(event) {
@@ -416,8 +436,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         { rx: 3, alpha: 0.42, labelClass: 'proph-pill-label', fontSize: 6, labelText: book.abbrev || book.name });
       // transparent hit rect
       pg.append('rect')
-        .attr('x', x1).attr('y', trackY)
-        .attr('width', w).attr('height', PROPH_H)
+        .attr('x', x1).attr('y', trackY - HIT_PAD)
+        .attr('width', w).attr('height', PROPH_H + HIT_PAD * 2)
         .attr('fill', 'transparent').attr('rx', 3).attr('stroke', 'none');
     });
 
@@ -451,13 +471,15 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           const g = bookG.append('g')
             .attr('class', 'book-capsule')
             .attr('data-id', book.id)
+            .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
             .attr('cursor', 'pointer')
             .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
             .on('mouseenter', function() {
               d3.select(this).select('div').style('filter', 'brightness(1.22)');
             })
             .on('mouseleave', function() {
-              d3.select(this).select('div').style('filter', null);
+              const isSel = d3.select(this).attr('data-id') === selectedIdRef.current;
+              d3.select(this).select('div').style('filter', isSel ? 'brightness(1.25) saturate(1.1)' : null);
             });
 
           const rx = BOOK_H / 2;
@@ -523,6 +545,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
     // ── Events ──
     const evtG = root.append('g').attr('class', 'events');
+    const evtLabels = []; // metadata for screen-space label collision in the zoom handler
     // Alternate events above/below the axis to reduce label overlap
     let aboveIdx = 0, belowIdx = 0;
     data.events.forEach((evt, i) => {
@@ -536,8 +559,13 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
       const color = isMajor ? CS.evtMajor : CS.evtMinor;
 
+      // per-event group so search dimming can target the whole event
+      const eg = evtG.append('g')
+        .attr('class', 'evt-group')
+        .attr('data-name', evt.label.toLowerCase());
+
       // connector line to axis
-      evtG.append('line')
+      eg.append('line')
         .attr('x1', x).attr('x2', x)
         .attr('y1', AXIS_Y).attr('y2', evtY)
         .attr('stroke', color).attr('stroke-width', isMajor ? 0.8 : 0.4)
@@ -545,7 +573,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('opacity', 0.5);
 
       // dot
-      evtG.append('circle')
+      eg.append('circle')
         .attr('cx', x).attr('cy', evtY)
         .attr('r', isMajor ? 4 : 2.5)
         .attr('fill', color)
@@ -553,10 +581,10 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('pointer-events', 'none');
 
       // invisible larger hit target (scaled in zoom handler to stay ~10px screen)
-      evtG.append('circle')
+      eg.append('circle')
         .attr('class', 'evt-hit')
         .attr('cx', x).attr('cy', evtY)
-        .attr('r', 10)
+        .attr('r', EVT_HIT_R)
         .attr('fill', 'transparent')
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectEvent && onSelectEvent(evt); })
@@ -569,8 +597,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           setHoveredTip(null);
         });
 
-      // label — only shown at sufficient zoom, managed in zoom handler
-      evtG.append('text')
+      // label — visibility managed by collision pass in the zoom handler
+      const labelSel = eg.append('text')
         .attr('class', 'evt-label')
         .attr('data-major', isMajor)
         .attr('x', x)
@@ -581,7 +609,42 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('font-size', isMajor ? 8.5 : 7)
         .attr('pointer-events', 'none')
         .text(evt.label);
+
+      evtLabels.push({
+        node: labelSel.node(),
+        x,
+        row: evtY,
+        above: evtY < AXIS_Y,
+        major: isMajor,
+        // approx rendered width: labels hold constant screen size (fontSize/k)
+        w: evt.label.length * (isMajor ? 8.5 : 7) * 0.66,
+      });
     });
+
+    // Greedy screen-space collision: majors placed first, then minors left-to-right.
+    // When rows are squeezed together (screen row gap < label height) treat each
+    // side of the axis as a single lane so vertically-overlapping rows don't clash.
+    function layoutEventLabels(t) {
+      const k = t.k;
+      const mergeRows = 14 * k < 10;
+      const kept = new Map(); // laneKey -> [[x1,x2], …]
+      const ordered = [...evtLabels].sort((a, b) =>
+        a.major === b.major ? a.x - b.x : (a.major ? -1 : 1));
+      ordered.forEach(L => {
+        let show = k >= 0.2 && (L.major || k >= 0.4);
+        if (show) {
+          const lane = mergeRows ? (L.above ? 'above' : 'below') : L.row;
+          const sx = t.applyX(L.x);
+          const x1 = sx - L.w / 2 - 4;
+          const x2 = sx + L.w / 2 + 4;
+          const intervals = kept.get(lane) || [];
+          if (intervals.some(([a, b]) => x1 < b && x2 > a)) show = false;
+          else { intervals.push([x1, x2]); kept.set(lane, intervals); }
+        }
+        L.node.setAttribute('display', show ? '' : 'none');
+      });
+    }
+    layoutEventLabels(d3.zoomIdentity);
 
     // ── Zoom behavior ──
     const zoom = d3.zoom()
@@ -606,7 +669,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         svg.selectAll('.axis-line').attr('stroke-width', 1 / k);
         svg.selectAll('.book-pill-label').style('font-size', `${7.5 / k}px`);
         svg.selectAll('.fig-pill-label').style('font-size', `${7 / k}px`).style('display', k < 0.8 ? 'none' : null);
-        svg.selectAll('.evt-hit').attr('r', 10 / k);
+        svg.selectAll('.evt-hit').attr('r', EVT_HIT_R / k);
         svg.selectAll('.king-pill-label').style('font-size', `${7 / k}px`).style('display', k < 1.5 ? 'none' : null);
         svg.selectAll('.king-track-label').attr('font-size', 7 / k);
         // Lane labels live outside root — update y-position only
@@ -617,13 +680,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         svg.selectAll('.proph-pill-label').style('font-size', `${6 / k}px`).style('display', k < 2 ? 'none' : null);
         svg.selectAll('.proph-track-label').attr('font-size', 7 / k);
 
-        // hide event labels when zoomed out
-        svg.selectAll('.evt-label').attr('display', function() {
-          const maj = d3.select(this).attr('data-major') === 'true';
-          if (k < 0.4 && !maj) return 'none';
-          if (k < 0.2) return 'none';
-          return null;
-        });
+        // event label visibility: zoom thresholds + screen-space collision
+        layoutEventLabels(t);
 
         drawTicks(k);
         svg.selectAll('.ticks text').attr('font-size', 9 / k);
@@ -635,6 +693,16 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           const centerYear = xScale.invert((svgW / 2 - t.x) / k);
           const era = data.eras.find(er => centerYear >= er.start && centerYear <= er.end);
           if (era) onPanEra(era.id);
+        }
+
+        // Minimap viewport window tracks the visible year range
+        if (mmViewRef.current && svgRef.current) {
+          const svgW = svgRef.current.clientWidth || 1280;
+          const frac = (yr) => Math.max(0, Math.min(1, (yr - DOMAIN_START) / (DOMAIN_END - DOMAIN_START)));
+          const px1 = frac(xScale.invert(-t.x / k)) * MM_W;
+          const px2 = frac(xScale.invert((svgW - t.x) / k)) * MM_W;
+          mmViewRef.current.setAttribute('x', px1);
+          mmViewRef.current.setAttribute('width', Math.max(4, px2 - px1));
         }
       });
 
@@ -664,6 +732,49 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       d3.select(this).call(zoom.transform, d3.zoomIdentity.translate(newX, newY).scale(newK));
     }, { passive: false });
 
+    // ── Search jump: zoom/pan to the first match for a query ──
+    function findMatch(q) {
+      const candidates = [];
+      data.books.forEach(b => candidates.push({
+        name: `${b.name} ${b.abbrev || ''} ${b.id}`.toLowerCase(),
+        range: b.dateRange,
+        y: b.testament === 'OT' ? OT_BOOK_Y : NT_BOOK_Y,
+      }));
+      data.figures.forEach(f => candidates.push({
+        name: f.name.toLowerCase(), range: [f.start, f.end], y: FIG_Y,
+      }));
+      data.kingsIsrael.forEach(kg => candidates.push({
+        name: kg.name.toLowerCase(), range: [kg.start, kg.end], y: KING_ISRAEL_Y,
+      }));
+      data.kingsJudah.forEach(kg => candidates.push({
+        name: kg.name.toLowerCase(), range: [kg.start, kg.end], y: KING_JUDAH_Y,
+      }));
+      data.events.forEach(ev => candidates.push({
+        name: ev.label.toLowerCase(), range: [ev.year, ev.year], y: AXIS_Y,
+      }));
+      return candidates.find(c => c.name.startsWith(q))
+          || candidates.find(c => c.name.includes(q));
+    }
+
+    function jumpToMatch(q) {
+      q = (q || '').trim().toLowerCase();
+      const svgEl = svgRef.current;
+      if (!q || !svgEl) return;
+      const hit = findMatch(q);
+      if (!hit) return;
+      const svgW = svgEl.clientWidth || 1280;
+      const svgH = Math.max(200, svgEl.clientHeight || 600);
+      const cur = d3.zoomTransform(svgEl);
+      const x1 = xScale(hit.range[0]);
+      const x2 = xScale(hit.range[1]);
+      const spanW = Math.max(x2 - x1, 30);
+      const targetK = Math.min(8, Math.max(cur.k, 1.4, (svgW * 0.4) / spanW));
+      const tx = svgW / 2 - ((x1 + x2) / 2) * targetK;
+      const ty = svgH / 2 - hit.y * targetK;
+      animateZoom(svgEl, d3.zoomIdentity.translate(tx, ty).scale(targetK), 500);
+    }
+    if (onJumpReady) onJumpReady(jumpToMatch);
+
     // Register zoomToEra with parent after zoom is ready
     if (onZoomReady) {
       onZoomReady((era) => {
@@ -686,6 +797,13 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     setTimeout(() => {
       const svgEl = svgRef.current;
       if (!svgEl) return;
+      // Re-render (e.g. theme change): keep the user's position — re-applying
+      // the existing transform also re-runs zoom styling on the fresh nodes
+      const existing = d3.zoomTransform(svgEl);
+      if (existing.k !== 1 || existing.x !== 0 || existing.y !== 0) {
+        d3.select(svgEl).call(zoom.transform, existing);
+        return;
+      }
       const svgW = svgEl.clientWidth  || 1280;
       const svgH = Math.max(200, svgEl.clientHeight || 600);
       const initScale = (svgH - 20) / H_TOTAL;
@@ -698,21 +816,20 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
   }, [data, theme]);
 
-  // Highlight selected book
+  // Highlight selected book — gold ring on the hit rect + brightness lift on the pill div
   useEffect(() => {
+    selectedIdRef.current = selectedId;
     if (!gRef.current) return;
-    d3.select(gRef.current).selectAll('.book-capsule rect')
-      .attr('stroke-width', function() {
-        const id = d3.select(this.parentNode).attr('data-id');
-        return id === selectedId ? 2 / kRef.current : 1 / kRef.current;
-      })
-      .attr('stroke', function() {
-        const id = d3.select(this.parentNode).attr('data-id');
-        const parent = d3.select(this.parentNode);
-        const baseColor = this.getAttribute('stroke');
-        return id === selectedId ? '#c9a84c' : baseColor;
-      });
-  }, [selectedId]);
+    d3.select(gRef.current).selectAll('.book-capsule').each(function() {
+      const g = d3.select(this);
+      const isSel = g.attr('data-id') === selectedId;
+      g.select('rect')
+        .attr('stroke', isSel ? '#c9a84c' : 'none')
+        .attr('stroke-width', isSel ? 2 : 0)
+        .attr('vector-effect', 'non-scaling-stroke');
+      g.select('div').style('filter', isSel ? 'brightness(1.25) saturate(1.1)' : null);
+    });
+  }, [selectedId, theme]);
 
   // Search: highlight matching elements, dim everything else
   useEffect(() => {
@@ -720,31 +837,20 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     const svg = d3.select(svgRef.current);
     const q = (searchQuery || '').trim().toLowerCase();
     if (!q) {
-      svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-hit')
+      svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group')
         .attr('opacity', null);
       return;
     }
-    svg.selectAll('.book-capsule').attr('opacity', function() {
+    function matchByName() {
       const id = d3.select(this).attr('data-id') || '';
-      const label = this.querySelector('text')?.textContent?.toLowerCase() || '';
-      return (id.includes(q) || label.includes(q)) ? 1 : 0.12;
-    });
-    svg.selectAll('.fig-group').attr('opacity', function() {
       const name = d3.select(this).attr('data-name') || '';
-      return name.includes(q) ? 1 : 0.12;
-    });
-    svg.selectAll('.king-group').attr('opacity', function() {
-      const label = this.querySelector('.king-label')?.textContent?.toLowerCase() || '';
-      return label.includes(q) ? 1 : 0.12;
-    });
-    svg.selectAll('.proph-group').attr('opacity', function() {
-      const label = this.querySelector('.proph-label')?.textContent?.toLowerCase() || '';
-      return label.includes(q) ? 1 : 0.12;
-    });
-    svg.selectAll('.evt-hit').attr('opacity', function() {
-      const label = this.previousSibling?.previousSibling?.textContent?.toLowerCase() || '';
-      return label.includes(q) ? 1 : 0.12;
-    });
+      return (id.includes(q) || name.includes(q)) ? 1 : 0.12;
+    }
+    svg.selectAll('.book-capsule').attr('opacity', matchByName);
+    svg.selectAll('.fig-group').attr('opacity', matchByName);
+    svg.selectAll('.king-group').attr('opacity', matchByName);
+    svg.selectAll('.proph-group').attr('opacity', matchByName);
+    svg.selectAll('.evt-group').attr('opacity', matchByName);
   }, [searchQuery]);
 
   // Toggle layer visibility without re-rendering D3
@@ -802,15 +908,79 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     animateZoom(svgEl, d3.zoomIdentity.translate(tx, ty).scale(initScale), 500);
   }, []);
 
+  // Minimap scrub: center the main viewport on the clicked/dragged year, keeping zoom
+  function mmJump(clientX, el) {
+    const svgEl = svgRef.current;
+    const z = zoomRef.current;
+    if (!svgEl || !z) return;
+    const rect = el.getBoundingClientRect();
+    const fracX = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const year = DOMAIN_START + fracX * (DOMAIN_END - DOMAIN_START);
+    const cur = d3.zoomTransform(svgEl);
+    const svgW = svgEl.clientWidth || 1280;
+    const tx = svgW / 2 - xScale(year) * cur.k;
+    d3.select(svgEl).call(z.transform, d3.zoomIdentity.translate(tx, cur.y).scale(cur.k));
+  }
+
+  // Keyboard navigation: ← → pan (Shift = faster), + − zoom, 0 fit
+  useEffect(() => {
+    function onKey(e) {
+      if (/^(INPUT|TEXTAREA)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
+      const svgEl = svgRef.current;
+      const z = zoomRef.current;
+      if (!svgEl || !z) return;
+      const pan = (dx) => {
+        onPanStart?.();
+        const cur = d3.zoomTransform(svgEl);
+        d3.select(svgEl).call(z.transform, d3.zoomIdentity.translate(cur.x + dx, cur.y).scale(cur.k));
+      };
+      switch (e.key) {
+        case 'ArrowLeft':  e.preventDefault(); pan(e.shiftKey ? 400 : 120); break;
+        case 'ArrowRight': e.preventDefault(); pan(e.shiftKey ? -400 : -120); break;
+        case '+': case '=': e.preventDefault(); handleZoom(1.4); break;
+        case '-': case '_': e.preventDefault(); handleZoom(1 / 1.4); break;
+        case '0': e.preventDefault(); handleReset(); break;
+        default: break;
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [handleZoom, handleReset, onPanStart]);
+
   return (
     <>
       <svg ref={svgRef} className="timeline-svg"
         style={{ display: 'block', width: '100%', height: '100%' }}
       />
       <div className="zoom-controls">
-        <button className="zoom-btn" onClick={() => handleZoom(2)} title="Zoom in">+</button>
-        <button className="zoom-btn" onClick={() => handleZoom(0.5)} title="Zoom out">−</button>
-        <button className="zoom-btn" onClick={handleReset} title="Reset" style={{ fontSize: 11, fontFamily: 'Cinzel, serif', letterSpacing: 1 }}>FIT</button>
+        <button className="zoom-btn" onClick={() => handleZoom(2)} title="Zoom in (+)">+</button>
+        <button className="zoom-btn" onClick={() => handleZoom(0.5)} title="Zoom out (−)">−</button>
+        <button className="zoom-btn" onClick={handleReset} title="Reset (0)" style={{ fontSize: 11, fontFamily: 'Cinzel, serif', letterSpacing: 1 }}>FIT</button>
+      </div>
+      <div
+        className="minimap"
+        title="Click or drag to navigate"
+        onPointerDown={(e) => {
+          mmDragRef.current = true;
+          e.currentTarget.setPointerCapture(e.pointerId);
+          onPanStart?.();
+          mmJump(e.clientX, e.currentTarget);
+        }}
+        onPointerMove={(e) => { if (mmDragRef.current) mmJump(e.clientX, e.currentTarget); }}
+        onPointerUp={() => { mmDragRef.current = false; }}
+        onPointerCancel={() => { mmDragRef.current = false; }}
+      >
+        <svg viewBox={`0 0 ${MM_W} ${MM_H}`} width={MM_W} height={MM_H} preserveAspectRatio="none">
+          {data.eras.map(era => {
+            const x1 = mmX(era.start);
+            return (
+              <rect key={era.id} x={x1} y={0} width={mmX(era.end) - x1} height={MM_H}
+                fill={mmEraFill(era.id, theme !== 'light')} />
+            );
+          })}
+          <line className="minimap__axis" x1={0} x2={MM_W} y1={MM_H / 2} y2={MM_H / 2} />
+          <rect ref={mmViewRef} className="minimap__view" x={0} y={0.5} width={MM_W} height={MM_H - 1} rx={3} />
+        </svg>
       </div>
       {hoveredTip && (
         <div className="tl-tooltip" style={{ left: hoveredTip.x, top: hoveredTip.y }}>

@@ -30,16 +30,33 @@ export default function App() {
   const [searchQuery, setSearchQuery]     = useState('');
   const [theme, setTheme]                 = useState(() => localStorage.getItem('bt-theme') || 'dark');
   const zoomToEraFn   = useRef(null);
+  const jumpToMatchFn = useRef(null);
   const userPickedEra = useRef(false); // true when user clicked a pill → don't auto-override
+  const urlRestored   = useRef(false); // URL state is restored once on first mount only
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('bt-theme', theme);
   }, [theme]);
 
+  // Esc closes the detail panel (unless typing in an input, e.g. search)
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === 'Escape' && !/^(INPUT|TEXTAREA)$/.test(e.target.tagName)) {
+        setSelected(null);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const handleZoomReady = useCallback((fn) => {
     zoomToEraFn.current = fn;
-    // Restore URL state once zoom is ready
+    // Restore URL state once zoom is ready — first mount only, not on
+    // re-renders (e.g. theme change), which would re-zoom and fight the
+    // preserved transform
+    if (urlRestored.current) return;
+    urlRestored.current = true;
     const { eraId, selId } = readUrlParams();
     if (eraId) {
       const era = data.eras.find(e => e.id === eraId);
@@ -94,7 +111,7 @@ export default function App() {
       <header className="app-header">
         <h1>Bible Timeline</h1>
         <span className="subtitle">ESV Chronological · ~4000 BC – AD 95</span>
-        <SearchBar onSearch={setSearchQuery} />
+        <SearchBar onSearch={setSearchQuery} onSubmit={(q) => jumpToMatchFn.current?.(q)} />
         <span className="hint">Scroll to zoom · drag to pan · click for details</span>
         <ThemeToggle theme={theme} onToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} />
       </header>
@@ -107,6 +124,7 @@ export default function App() {
         <BibleTimeline
           data={data}
           onZoomReady={handleZoomReady}
+          onJumpReady={(fn) => { jumpToMatchFn.current = fn; }}
           onSelectBook={handleSelectBook}
           onSelectEvent={handleSelectEvent}
           selectedId={selected?.item?.id}

@@ -43,18 +43,29 @@ html, body, #root {
   letter-spacing: 3px;
   color: var(--accent);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .app-header .subtitle {
   font-size: 11px;
   color: var(--text-dim);
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .app-header .hint {
   font-size: 11px;
   color: var(--text-muted);
   letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Narrow windows: shed the hint, then the subtitle, instead of wrapping */
+@media (max-width: 1100px) {
+  .app-header .hint { display: none; }
+}
+@media (max-width: 860px) {
+  .app-header .subtitle { display: none; }
 }
 
 /* ── 3D glass theme toggle ── */
@@ -415,6 +426,7 @@ html, body, #root {
   width: 100%;
   height: 100%;
   cursor: grab;
+  touch-action: none; /* let d3.zoom own pinch/pan instead of the browser */
 }
 .timeline-svg:active {
   cursor: grabbing;
@@ -585,6 +597,47 @@ html, body, #root {
   background: var(--pill-bg-active);
   box-shadow: var(--lip-in);
   color: var(--accent);
+}
+
+/* ── Minimap (overview strip, bottom-right beside zoom controls) ── */
+.minimap {
+  position: absolute;
+  bottom: 20px;
+  right: 64px;
+  z-index: 30;
+  padding: 5px 6px;
+  background: var(--pill-bg);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  box-shadow: var(--lip-out);
+  cursor: pointer;
+  touch-action: none;
+  line-height: 0;
+}
+.minimap svg {
+  display: block;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.minimap__axis {
+  stroke: rgba(201,168,76,0.30);
+  stroke-width: 1;
+}
+.minimap__view {
+  fill: rgba(201,168,76,0.16);
+  stroke: #c9a84c;
+  stroke-width: 1.2;
+  pointer-events: none;
+}
+[data-theme="light"] .minimap {
+  border-color: rgba(120,80,30,0.18);
+}
+[data-theme="light"] .minimap__axis {
+  stroke: rgba(140,90,28,0.35);
+}
+[data-theme="light"] .minimap__view {
+  fill: rgba(140,90,28,0.14);
+  stroke: #8c5a1c;
 }
 
 /* ── Detail panel ── */

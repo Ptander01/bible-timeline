@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-export default function SearchBar({ onSearch }) {
+export default function SearchBar({ onSearch, onSubmit }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
 
@@ -16,6 +16,15 @@ export default function SearchBar({ onSearch }) {
     inputRef.current?.focus();
   }
 
+  function handleKeyDown(e) {
+    if (e.key === 'Enter') {
+      onSubmit?.(query.trim().toLowerCase());
+    } else if (e.key === 'Escape') {
+      handleClear();
+      inputRef.current?.blur();
+    }
+  }
+
   return (
     <div className="search-bar">
       <svg className="search-bar__icon" viewBox="0 0 16 16" fill="none">
@@ -29,6 +38,7 @@ export default function SearchBar({ onSearch }) {
         placeholder="Search books, people, events…"
         value={query}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
       {query && (
         <button className="search-bar__clear" onClick={handleClear} aria-label="Clear">×</button>
