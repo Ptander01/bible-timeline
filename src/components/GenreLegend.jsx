@@ -1,4 +1,4 @@
-import { GENRE_COLORS } from '../genreColors';
+import { GENRE_COLORS, GROUP_COLOR } from '../genreColors';
 
 export default function GenreLegend() {
   return (
@@ -8,6 +8,13 @@ export default function GenreLegend() {
         <div key={genre} className="genre-legend__item">
           <span className="genre-legend__swatch" style={{ background: color }} />
           <span className="genre-legend__label">{genre}</span>
+        </div>
+      ))}
+      <div className="genre-legend__title genre-legend__title--people">People</div>
+      {Object.entries(GROUP_COLOR).map(([group, color]) => (
+        <div key={group} className="genre-legend__item">
+          <span className="genre-legend__swatch genre-legend__swatch--pill" style={{ background: color }} />
+          <span className="genre-legend__label">{group}</span>
         </div>
       ))}
     </div>

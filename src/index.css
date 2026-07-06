@@ -571,6 +571,9 @@ html, body, #root {
   margin-bottom: 2px;
   border-bottom: 1px solid rgba(201,168,76,0.14);
 }
+.genre-legend__title--people {
+  margin-top: 8px;
+}
 .genre-legend__item {
   display: flex;
   align-items: center;
@@ -583,6 +586,12 @@ html, body, #root {
   flex-shrink: 0;
   opacity: 1;
   box-shadow: 0 1px 4px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.20);
+}
+/* people swatches echo the rounded figure-bar shape */
+.genre-legend__swatch--pill {
+  width: 14px;
+  height: 7px;
+  border-radius: 4px;
 }
 .genre-legend__label {
   font-family: var(--font-display);

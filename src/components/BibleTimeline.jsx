@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-import { GENRE_COLORS } from '../genreColors';
+import { GENRE_COLORS, GROUP_COLOR } from '../genreColors';
 
 const ERA_FILL_DARK = {
   primeval:         'rgba(42,26,58,0.35)',
@@ -35,14 +35,6 @@ function formatDateRange([s, e]) {
   if (s === e) return yearLabel(s);
   return `${yearLabel(s)} – ${yearLabel(e)}`;
 }
-
-const GROUP_COLOR = {
-  patriarchs: '#c9a84c',
-  judges:     '#9a7ec8',
-  kings:      '#c4a06b',
-  prophets:   '#4A7C6F',
-  apostles:   '#5aaa70',
-};
 
 // Minimap era slice color: reuse the era band hue at higher alpha so slices read at 22px tall
 function mmEraFill(eraId, isDark) {
