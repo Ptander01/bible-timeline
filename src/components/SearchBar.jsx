@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-export default function SearchBar({ onSearch, onSubmit, matchCount }) {
+export default function SearchBar({ onSearch, onSubmit, matchCount, jumpIndex }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
 
@@ -18,7 +18,7 @@ export default function SearchBar({ onSearch, onSubmit, matchCount }) {
 
   function handleKeyDown(e) {
     if (e.key === 'Enter') {
-      onSubmit?.(query.trim().toLowerCase());
+      onSubmit?.(query.trim().toLowerCase(), e.shiftKey ? -1 : 1);
     } else if (e.key === 'Escape') {
       handleClear();
       inputRef.current?.blur();
@@ -43,9 +43,13 @@ export default function SearchBar({ onSearch, onSubmit, matchCount }) {
       {query && matchCount != null && (
         <span
           className={`search-bar__count${matchCount === 0 ? ' search-bar__count--none' : ''}`}
-          title={matchCount > 0 ? 'Press Enter to jump to the first match' : 'No matches'}
+          title={matchCount > 0 ? 'Enter: next match · Shift+Enter: previous' : 'No matches'}
         >
-          {matchCount === 0 ? 'no matches' : `${matchCount} ↵`}
+          {matchCount === 0
+            ? 'no matches'
+            : jumpIndex != null
+              ? `${jumpIndex + 1}/${matchCount} ↵`
+              : `${matchCount} ↵`}
         </span>
       )}
       {query && (

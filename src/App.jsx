@@ -30,6 +30,7 @@ export default function App() {
   const [searchQuery, setSearchQuery]     = useState('');
   const [matchCount, setMatchCount]       = useState(null);
   const [ntExpanded, setNtExpanded]       = useState(false);
+  const [jumpIndex, setJumpIndex]         = useState(null);
   const [theme, setTheme]                 = useState(() => localStorage.getItem('bt-theme') || 'dark');
   const zoomToEraFn   = useRef(null);
   const jumpToMatchFn = useRef(null);
@@ -113,7 +114,12 @@ export default function App() {
       <header className="app-header">
         <h1>Bible Timeline</h1>
         <span className="subtitle">ESV Chronological · ~4000 BC – AD 95</span>
-        <SearchBar onSearch={setSearchQuery} onSubmit={(q) => jumpToMatchFn.current?.(q)} matchCount={matchCount} />
+        <SearchBar
+          onSearch={(q) => { setSearchQuery(q); setJumpIndex(null); }}
+          onSubmit={(q, dir) => jumpToMatchFn.current?.(q, dir)}
+          matchCount={matchCount}
+          jumpIndex={jumpIndex}
+        />
         <span className="hint">Scroll to zoom · drag to pan · click for details</span>
         <ThemeToggle theme={theme} onToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} />
       </header>
@@ -133,6 +139,7 @@ export default function App() {
           onZoomReady={handleZoomReady}
           onJumpReady={(fn) => { jumpToMatchFn.current = fn; }}
           onMatchCount={setMatchCount}
+          onJumpIndex={setJumpIndex}
           onSelectBook={handleSelectBook}
           onSelectEvent={handleSelectEvent}
           selectedId={selected?.item?.id}

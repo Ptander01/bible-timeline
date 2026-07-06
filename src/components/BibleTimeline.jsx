@@ -56,7 +56,7 @@ const IS_COARSE = typeof window !== 'undefined' && window.matchMedia?.('(pointer
 const EVT_HIT_R = IS_COARSE ? 15 : 10;
 const HIT_PAD   = IS_COARSE ? 5 : 0;
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, onMatchCount, visibleLayers, searchQuery, onPanEra, onPanStart, theme, ntExpanded }) {
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, onMatchCount, onJumpIndex, visibleLayers, searchQuery, onPanEra, onPanStart, theme, ntExpanded }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
@@ -65,6 +65,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const mmViewRef = useRef(null);     // minimap viewport window rect
   const mmDragRef = useRef(false);    // true while scrubbing the minimap
   const prevNtRef = useRef(undefined); // last-rendered ntExpanded, to detect toggles
+  const jumpStateRef = useRef({ q: null, i: 0 }); // search-jump cycling position
   const [hoveredTip, setHoveredTip] = useState(null); // { label, sub, x, y }
 
 
@@ -313,6 +314,9 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           .text(labelText);
       return fo;
     }
+
+    // ── Event connector lines — back layer so flagpoles pass behind all bars ──
+    const evtLineG = root.append('g').attr('class', 'evt-lines');
 
     // ── Figures ──
     const figG = root.append('g').attr('class', 'figures');
@@ -575,8 +579,10 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('class', 'evt-group')
         .attr('data-name', evt.label.toLowerCase());
 
-      // connector line to axis
-      eg.append('line')
+      // connector line to axis — lives in the back layer, carries data-name
+      // so search dimming can track it independently of the front group
+      evtLineG.append('line')
+        .attr('data-name', evt.label.toLowerCase())
         .attr('x1', x).attr('x2', x)
         .attr('y1', AXIS_Y).attr('y2', evtY)
         .attr('stroke', color).attr('stroke-width', isMajor ? 0.8 : 0.4)
@@ -743,8 +749,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       d3.select(this).call(zoom.transform, d3.zoomIdentity.translate(newX, newY).scale(newK));
     }, { passive: false });
 
-    // ── Search jump: zoom/pan to the first match for a query ──
-    function findMatch(q) {
+    // ── Search jump: zoom/pan to matches; repeated Enter cycles through them ──
+    function findMatches(q) {
       const candidates = [];
       data.books.forEach(b => candidates.push({
         name: `${b.name} ${b.abbrev || ''} ${b.id}`.toLowerCase(),
@@ -763,16 +769,26 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       data.events.forEach(ev => candidates.push({
         name: ev.label.toLowerCase(), range: [ev.year, ev.year], y: AXIS_Y,
       }));
-      return candidates.find(c => c.name.startsWith(q))
-          || candidates.find(c => c.name.includes(q));
+      // prefix matches first, then substring matches
+      return [
+        ...candidates.filter(c => c.name.startsWith(q)),
+        ...candidates.filter(c => !c.name.startsWith(q) && c.name.includes(q)),
+      ];
     }
 
-    function jumpToMatch(q) {
+    function jumpToMatch(q, dir = 1) {
       q = (q || '').trim().toLowerCase();
       const svgEl = svgRef.current;
       if (!q || !svgEl) return;
-      const hit = findMatch(q);
-      if (!hit) return;
+      const matches = findMatches(q);
+      if (!matches.length) { onJumpIndex?.(null); return; }
+      const st = jumpStateRef.current;
+      const i = st.q === q
+        ? (st.i + dir + matches.length) % matches.length
+        : (dir === -1 ? matches.length - 1 : 0);
+      jumpStateRef.current = { q, i };
+      onJumpIndex?.(i);
+      const hit = matches[i];
       const svgW = svgEl.clientWidth || 1280;
       const svgH = Math.max(200, svgEl.clientHeight || 600);
       const cur = d3.zoomTransform(svgEl);
@@ -890,6 +906,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     if (!q) {
       svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group')
         .attr('opacity', null);
+      svg.selectAll('.evt-lines line').attr('opacity', 0.5);
       onMatchCount?.(null);
       return;
     }
@@ -913,6 +930,11 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     svg.selectAll('.king-group').attr('opacity', matchByName);
     svg.selectAll('.proph-group').attr('opacity', matchByName);
     svg.selectAll('.evt-group').attr('opacity', matchByName);
+    // connector lines sit in the back layer with a 0.5 base opacity
+    svg.selectAll('.evt-lines line').attr('opacity', function() {
+      const name = d3.select(this).attr('data-name') || '';
+      return name.includes(q) ? 0.5 : 0.06;
+    });
   }, [searchQuery]);
 
   // Toggle layer visibility without re-rendering D3
@@ -921,6 +943,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     const svg = d3.select(svgRef.current);
     svg.select('.figures').attr('display', visibleLayers.people   ? null : 'none');
     svg.select('.events').attr('display',  visibleLayers.events   ? null : 'none');
+    svg.select('.evt-lines').attr('display', visibleLayers.events ? null : 'none');
     svg.select('.books').attr('display',   visibleLayers.books    ? null : 'none');
     svg.selectAll('.kings').attr('display',   visibleLayers.kings    ? null : 'none');
     svg.select('.prophets').attr('display', visibleLayers.prophets ? null : 'none');
