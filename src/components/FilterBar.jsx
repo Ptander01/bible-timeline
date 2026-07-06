@@ -6,7 +6,7 @@ const LAYERS = [
   { id: 'prophets', label: 'Prophets' },
 ];
 
-export default function FilterBar({ visible, onToggle }) {
+export default function FilterBar({ visible, onToggle, ntExpanded, onToggleNt }) {
   return (
     <div className="filter-bar">
       <span className="filter-bar__label">Show</span>
@@ -21,6 +21,16 @@ export default function FilterBar({ visible, onToggle }) {
           {layer.label}
         </button>
       ))}
+      <button
+        className={`filter-bar__pill filter-bar__pill--nt${ntExpanded ? ' filter-bar__pill--on' : ''}`}
+        onClick={onToggleNt}
+        title={ntExpanded
+          ? 'Restore the proportional time scale'
+          : 'Stretch the New Testament era across the screen'}
+      >
+        <span className="filter-bar__dot" />
+        {ntExpanded ? 'NT Expanded' : 'Expand NT'}
+      </button>
     </div>
   );
 }

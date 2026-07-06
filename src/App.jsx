@@ -29,6 +29,7 @@ export default function App() {
   const [visibleLayers, setVisibleLayers] = useState(ALL_ON);
   const [searchQuery, setSearchQuery]     = useState('');
   const [matchCount, setMatchCount]       = useState(null);
+  const [ntExpanded, setNtExpanded]       = useState(false);
   const [theme, setTheme]                 = useState(() => localStorage.getItem('bt-theme') || 'dark');
   const zoomToEraFn   = useRef(null);
   const jumpToMatchFn = useRef(null);
@@ -118,7 +119,12 @@ export default function App() {
       </header>
 
       <EraNav eras={data.eras} onSelect={handleEraSelect} activeEraId={activeEraId} />
-      <FilterBar visible={visibleLayers} onToggle={handleToggleLayer} />
+      <FilterBar
+        visible={visibleLayers}
+        onToggle={handleToggleLayer}
+        ntExpanded={ntExpanded}
+        onToggleNt={() => setNtExpanded(v => !v)}
+      />
 
       <div className="timeline-container">
         <GenreLegend />
@@ -135,6 +141,7 @@ export default function App() {
           onPanEra={handlePanEra}
           onPanStart={handlePanStart}
           theme={theme}
+          ntExpanded={ntExpanded}
         />
         <DetailPanel
           item={selected?.item}

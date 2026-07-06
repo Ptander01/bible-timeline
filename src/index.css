@@ -428,6 +428,23 @@ html, body, #root {
   opacity: 1;
 }
 
+/* NT expand toggle — pushed right, gold accent when active */
+.filter-bar__pill--nt {
+  margin-left: auto;
+  color: rgba(201,168,76,0.55);
+}
+.filter-bar__pill--nt.filter-bar__pill--on {
+  color: var(--accent);
+  border-color: rgba(201,168,76,0.45);
+}
+[data-theme="light"] .filter-bar__pill--nt {
+  color: rgba(140,90,28,0.65);
+}
+[data-theme="light"] .filter-bar__pill--nt.filter-bar__pill--on {
+  color: #8c5a1c;
+  border-color: rgba(140,90,28,0.45);
+}
+
 /* ── Main timeline area ── */
 .timeline-container {
   flex: 1;

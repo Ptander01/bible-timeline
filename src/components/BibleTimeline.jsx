@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import * as d3 from 'd3';
 import { GENRE_COLORS } from '../genreColors';
 
@@ -56,7 +56,7 @@ const IS_COARSE = typeof window !== 'undefined' && window.matchMedia?.('(pointer
 const EVT_HIT_R = IS_COARSE ? 15 : 10;
 const HIT_PAD   = IS_COARSE ? 5 : 0;
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, onMatchCount, visibleLayers, searchQuery, onPanEra, onPanStart, theme }) {
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, onMatchCount, visibleLayers, searchQuery, onPanEra, onPanStart, theme, ntExpanded }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
@@ -64,6 +64,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const selectedIdRef = useRef(null); // mirror of selectedId for D3 event closures
   const mmViewRef = useRef(null);     // minimap viewport window rect
   const mmDragRef = useRef(false);    // true while scrubbing the minimap
+  const prevNtRef = useRef(undefined); // last-rendered ntExpanded, to detect toggles
   const [hoveredTip, setHoveredTip] = useState(null); // { label, sub, x, y }
 
 
@@ -92,14 +93,29 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const DOMAIN_START = -4100;
   const DOMAIN_END   = 100;
 
-  // Minimap logical dimensions
+  // NT expand mode: the kingdom+church span gets NT_SHARE of the canvas via a
+  // piecewise scale, so NT content reflows from vertical stacking to horizontal spread
+  const NT_SPLIT = data?.eras?.find(e => e.id === 'kingdom')?.start ?? -3;
+  const NT_SHARE = 0.42;
+  const USABLE_W = W - MARGIN_L - MARGIN_R;
+
+  const xScale = useMemo(() => {
+    if (!ntExpanded) {
+      return d3.scaleLinear()
+        .domain([DOMAIN_START, DOMAIN_END])
+        .range([MARGIN_L, W - MARGIN_R]);
+    }
+    return d3.scaleLinear()
+      .domain([DOMAIN_START, NT_SPLIT, DOMAIN_END])
+      .range([MARGIN_L, MARGIN_L + USABLE_W * (1 - NT_SHARE), W - MARGIN_R]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ntExpanded, NT_SPLIT]);
+
+  // Minimap logical dimensions — derived from xScale so its era slices and
+  // viewport window warp along with NT expand mode
   const MM_W = 220;
   const MM_H = 22;
-  const mmX = (year) => (year - DOMAIN_START) / (DOMAIN_END - DOMAIN_START) * MM_W;
-
-  const xScale = d3.scaleLinear()
-    .domain([DOMAIN_START, DOMAIN_END])
-    .range([MARGIN_L, W - MARGIN_R]);
+  const mmX = (year) => (xScale(year) - MARGIN_L) / USABLE_W * MM_W;
 
   useEffect(() => {
     if (!svgRef.current || !data) return;
@@ -174,31 +190,32 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     // We'll redraw ticks on zoom; store ref
     function drawTicks(k) {
       ticksG.selectAll('*').remove();
-      // pick interval based on zoom
-      let interval = 500;
-      if (k > 0.5)  interval = 200;
-      if (k > 1.2)  interval = 100;
-      if (k > 2.5)  interval = 50;
-      if (k > 6)    interval = 25;
-      if (k > 12)   interval = 10;
+      // Per-segment interval from local px-per-year, so the stretched NT zone
+      // gets fine ticks while the compressed BC side stays sparse
+      const segs = ntExpanded
+        ? [[DOMAIN_START, NT_SPLIT], [NT_SPLIT, DOMAIN_END]]
+        : [[DOMAIN_START, DOMAIN_END]];
+      const STEPS = [1, 2, 5, 10, 25, 50, 100, 200, 500, 1000];
+      const MIN_TICK_PX = 65; // minimum screen px between ticks
 
-      const start = Math.ceil(DOMAIN_START / interval) * interval;
-      const ticks = [];
-      for (let y = start; y <= DOMAIN_END; y += interval) ticks.push(y);
-
-      ticks.forEach(y => {
-        const x = xScale(y);
-        ticksG.append('line')
-          .attr('x1', x).attr('x2', x)
-          .attr('y1', AXIS_Y - 6).attr('y2', AXIS_Y + 6)
-          .attr('stroke', CS.tickStroke).attr('stroke-width', 0.5);
-        ticksG.append('text')
-          .attr('x', x).attr('y', AXIS_Y + 18)
-          .attr('text-anchor', 'middle')
-          .attr('fill', CS.tickText)
-          .attr('font-family', "'Cinzel', serif")
-          .attr('font-size', 9)
-          .text(yearLabel(y));
+      segs.forEach(([s, e]) => {
+        const pxPerYear = (xScale(e) - xScale(s)) / (e - s);
+        const interval = STEPS.find(st => st * pxPerYear * k >= MIN_TICK_PX) ?? 1000;
+        const start = Math.ceil(s / interval) * interval;
+        for (let y = start; y <= e; y += interval) {
+          const x = xScale(y);
+          ticksG.append('line')
+            .attr('x1', x).attr('x2', x)
+            .attr('y1', AXIS_Y - 6).attr('y2', AXIS_Y + 6)
+            .attr('stroke', CS.tickStroke).attr('stroke-width', 0.5 / k);
+          ticksG.append('text')
+            .attr('x', x).attr('y', AXIS_Y + 18)
+            .attr('text-anchor', 'middle')
+            .attr('fill', CS.tickText)
+            .attr('font-family', "'Cinzel', serif")
+            .attr('font-size', 9 / k)
+            .text(yearLabel(y));
+        }
       });
     }
     drawTicks(1);
@@ -689,12 +706,12 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
           if (era) onPanEra(era.id);
         }
 
-        // Minimap viewport window tracks the visible year range
+        // Minimap viewport window tracks the visible logical-x range
         if (mmViewRef.current && svgRef.current) {
           const svgW = svgRef.current.clientWidth || 1280;
-          const frac = (yr) => Math.max(0, Math.min(1, (yr - DOMAIN_START) / (DOMAIN_END - DOMAIN_START)));
-          const px1 = frac(xScale.invert(-t.x / k)) * MM_W;
-          const px2 = frac(xScale.invert((svgW - t.x) / k)) * MM_W;
+          const frac = (lx) => Math.max(0, Math.min(1, (lx - MARGIN_L) / USABLE_W));
+          const px1 = frac(-t.x / k) * MM_W;
+          const px2 = frac((svgW - t.x) / k) * MM_W;
           mmViewRef.current.setAttribute('x', px1);
           mmViewRef.current.setAttribute('width', Math.max(4, px2 - px1));
         }
@@ -791,6 +808,29 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     setTimeout(() => {
       const svgEl = svgRef.current;
       if (!svgEl) return;
+      const svgW = svgEl.clientWidth  || 1280;
+      const svgH = Math.max(200, svgEl.clientHeight || 600);
+
+      // NT expand toggled: fly to the NT span (on) or back to full fit (off)
+      const toggled = prevNtRef.current !== undefined && prevNtRef.current !== ntExpanded;
+      prevNtRef.current = ntExpanded;
+      if (toggled) {
+        if (ntExpanded) {
+          const x1 = xScale(NT_SPLIT);
+          const x2 = xScale(DOMAIN_END);
+          const k = Math.min(8, Math.max(0.08, (svgW * 0.98) / (x2 - x1)));
+          const tx = svgW / 2 - ((x1 + x2) / 2) * k;
+          const ty = (svgH - H_TOTAL * k) / 2;
+          animateZoom(svgEl, d3.zoomIdentity.translate(tx, ty).scale(k), 600);
+        } else {
+          const k = (svgH - 20) / H_TOTAL;
+          const tx = svgW / 2 - xScale(-2000) * k;
+          const ty = (svgH - H_TOTAL * k) / 2;
+          animateZoom(svgEl, d3.zoomIdentity.translate(tx, ty).scale(k), 600);
+        }
+        return;
+      }
+
       // Re-render (e.g. theme change): keep the user's position — re-applying
       // the existing transform also re-runs zoom styling on the fresh nodes
       const existing = d3.zoomTransform(svgEl);
@@ -798,8 +838,6 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         d3.select(svgEl).call(zoom.transform, existing);
         return;
       }
-      const svgW = svgEl.clientWidth  || 1280;
-      const svgH = Math.max(200, svgEl.clientHeight || 600);
       const initScale = (svgH - 20) / H_TOTAL;
       const centerYear = -2000;
       const centerX = xScale(centerYear) * initScale;
@@ -808,7 +846,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       d3.select(svgEl).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(initScale));
     }, 0);
 
-  }, [data, theme]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, theme, ntExpanded]);
 
   // Highlight selected book — gold ring on the hit rect + brightness lift on the pill div,
   // plus a lift on the era band the book belongs to
@@ -929,19 +968,21 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     const tx = svgW / 2 - centerX;
     const ty = (svgH - H_TOTAL * initScale) / 2;
     animateZoom(svgEl, d3.zoomIdentity.translate(tx, ty).scale(initScale), 500);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xScale]);
 
-  // Minimap scrub: center the main viewport on the clicked/dragged year, keeping zoom
+  // Minimap scrub: center the main viewport on the clicked/dragged position, keeping zoom.
+  // Fraction maps to logical x directly, so it works for both linear and NT-expanded scales.
   function mmJump(clientX, el) {
     const svgEl = svgRef.current;
     const z = zoomRef.current;
     if (!svgEl || !z) return;
     const rect = el.getBoundingClientRect();
     const fracX = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    const year = DOMAIN_START + fracX * (DOMAIN_END - DOMAIN_START);
+    const lx = MARGIN_L + fracX * USABLE_W;
     const cur = d3.zoomTransform(svgEl);
     const svgW = svgEl.clientWidth || 1280;
-    const tx = svgW / 2 - xScale(year) * cur.k;
+    const tx = svgW / 2 - lx * cur.k;
     d3.select(svgEl).call(z.transform, d3.zoomIdentity.translate(tx, cur.y).scale(cur.k));
   }
 
