@@ -31,6 +31,7 @@ export default function App() {
   const [matchCount, setMatchCount]       = useState(null);
   const [ntExpanded, setNtExpanded]       = useState(false);
   const [jumpIndex, setJumpIndex]         = useState(null);
+  const [legendFilter, setLegendFilter]   = useState(null); // { kind:'genre'|'group', value } | null
   const [theme, setTheme]                 = useState(() => localStorage.getItem('bt-theme') || 'dark');
   const zoomToEraFn   = useRef(null);
   const jumpToMatchFn = useRef(null);
@@ -137,7 +138,11 @@ export default function App() {
       />
 
       <div className="timeline-container">
-        <GenreLegend />
+        <GenreLegend
+          activeFilter={legendFilter}
+          onPick={(kind, value) => setLegendFilter(f =>
+            f && f.kind === kind && f.value === value ? null : { kind, value })}
+        />
         <BibleTimeline
           data={data}
           onZoomReady={handleZoomReady}
@@ -153,6 +158,7 @@ export default function App() {
           onPanStart={handlePanStart}
           theme={theme}
           ntExpanded={ntExpanded}
+          legendFilter={legendFilter}
         />
         <DetailPanel
           item={selected?.item}

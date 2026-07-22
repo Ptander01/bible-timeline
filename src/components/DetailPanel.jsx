@@ -13,7 +13,7 @@ function formatDateRange([s, e]) {
 }
 
 const GROUP_LABEL = {
-  patriarchs: 'Patriarch', judges: 'Judge', kings: 'King',
+  patriarchs: 'Patriarch', exodus: 'Leader', judges: 'Judge', kings: 'King',
   prophets: 'Prophet', apostles: 'Apostle',
 };
 

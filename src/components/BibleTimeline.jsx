@@ -48,7 +48,7 @@ const IS_COARSE = typeof window !== 'undefined' && window.matchMedia?.('(pointer
 const EVT_HIT_R = IS_COARSE ? 15 : 10;
 const HIT_PAD   = IS_COARSE ? 5 : 0;
 
-export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, onMatchCount, onJumpIndex, visibleLayers, searchQuery, onPanEra, onPanStart, theme, ntExpanded }) {
+export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selectedId, onZoomReady, onJumpReady, onMatchCount, onJumpIndex, visibleLayers, searchQuery, onPanEra, onPanStart, theme, ntExpanded, legendFilter }) {
   const svgRef   = useRef(null);
   const gRef     = useRef(null);
   const zoomRef  = useRef(null);
@@ -59,6 +59,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const prevNtRef = useRef(undefined); // last-rendered ntExpanded, to detect toggles
   const jumpStateRef = useRef({ q: null, i: 0 }); // search-jump cycling position
   const searchQueryRef = useRef('');   // live search query for D3 event closures
+  const legendFilterRef = useRef(null); // live legend filter for D3 event closures
   const [hoveredTip, setHoveredTip] = useState(null); // { label, sub, x, y }
 
 
@@ -334,6 +335,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('class', 'fig-group')
         .attr('data-name', fig.name.toLowerCase())
         .attr('data-start', fig.start).attr('data-end', fig.end)
+        .attr('data-group', fig.group)
         .attr('cursor', 'pointer')
         .on('click', (e) => {
           e.stopPropagation();
@@ -450,6 +452,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('class', 'proph-group')
         .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
         .attr('data-start', book.dateRange[0]).attr('data-end', book.dateRange[1])
+        .attr('data-genre', book.genre)
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
         .on('mouseover', function(event) {
@@ -559,6 +562,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
             .attr('data-id', book.id)
             .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
             .attr('data-start', book.dateRange[0]).attr('data-end', book.dateRange[1])
+            .attr('data-genre', book.genre)
             .attr('cursor', 'pointer')
             .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
             .on('mouseenter', function() {
@@ -773,13 +777,13 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       root.selectAll('[data-start]').attr('opacity', null);
     }
     svg.on('mouseover.contemp', (event) => {
-      if (searchQueryRef.current) return;
+      if (searchQueryRef.current || legendFilterRef.current) return;
       const el = event.target.closest?.('[data-start]');
       if (el) applyContemp(+el.getAttribute('data-start'), +el.getAttribute('data-end'));
       else clearContemp();
     });
     svg.on('mouseleave.contemp', () => {
-      if (!searchQueryRef.current) clearContemp();
+      if (!searchQueryRef.current && !legendFilterRef.current) clearContemp();
     });
 
     // ── Zoom behavior ──
@@ -1072,6 +1076,27 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       return name.includes(q) ? 0.55 : 0.06;
     });
   }, [searchQuery]);
+
+  // Legend filter: click a genre / people group to isolate it (dim the rest).
+  // Skipped while a search is active — search owns opacity then.
+  useEffect(() => {
+    legendFilterRef.current = legendFilter;
+    if (!svgRef.current) return;
+    const svg = d3.select(svgRef.current);
+    if ((searchQuery || '').trim()) return;
+    if (!legendFilter) {
+      svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group, .wctx-group')
+        .attr('opacity', null);
+      return;
+    }
+    const { kind, value } = legendFilter;
+    const attr = kind === 'genre' ? 'data-genre' : 'data-group';
+    const DIM = 0.12;
+    svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group, .wctx-group')
+      .attr('opacity', function() {
+        return this.getAttribute(attr) === value ? null : DIM;
+      });
+  }, [legendFilter, searchQuery]);
 
   // Toggle layer visibility without re-rendering D3
   useEffect(() => {

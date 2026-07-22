@@ -15,6 +15,7 @@ export const GENRE_COLORS = {
 // distinct period colors since they have no 1:1 genre counterpart.
 export const GROUP_COLOR = {
   patriarchs: '#c9a84c',
+  exodus:     '#c0714e',  // terracotta — Moses & Aaron
   judges:     '#9a7ec8',
   kings:      '#c4a06b',
   prophets:   '#488B68',  // tint of Prophecy #1A5C3A
