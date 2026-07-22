@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import BibleTimeline from './components/BibleTimeline';
 import DetailPanel from './components/DetailPanel';
+import EraCard from './components/EraCard';
 import EraNav from './components/EraNav';
 import FilterBar from './components/FilterBar';
 import GenreLegend from './components/GenreLegend';
@@ -76,6 +77,7 @@ export default function App() {
   const [ntExpanded, setNtExpanded]       = useState(false);
   const [jumpIndex, setJumpIndex]         = useState(null);
   const [legendFilter, setLegendFilter]   = useState(null); // { kind:'genre'|'group', value } | null
+  const [eraCardId, setEraCardId]         = useState(null); // era intro card shown after a deliberate era pick
   const [theme, setTheme]                 = useState(() => localStorage.getItem('bt-theme') || 'dark');
   const zoomToEraFn   = useRef(null);
   const jumpToMatchFn = useRef(null);
@@ -87,11 +89,12 @@ export default function App() {
     localStorage.setItem('bt-theme', theme);
   }, [theme]);
 
-  // Esc closes the detail panel (unless typing in an input, e.g. search)
+  // Esc closes the detail panel and era card (unless typing in an input, e.g. search)
   useEffect(() => {
     function onKey(e) {
       if (e.key === 'Escape' && !/^(INPUT|TEXTAREA)$/.test(e.target.tagName)) {
         setSelected(null);
+        setEraCardId(null);
       }
     }
     window.addEventListener('keydown', onKey);
@@ -114,6 +117,7 @@ export default function App() {
         // stomp this restored era back to whatever's near the default center
         userPickedEra.current = true;
         setActiveEraId(eraId);
+        setEraCardId(eraId);
         fn(era);
       }
     }
@@ -150,6 +154,7 @@ export default function App() {
   function handleEraSelect(era) {
     userPickedEra.current = true;
     setActiveEraId(era.id);
+    setEraCardId(era.id);
     zoomToEraFn.current?.(era);
   }
 
@@ -234,6 +239,10 @@ export default function App() {
           item={selected?.item}
           type={selected?.type}
           onClose={() => setSelected(null)}
+        />
+        <EraCard
+          era={data.eras.find(e => e.id === eraCardId) ?? null}
+          onClose={() => setEraCardId(null)}
         />
       </div>
 

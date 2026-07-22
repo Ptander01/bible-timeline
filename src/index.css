@@ -701,6 +701,89 @@ html, body, #root {
   stroke: #8c5a1c;
 }
 
+/* ── Era intro card (shown after a deliberate era-pill pick) ── */
+@keyframes eraCardIn {
+  from { opacity: 0; transform: translate(-50%, -14px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.era-card {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: clamp(300px, 86%, 460px);
+  z-index: 35;
+  padding: 18px 22px 20px;
+  background: linear-gradient(170deg, #141828 0%, #0d1020 60%, #0a0c18 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.55),
+    0  4px 14px rgba(0,0,0,0.40),
+    inset 0  1px 0 rgba(255,255,255,0.10),
+    inset 0 -1px 0 rgba(0,0,0,0.35);
+  animation: eraCardIn 0.32s cubic-bezier(0.2, 0.8, 0.3, 1.1) both;
+}
+.era-card__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: none;
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.era-card__close:hover { color: var(--accent); border-color: var(--accent-dim); }
+.era-card__eyebrow {
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+}
+.era-card__name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  margin-top: 3px;
+}
+.era-card__range {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.era-card__desc {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  margin-top: 10px;
+}
+[data-theme="light"] .era-card {
+  background: linear-gradient(170deg, #f0e4c8 0%, #e8d8b0 60%, #e0cca0 100%);
+  border-color: rgba(130,85,28,0.16);
+  box-shadow:
+    0 16px 48px rgba(110,70,20,0.16),
+    0  4px 14px rgba(110,70,20,0.10),
+    inset 0  1px 0 rgba(255,255,255,0.55),
+    inset 0 -1px 0 rgba(110,70,20,0.10);
+}
+[data-theme="light"] .era-card__close {
+  border-color: rgba(130,85,28,0.25);
+  color: rgba(80,52,18,0.65);
+}
+
 /* ── Detail panel ── */
 .detail-panel {
   position: absolute;
