@@ -116,6 +116,18 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const MM_H = 22;
   const mmX = (year) => (xScale(year) - MARGIN_L) / USABLE_W * MM_W;
 
+  // Wave-in entrance: stagger each element's animation-delay by its
+  // horizontal position, so the whole canvas sweeps left-to-right on first
+  // load and whenever a hidden SHOW layer is toggled back on. Elements carry
+  // this permanently (not just at mount) since a layer's display:none→block
+  // naturally restarts CSS animations on its children — no extra code needed
+  // in the visibleLayers effect for the replay-on-toggle behavior.
+  const WAVE_STAGGER_MS = 650;
+  function waveDelay(px) {
+    const frac = Math.max(0, Math.min(1, (px - MARGIN_L) / USABLE_W));
+    return `${Math.round(frac * WAVE_STAGGER_MS)}ms`;
+  }
+
   useEffect(() => {
     if (!svgRef.current || !data) return;
     const svg = d3.select(svgRef.current);
@@ -332,7 +344,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       const fy = FIG_Y + row * (FIG_H + 3);
       const fw = Math.max(4, x2 - x1);
       const fg = figG.append('g')
-        .attr('class', 'fig-group')
+        .attr('class', 'fig-group tl-wave-in')
+        .style('animation-delay', waveDelay(x1))
         .attr('data-name', fig.name.toLowerCase())
         .attr('data-start', fig.start).attr('data-end', fig.end)
         .attr('data-group', fig.group)
@@ -382,7 +395,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         const x2 = xScale(king.end);
         const w  = Math.max(x2 - x1, 1);
         const kg = g.append('g')
-          .attr('class', 'king-group')
+          .attr('class', 'king-group tl-wave-in')
+          .style('animation-delay', waveDelay(x1))
           .attr('data-name', king.name.toLowerCase())
           .attr('data-start', king.start).attr('data-end', king.end)
           .attr('cursor', 'pointer')
@@ -449,7 +463,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       const w  = x2 - x1;
 
       const pg = prophG.append('g')
-        .attr('class', 'proph-group')
+        .attr('class', 'proph-group tl-wave-in')
+        .style('animation-delay', waveDelay(x1))
         .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
         .attr('data-start', book.dateRange[0]).attr('data-end', book.dateRange[1])
         .attr('data-genre', book.genre)
@@ -504,7 +519,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         const ww = x2 - x1;
 
         const wg = wctxG.append('g')
-          .attr('class', 'wctx-group')
+          .attr('class', 'wctx-group tl-wave-in')
+          .style('animation-delay', waveDelay(x1))
           .attr('data-name', `${item.name.toLowerCase()} ${item.region.toLowerCase()} ${item.category}`)
           .attr('data-start', item.start).attr('data-end', item.end)
           .attr('cursor', 'pointer')
@@ -558,7 +574,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         row.forEach(book => {
           const color = GENRE_COLORS[book.genre] || '#7a8ab0';
           const g = bookG.append('g')
-            .attr('class', 'book-capsule')
+            .attr('class', 'book-capsule tl-wave-in')
+            .style('animation-delay', waveDelay(book._x1))
             .attr('data-id', book.id)
             .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
             .attr('data-start', book.dateRange[0]).attr('data-end', book.dateRange[1])
@@ -652,7 +669,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
       // per-event group so search dimming can target the whole event
       const eg = evtG.append('g')
-        .attr('class', 'evt-group')
+        .attr('class', 'evt-group tl-wave-in')
+        .style('animation-delay', waveDelay(x))
         .attr('data-name', evt.label.toLowerCase())
         .attr('data-start', evt.year).attr('data-end', evt.endYear ?? evt.year);
 
@@ -660,6 +678,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       // so search dimming can track it independently of the front group.
       // Width/dashes held screen-constant by the zoom handler for crispness.
       evtLineG.append('line')
+        .attr('class', 'tl-wave-in-line')
+        .style('animation-delay', waveDelay(x))
         .attr('data-name', evt.label.toLowerCase())
         .attr('data-major', isMajor)
         .attr('x1', x).attr('x2', x)

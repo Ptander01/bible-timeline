@@ -495,6 +495,44 @@ html, body, #root {
 .fig-group, .king-group, .proph-group, .book-capsule, .evt-group, .wctx-group {
   transition: opacity 0.16s ease;
 }
+
+/* ── Wave-in entrance animation ──
+   Sweeps left-to-right on first load and whenever a hidden SHOW layer is
+   toggled back on (browsers restart CSS animations when an element's
+   display goes from none to visible). animation-delay is set per-element
+   in BibleTimeline.jsx, proportional to its x position (see waveDelay()).
+   fill-mode is BACKWARDS only (not forwards/both) — it holds the 0%
+   keyframe during the delay so nothing flashes early, but releases full
+   control back to the element's normal opacity attribute the instant the
+   animation ends, so search/legend-filter dimming keeps working exactly
+   as before with zero extra cleanup code. */
+@keyframes tlWaveIn {
+  0%   { opacity: 0; transform: scale(0.82) translateY(5px); }
+  58%  { opacity: 1; transform: scale(1.06) translateY(-2px); }
+  80%  { transform: scale(0.98) translateY(1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.tl-wave-in {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tlWaveIn 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+/* Event connector lines rest at opacity 0.55 (not 1), so they get a
+   transform-only variant — animating opacity here would flash to 1 and
+   then visibly snap down to 0.55 the instant the animation released. */
+@keyframes tlWaveInLine {
+  0%   { transform: scaleY(0.2); }
+  60%  { transform: scaleY(1.08); }
+  100% { transform: scaleY(1); }
+}
+.tl-wave-in-line {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tlWaveInLine 380ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-wave-in, .tl-wave-in-line { animation: none; }
+}
 .timeline-svg:active {
   cursor: grabbing;
 }
