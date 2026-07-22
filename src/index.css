@@ -774,6 +774,38 @@ html, body, #root {
   opacity: 0.75;
 }
 
+/* ── Explore Further resource links ── */
+.detail-panel__resources {
+  margin-top: 20px;
+}
+.detail-panel__reslink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--pill-bg);
+  box-shadow: var(--lip-out);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+.detail-panel__reslink:hover {
+  border-color: rgba(201,168,76,0.5);
+  box-shadow: var(--lip-hover);
+  color: var(--accent);
+}
+.detail-panel__resarrow { opacity: 0.55; font-size: 12px; flex-shrink: 0; }
+.detail-panel__reslink--app     { border-left: 3px solid var(--accent); }
+.detail-panel__reslink--study   { border-left: 3px solid #9a7ec8; }
+.detail-panel__reslink--library { border-left: 3px solid var(--teal); }
+
 .detail-panel__divider {
   margin: 16px 0;
   border: none;

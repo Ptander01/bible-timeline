@@ -106,6 +106,7 @@ export default function App() {
     const type = evt.type === 'king' ? 'king'
       : evt.type === 'prophet' ? 'book'
       : evt.type === 'context' ? 'context'
+      : evt.type === 'figure' ? 'figure'
       : 'event';
     setSelected(prev =>
       prev?.item?.id === evt.id ? null : { item: evt, type }

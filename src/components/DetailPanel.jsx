@@ -1,4 +1,6 @@
 import data from '../data/bible-data.json';
+import { resourcesFor } from '../resources';
+import { GROUP_COLOR } from '../genreColors';
 
 function yearLabel(y) {
   if (y <= 0) return `${Math.abs(y)} BC`;
@@ -8,6 +10,32 @@ function yearLabel(y) {
 function formatDateRange([s, e]) {
   if (s === e) return yearLabel(s);
   return `${yearLabel(s)} – ${yearLabel(e)}`;
+}
+
+const GROUP_LABEL = {
+  patriarchs: 'Patriarch', judges: 'Judge', kings: 'King',
+  prophets: 'Prophet', apostles: 'Apostle',
+};
+
+// Per-person title overrides where the group label would be theologically off
+// (Jesus and John the Baptist sit in the 'apostles' group for coloring only).
+const FIGURE_TITLE = { jesus: 'Messiah', 'john-baptist': 'Forerunner' };
+
+function ExploreLinks({ item, type }) {
+  const links = resourcesFor(item, type);
+  if (!links.length) return null;
+  return (
+    <div className="detail-panel__resources">
+      <div className="detail-panel__label">Explore Further</div>
+      {links.map(r => (
+        <a key={r.url} className={`detail-panel__reslink detail-panel__reslink--${r.kind}`}
+          href={r.url} target="_blank" rel="noopener noreferrer">
+          <span>{r.label}</span>
+          <span className="detail-panel__resarrow" aria-hidden="true">↗</span>
+        </a>
+      ))}
+    </div>
+  );
 }
 
 export default function DetailPanel({ item, type, onClose }) {
@@ -54,6 +82,26 @@ export default function DetailPanel({ item, type, onClose }) {
           <div className="detail-panel__theme">{item.theme}</div>
 
           <div className="detail-panel__verse">{item.keyVerse}</div>
+
+          <ExploreLinks item={item} type={type} />
+        </>
+      )}
+
+      {item && type === 'figure' && (
+        <>
+          <div className="detail-panel__abbrev">{FIGURE_TITLE[item.id] ?? GROUP_LABEL[item.group] ?? 'Figure'}</div>
+          <div className="detail-panel__name" style={{ color: GROUP_COLOR[item.group] }}>
+            {item.name}
+          </div>
+
+          <hr className="detail-panel__divider" />
+
+          <div className="detail-panel__section">
+            <div className="detail-panel__label">Timeframe</div>
+            <div className="detail-panel__value">{formatDateRange([item.start, item.end])}</div>
+          </div>
+
+          <ExploreLinks item={item} type={type} />
         </>
       )}
 
@@ -77,6 +125,8 @@ export default function DetailPanel({ item, type, onClose }) {
             <div className="detail-panel__label">Era</div>
             <div className="detail-panel__value">{eraName}</div>
           </div>
+
+          <ExploreLinks item={item} type={type} />
         </>
       )}
 

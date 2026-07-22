@@ -331,7 +331,20 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       const fw = Math.max(4, x2 - x1);
       const fg = figG.append('g')
         .attr('class', 'fig-group')
-        .attr('data-name', fig.name.toLowerCase());
+        .attr('data-name', fig.name.toLowerCase())
+        .attr('cursor', 'pointer')
+        .on('click', (e) => {
+          e.stopPropagation();
+          onSelectEvent && onSelectEvent({ ...fig, type: 'figure', label: fig.name });
+        })
+        .on('mouseover', function(event) {
+          d3.select(this).select('div').style('filter', 'brightness(1.22)');
+          setHoveredTip({ label: fig.name, sub: formatDateRange([fig.start, fig.end]), x: event.clientX + 14, y: event.clientY - 36 });
+        })
+        .on('mouseout', function() {
+          d3.select(this).select('div').style('filter', null);
+          setHoveredTip(null);
+        });
       makeTrackFO(fg, x1, fy - FIG_H / 2, fw, FIG_H, color,
         { rx: FIG_H / 2, alpha: 0.42, labelClass: 'fig-pill-label', fontSize: 7, labelText: fig.name });
       // transparent hit rect
