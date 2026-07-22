@@ -8,7 +8,7 @@ import SearchBar from './components/SearchBar';
 import ThemeToggle from './components/ThemeToggle';
 import data from './data/bible-data.json';
 
-const ALL_ON = { people: true, events: true, books: true, kings: true, prophets: true };
+const ALL_ON = { people: true, events: true, books: true, kings: true, prophets: true, context: true };
 
 function readUrlParams() {
   const p = new URLSearchParams(window.location.search);
@@ -103,7 +103,10 @@ export default function App() {
   }
 
   function handleSelectEvent(evt) {
-    const type = evt.type === 'king' ? 'king' : evt.type === 'prophet' ? 'book' : 'event';
+    const type = evt.type === 'king' ? 'king'
+      : evt.type === 'prophet' ? 'book'
+      : evt.type === 'context' ? 'context'
+      : 'event';
     setSelected(prev =>
       prev?.item?.id === evt.id ? null : { item: evt, type }
     );

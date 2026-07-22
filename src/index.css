@@ -756,6 +756,23 @@ html, body, #root {
 .detail-panel__badge--ot       { border-color: rgba(201,168,76,0.4); color: var(--accent); }
 .detail-panel__badge--nt       { border-color: rgba(74,124,111,0.5); color: var(--teal); }
 .detail-panel__badge--genre    { }
+.detail-panel__badge--context  { border-color: rgba(139,122,150,0.5); color: rgba(180,168,196,0.9); }
+
+.detail-panel__prose {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+.detail-panel__note {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-style: italic;
+  color: var(--text-dim);
+  margin-top: 14px;
+  opacity: 0.75;
+}
 
 .detail-panel__divider {
   margin: 16px 0;

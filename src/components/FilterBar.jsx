@@ -4,6 +4,7 @@ const LAYERS = [
   { id: 'books',    label: 'Books'    },
   { id: 'kings',    label: 'Kings'    },
   { id: 'prophets', label: 'Prophets' },
+  { id: 'context',  label: 'World'    },
 ];
 
 export default function FilterBar({ visible, onToggle, ntExpanded, onToggleNt }) {

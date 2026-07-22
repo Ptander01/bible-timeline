@@ -2136,5 +2136,187 @@
       "start": -597,
       "end": -586
     }
+  ],
+  "worldContext":   [
+    {
+      "id": "ctx-nomadic",
+      "name": "Nomadic Herding World",
+      "start": -4000,
+      "end": -1900,
+      "category": "life",
+      "region": "Near East",
+      "description": "Most people lived in small, mobile clans herding sheep, goats, and cattle across semi-arid land, sheltering in tents and moving with the seasons and pasture. Wealth was counted in livestock; kinship and hospitality governed daily life. Literacy was almost unknown, life expectancy hovered near 30–40 years, and survival depended on rainfall and the herd — the world of Abraham, Isaac, and Jacob."
+    },
+    {
+      "id": "ctx-agrarian",
+      "name": "Spread of Settled Farming",
+      "start": -3500,
+      "end": -600,
+      "category": "life",
+      "region": "Fertile Crescent",
+      "description": "Villages of mud-brick houses grew up around grain fields (wheat, barley), olive groves, and vineyards. Ninety percent of people were subsistence farmers who ate bread, lentils, and onions and rarely traveled beyond a day's walk. Debt, drought, and taxation kept most families poor; children worked from a young age, and only priests and scribes could read."
+    },
+    {
+      "id": "ctx-classical-life",
+      "name": "Cities, Coins & Roads",
+      "start": -600,
+      "end": 100,
+      "category": "life",
+      "region": "Mediterranean",
+      "description": "Coined money, paved roads, and sea trade knit the ancient world together. Cities had markets, baths, theaters, and schools for elite boys, while most people remained rural laborers, slaves, or artisans. Greek became the common tongue of commerce and ideas; still, few lived past 40, infant mortality was brutal, and social rank was rigid — the setting into which the New Testament church was born."
+    },
+    {
+      "id": "ctx-chalcolithic",
+      "name": "Copper Age",
+      "start": -4000,
+      "end": -3300,
+      "category": "age",
+      "region": "Near East",
+      "description": "The first metalworking: people learned to smelt copper for tools and ornaments alongside stone. Temples and irrigation appeared in Mesopotamia, and the plow and potter's wheel transformed labor."
+    },
+    {
+      "id": "ctx-eba",
+      "name": "Early Bronze Age",
+      "start": -3300,
+      "end": -2100,
+      "category": "age",
+      "region": "Near East",
+      "description": "Bronze (copper alloyed with tin) gave harder tools and weapons. Writing, the wheel, and the first cities and kingdoms emerged; monumental building — ziggurats and pyramids — began."
+    },
+    {
+      "id": "ctx-mba",
+      "name": "Middle Bronze Age",
+      "start": -2100,
+      "end": -1550,
+      "category": "age",
+      "region": "Near East",
+      "description": "An age of trade networks, fortified cities, and law codes. Canaan's city-states flourished; the alphabet's ancestors first appear — the world of the patriarchs and Joseph in Egypt."
+    },
+    {
+      "id": "ctx-lba",
+      "name": "Late Bronze Age",
+      "start": -1550,
+      "end": -1200,
+      "category": "age",
+      "region": "Near East",
+      "description": "Great empires — Egypt, the Hittites, Mycenaean Greece — traded and warred across the region. It ended in a mysterious collapse (~1200 BC) as cities burned and trade routes failed, near the time of the Exodus and Conquest."
+    },
+    {
+      "id": "ctx-iron",
+      "name": "Iron Age",
+      "start": -1200,
+      "end": -550,
+      "category": "age",
+      "region": "Near East",
+      "description": "Cheaper, stronger iron tools spread farming and warfare to common people. Smaller kingdoms rose from the Bronze Age ruins — including Israel and Judah — before the great Mesopotamian empires swallowed them."
+    },
+    {
+      "id": "ctx-classical-age",
+      "name": "Classical Antiquity",
+      "start": -550,
+      "end": 100,
+      "category": "age",
+      "region": "Mediterranean",
+      "description": "The age of Greece and Rome: philosophy, democracy, drama, engineering, and empire. Ideas and armies moved freely across the Mediterranean, setting the cultural stage for the intertestamental period and the early church."
+    },
+    {
+      "id": "ctx-sumer",
+      "name": "Sumer & the First Cities",
+      "start": -4000,
+      "end": -2300,
+      "category": "power",
+      "region": "Mesopotamia",
+      "description": "In the land later called Babylonia, Sumerians built the world's first cities (Uruk, Ur), invented cuneiform writing (~3200 BC), and developed the wheel, sailboats, and codes of law."
+    },
+    {
+      "id": "ctx-egypt-old",
+      "name": "Egypt: Old Kingdom (Pyramids)",
+      "start": -2686,
+      "end": -2181,
+      "category": "power",
+      "region": "Egypt",
+      "description": "The pyramid age. The Great Pyramid of Giza was built around 2560 BC — already over 500 years old before Abraham was born. A centralized, god-king state organized vast labor and record-keeping along the Nile."
+    },
+    {
+      "id": "ctx-akkad",
+      "name": "Akkadian Empire",
+      "start": -2334,
+      "end": -2154,
+      "category": "power",
+      "region": "Mesopotamia",
+      "description": "Sargon of Akkad forged the first multi-ethnic empire, uniting Mesopotamian city-states under one ruler and spreading a common administration and language."
+    },
+    {
+      "id": "ctx-egypt-new",
+      "name": "Egypt: New Kingdom",
+      "start": -1550,
+      "end": -1077,
+      "category": "power",
+      "region": "Egypt",
+      "description": "Egypt at its imperial height — pharaohs like Thutmose, Akhenaten, and Ramesses II ruled from Nubia to Syria. This is the Egypt of the Exodus narrative, rich in temples, chariots, and monumental art."
+    },
+    {
+      "id": "ctx-assyria",
+      "name": "Neo-Assyrian Empire",
+      "start": -911,
+      "end": -609,
+      "category": "power",
+      "region": "Mesopotamia",
+      "description": "A brutal, highly organized war machine that dominated the Near East, deporting conquered peoples. Assyria destroyed the northern kingdom of Israel in 722 BC and besieged Jerusalem."
+    },
+    {
+      "id": "ctx-babylon",
+      "name": "Neo-Babylonian Empire",
+      "start": -626,
+      "end": -539,
+      "category": "power",
+      "region": "Mesopotamia",
+      "description": "Under Nebuchadnezzar II, Babylon dazzled the world with its walls and hanging gardens. It destroyed Jerusalem and the Temple in 586 BC and carried Judah into exile."
+    },
+    {
+      "id": "ctx-persia",
+      "name": "Persian Empire",
+      "start": -550,
+      "end": -330,
+      "category": "power",
+      "region": "Persia",
+      "description": "The vast, comparatively tolerant empire of Cyrus, Darius, and Xerxes stretched from India to Greece. Cyrus let the Jewish exiles return and rebuild the Temple; this is the world of Esther, Ezra, and Nehemiah."
+    },
+    {
+      "id": "ctx-greece",
+      "name": "Classical Greece",
+      "start": -508,
+      "end": -323,
+      "category": "power",
+      "region": "Greece",
+      "description": "Athenian democracy, Socrates, Plato, and Aristotle, and the wars with Persia. Alexander the Great then conquered the known world by 323 BC, spreading Greek language and culture (Hellenism) everywhere."
+    },
+    {
+      "id": "ctx-hellenistic",
+      "name": "Hellenistic Kingdoms",
+      "start": -323,
+      "end": -63,
+      "category": "power",
+      "region": "Mediterranean",
+      "description": "Alexander's generals split his empire; the Ptolemies (Egypt) and Seleucids (Syria) fought over Judea. The Hebrew scriptures were translated into Greek (the Septuagint), and the Maccabean revolt won brief Jewish independence."
+    },
+    {
+      "id": "ctx-rome-rep",
+      "name": "Roman Republic",
+      "start": -509,
+      "end": -27,
+      "category": "power",
+      "region": "Rome",
+      "description": "Rome grew from a city to master of the Mediterranean through its legions, roads, and law. Pompey brought Judea under Roman control in 63 BC, and the Republic dissolved into civil war after Julius Caesar."
+    },
+    {
+      "id": "ctx-rome-emp",
+      "name": "Roman Empire",
+      "start": -27,
+      "end": 100,
+      "category": "power",
+      "region": "Rome",
+      "description": "Augustus founded the empire and the Pax Romana — a long peace with common roads, coinage, and Greek trade-language that let the gospel spread rapidly. Judea was a restless Roman province throughout the life of Jesus and the apostles."
+    }
   ]
 }

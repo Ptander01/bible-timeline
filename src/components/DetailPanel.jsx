@@ -80,6 +80,32 @@ export default function DetailPanel({ item, type, onClose }) {
         </>
       )}
 
+      {item && type === 'context' && (
+        <>
+          <div className="detail-panel__abbrev">
+            {item.category === 'age' ? 'Historical Age'
+              : item.category === 'power' ? 'Empire & Power'
+              : 'Way of Life'}
+          </div>
+          <div className="detail-panel__name">{item.name}</div>
+          <div className="detail-panel__badges">
+            <span className="detail-panel__badge detail-panel__badge--context">{item.region}</span>
+          </div>
+
+          <hr className="detail-panel__divider" />
+
+          <div className="detail-panel__section">
+            <div className="detail-panel__label">Period</div>
+            <div className="detail-panel__value">{formatDateRange([item.start, item.end])}</div>
+          </div>
+
+          <hr className="detail-panel__divider" />
+
+          <div className="detail-panel__prose">{item.description}</div>
+          <div className="detail-panel__note">Dates are approximate, following common scholarly convention.</div>
+        </>
+      )}
+
       {item && type === 'king' && (
         <>
           <div className="detail-panel__abbrev">

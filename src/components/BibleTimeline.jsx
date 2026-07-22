@@ -62,7 +62,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
 
   const W = 4000;  // logical SVG width — we zoom/pan within this
-  const H_TOTAL = 560;
+  const H_TOTAL = 700;  // extra bottom band houses the world-context lane
 
   // Layout constants (in logical px, scale-independent)
   const MARGIN_L  = 60;
@@ -82,6 +82,10 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const PROPH_H       = 8;    // height of each prophet bar
   const PROPH_MAJOR_Y = 259;  // top of major prophet row
   const PROPH_MINOR_Y = 270;  // top of minor prophet row
+  const ERA_BAND_BOT  = 692;  // era-band background extends here to back the context lane
+  const WCTX_TOP      = 560;  // first world-context row (top edge)
+  const WCTX_H        = 15;   // world-context bar height
+  const WCTX_ROW      = 19;   // world-context row pitch (fits 6 packed rows to y≈670)
 
   const DOMAIN_START = -4100;
   const DOMAIN_END   = 100;
@@ -158,7 +162,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('data-era-band', era.id)
         .attr('data-base-fill', bandFill)
         .attr('x', x1).attr('y', AXIS_Y - ERA_H)
-        .attr('width', x2 - x1).attr('height', ERA_H * 2)
+        .attr('width', x2 - x1).attr('height', ERA_BAND_BOT - (AXIS_Y - ERA_H))
         .attr('fill', bandFill)
         .attr('rx', 0);
 
@@ -166,7 +170,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       if (era.id !== 'primeval') {
         eraG.append('line')
           .attr('x1', x1).attr('x2', x1)
-          .attr('y1', AXIS_Y - ERA_H).attr('y2', AXIS_Y + ERA_H)
+          .attr('y1', AXIS_Y - ERA_H).attr('y2', ERA_BAND_BOT)
           .attr('stroke', CS.eraDivider).attr('stroke-width', 1);
       }
     });
@@ -252,6 +256,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       { text: 'OT BOOKS', dataY: OT_BOOK_Y,  fill: CS.sectionOT },
       { text: 'FIGURES',  dataY: (FIG_Y + PROPH_MINOR_Y + PROPH_H) / 2, fill: CS.sectionPeople },
       { text: 'NT BOOKS', dataY: NT_BOOK_Y,  fill: CS.sectionNT },
+      { text: 'WORLD',    dataY: WCTX_TOP + WCTX_ROW, fill: dimEvt },
     ].forEach(({ text, dataY, fill }) => {
       labelsOverlay.append('text')
         .attr('class', 'lane-label')
@@ -448,6 +453,62 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('fill', 'transparent').attr('rx', 3).attr('stroke', 'none');
     });
 
+    // ── World Context lane (secular history backdrop, bottom band) ──
+    const WCTX_COLOR = {
+      age:   isDark ? '#5B6B8A' : '#4A5A7A',  // slate — technological ages
+      power: isDark ? '#8A6B52' : '#7A5B42',  // bronze — empires & powers
+      life:  isDark ? '#6B7A55' : '#5B6A45',  // sage — ways of life
+    };
+    if (data.worldContext) {
+      const wctxG = root.append('g').attr('class', 'world-context');
+
+      // subtle separator + zone label rule above the lane
+      wctxG.append('line')
+        .attr('class', 'zone-divider')
+        .attr('x1', MARGIN_L).attr('x2', W - MARGIN_R)
+        .attr('y1', WCTX_TOP - 12).attr('y2', WCTX_TOP - 12)
+        .attr('stroke', CS.zoneDivider).attr('stroke-width', 1)
+        .attr('pointer-events', 'none');
+
+      // greedy row-pack (like figures) so overlapping periods don't collide
+      const rowEnds = [];
+      const sorted = [...data.worldContext].sort((a, b) => a.start - b.start);
+      sorted.forEach(item => {
+        const x1 = xScale(item.start);
+        const x2 = Math.max(x1 + 3, xScale(item.end));
+        let row = rowEnds.findIndex(end => end <= x1 - 4);
+        if (row === -1) { rowEnds.push(0); row = rowEnds.length - 1; }
+        rowEnds[row] = x2;
+        const color = WCTX_COLOR[item.category] || '#7a8ab0';
+        const wy = WCTX_TOP + row * WCTX_ROW;
+        const ww = x2 - x1;
+
+        const wg = wctxG.append('g')
+          .attr('class', 'wctx-group')
+          .attr('data-name', `${item.name.toLowerCase()} ${item.region.toLowerCase()} ${item.category}`)
+          .attr('cursor', 'pointer')
+          .on('click', (e) => {
+            e.stopPropagation();
+            onSelectEvent && onSelectEvent({ ...item, type: 'context', label: item.name });
+          })
+          .on('mouseover', function(event) {
+            d3.select(this).select('div').style('filter', 'brightness(1.22)');
+            setHoveredTip({ label: item.name, sub: formatDateRange([item.start, item.end]), x: event.clientX + 14, y: event.clientY - 36 });
+          })
+          .on('mouseout', function() {
+            d3.select(this).select('div').style('filter', null);
+            setHoveredTip(null);
+          });
+
+        makeTrackFO(wg, x1, wy, ww, WCTX_H, color,
+          { rx: 3, alpha: 0.40, labelClass: 'wctx-pill-label', fontSize: 7.5, labelText: item.name });
+        wg.append('rect')
+          .attr('x', x1).attr('y', wy - HIT_PAD)
+          .attr('width', ww).attr('height', WCTX_H + HIT_PAD * 2)
+          .attr('fill', 'transparent').attr('rx', 3).attr('stroke', 'none');
+      });
+    }
+
     // ── Books ──
     const bookG = root.append('g').attr('class', 'books');
 
@@ -572,21 +633,35 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('data-name', evt.label.toLowerCase());
 
       // connector line to axis — lives in the back layer, carries data-name
-      // so search dimming can track it independently of the front group
+      // so search dimming can track it independently of the front group.
+      // Width/dashes held screen-constant by the zoom handler for crispness.
       evtLineG.append('line')
         .attr('data-name', evt.label.toLowerCase())
+        .attr('data-major', isMajor)
         .attr('x1', x).attr('x2', x)
         .attr('y1', AXIS_Y).attr('y2', evtY)
-        .attr('stroke', color).attr('stroke-width', isMajor ? 0.8 : 0.4)
-        .attr('stroke-dasharray', isMajor ? null : '2,3')
-        .attr('opacity', 0.5);
+        .attr('stroke', color).attr('stroke-width', isMajor ? 1 : 0.7)
+        .attr('stroke-dasharray', isMajor ? null : '2.5,3')
+        .attr('opacity', 0.55);
 
-      // dot
+      // marker: ring + solid core (sequencer-dot style), screen-constant size
       eg.append('circle')
+        .attr('class', 'evt-ring')
+        .attr('data-major', isMajor)
         .attr('cx', x).attr('cy', evtY)
-        .attr('r', isMajor ? 4 : 2.5)
+        .attr('r', isMajor ? 6.5 : 4.8)
+        .attr('fill', 'none')
+        .attr('stroke', color)
+        .attr('stroke-width', 1)
+        .attr('stroke-opacity', isMajor ? 0.55 : 0.38)
+        .attr('pointer-events', 'none');
+      eg.append('circle')
+        .attr('class', 'evt-dot')
+        .attr('data-major', isMajor)
+        .attr('cx', x).attr('cy', evtY)
+        .attr('r', isMajor ? 3.5 : 2.4)
         .attr('fill', color)
-        .attr('opacity', isMajor ? 0.9 : 0.6)
+        .attr('fill-opacity', isMajor ? 1 : 0.9)
         .attr('pointer-events', 'none');
 
       // invisible larger hit target (scaled in zoom handler to stay ~10px screen)
@@ -598,11 +673,17 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectEvent && onSelectEvent(evt); })
         .on('mouseover', function(event) {
-          d3.select(this.previousSibling).attr('opacity', 1).attr('r', isMajor ? 5.5 : 4);
+          const g = d3.select(this.parentNode);
+          const k = kRef.current;
+          g.select('.evt-dot').attr('r', (isMajor ? 4.6 : 3.4) / k);
+          g.select('.evt-ring').attr('r', (isMajor ? 8 : 6.2) / k).attr('stroke-opacity', 1);
           setHoveredTip({ label: evt.label, sub: yearLabel(evt.year), x: event.clientX + 14, y: event.clientY - 36 });
         })
         .on('mouseout', function() {
-          d3.select(this.previousSibling).attr('opacity', isMajor ? 0.9 : 0.6).attr('r', isMajor ? 4 : 2.5);
+          const g = d3.select(this.parentNode);
+          const k = kRef.current;
+          g.select('.evt-dot').attr('r', (isMajor ? 3.5 : 2.4) / k);
+          g.select('.evt-ring').attr('r', (isMajor ? 6.5 : 4.8) / k).attr('stroke-opacity', isMajor ? 0.55 : 0.38);
           setHoveredTip(null);
         });
 
@@ -611,7 +692,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         .attr('class', 'evt-label')
         .attr('data-major', isMajor)
         .attr('x', x)
-        .attr('y', evtY - 6)
+        .attr('y', evtY - 9)
         .attr('text-anchor', 'middle')
         .attr('fill', color)
         .attr('font-family', "'Cinzel', serif")
@@ -678,7 +759,23 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         svg.selectAll('.axis-line').attr('stroke-width', 1 / k);
         svg.selectAll('.book-pill-label').style('font-size', `${7.5 / k}px`);
         svg.selectAll('.fig-pill-label').style('font-size', `${7 / k}px`).style('display', k < 0.8 ? 'none' : null);
+        svg.selectAll('.wctx-pill-label').style('font-size', `${7.5 / k}px`).style('display', k < 0.5 ? 'none' : null);
         svg.selectAll('.evt-hit').attr('r', EVT_HIT_R / k);
+        // crisp screen-constant event markers + flagpoles
+        svg.selectAll('.evt-dot').attr('r', function() {
+          return (d3.select(this).attr('data-major') === 'true' ? 3.5 : 2.4) / k;
+        });
+        svg.selectAll('.evt-ring')
+          .attr('r', function() {
+            return (d3.select(this).attr('data-major') === 'true' ? 6.5 : 4.8) / k;
+          })
+          .attr('stroke-width', 1 / k);
+        svg.selectAll('.evt-lines line').each(function() {
+          const maj = d3.select(this).attr('data-major') === 'true';
+          d3.select(this)
+            .attr('stroke-width', (maj ? 1 : 0.7) / k)
+            .attr('stroke-dasharray', maj ? null : `${2.5 / k},${3 / k}`);
+        });
         svg.selectAll('.king-pill-label').style('font-size', `${7 / k}px`).style('display', k < 1.5 ? 'none' : null);
         svg.selectAll('.king-track-label').attr('font-size', 7 / k);
         // Lane labels live outside root — update y-position only
@@ -898,7 +995,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     if (!q) {
       svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group')
         .attr('opacity', null);
-      svg.selectAll('.evt-lines line').attr('opacity', 0.5);
+      svg.selectAll('.evt-lines line').attr('opacity', 0.55);
       onMatchCount?.(null);
       return;
     }
@@ -922,10 +1019,10 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     svg.selectAll('.king-group').attr('opacity', matchByName);
     svg.selectAll('.proph-group').attr('opacity', matchByName);
     svg.selectAll('.evt-group').attr('opacity', matchByName);
-    // connector lines sit in the back layer with a 0.5 base opacity
+    // connector lines sit in the back layer with a 0.55 base opacity
     svg.selectAll('.evt-lines line').attr('opacity', function() {
       const name = d3.select(this).attr('data-name') || '';
-      return name.includes(q) ? 0.5 : 0.06;
+      return name.includes(q) ? 0.55 : 0.06;
     });
   }, [searchQuery]);
 
@@ -939,6 +1036,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
     svg.select('.books').attr('display',   visibleLayers.books    ? null : 'none');
     svg.selectAll('.kings').attr('display',   visibleLayers.kings    ? null : 'none');
     svg.select('.prophets').attr('display', visibleLayers.prophets ? null : 'none');
+    svg.select('.world-context').attr('display', visibleLayers.context ? null : 'none');
   }, [visibleLayers]);
 
   function animateZoom(svgEl, target, dur = 400) {
