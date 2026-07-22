@@ -44,6 +44,7 @@ html, body, #root {
   color: var(--accent);
   text-transform: uppercase;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .app-header .subtitle {
@@ -66,6 +67,12 @@ html, body, #root {
 }
 @media (max-width: 860px) {
   .app-header .subtitle { display: none; }
+}
+@media (max-width: 700px) {
+  .app-header { padding: 8px 12px; gap: 10px; }
+  .app-header h1 { font-size: 14px; letter-spacing: 2px; }
+  .search-bar { padding: 4px 10px; }
+  .search-bar__input { font-size: 8px; }
 }
 
 /* ── 3D glass theme toggle ── */
@@ -273,6 +280,8 @@ html, body, #root {
   border-radius: 20px;
   padding: 4px 12px;
   width: 240px;
+  min-width: 0;    /* let it shrink below content size in the header flex row */
+  flex-shrink: 1;
   box-shadow: var(--lip-in);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -445,6 +454,30 @@ html, body, #root {
   border-color: rgba(140,90,28,0.45);
 }
 
+/* Narrow windows: era pills and SHOW pills scroll horizontally instead of
+   wrapping to extra rows (era-nav) or silently overflowing off-screen
+   (filter-bar, which had no wrap at all). */
+@media (max-width: 700px) {
+  .era-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .era-nav::-webkit-scrollbar { display: none; }
+  .era-nav__pill { flex-shrink: 0; }
+
+  .filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-bar__pill,
+  .filter-bar__label { flex-shrink: 0; }
+  .filter-bar__pill--nt { margin-left: 10px; } /* auto-margin fights scroll flow */
+}
+
 /* ── Main timeline area ── */
 .timeline-container {
   flex: 1;
@@ -505,6 +538,12 @@ html, body, #root {
 }
 .era-legend-item:last-child { border-right: none; }
 
+/* Below 700px there's no room for 9 squeezed labels (they overlap/clip
+   unreadably) and the EraNav pills above already show the active era. */
+@media (max-width: 700px) {
+  .era-legend { display: none; }
+}
+
 /* ── Zoom controls ── */
 /* ── Hover tooltip ── */
 .tl-tooltip {
@@ -546,7 +585,6 @@ html, body, #root {
   left: 20px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
   background: linear-gradient(160deg, #141828 0%, #0d1020 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -564,6 +602,14 @@ html, body, #root {
     inset  1px 0 0 rgba(255,255,255,0.05),
     inset -1px 0 0 rgba(0,0,0,0.35),
     inset 0  0   0 1px rgba(255,255,255,0.04);
+}
+.genre-legend__body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.genre-legend__toggle {
+  display: none; /* mobile-only — shown below the breakpoint */
 }
 .genre-legend__title {
   font-family: var(--font-display);
@@ -621,6 +667,28 @@ html, body, #root {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: rgba(255,255,255,0.45);
+}
+
+/* Below 700px the legend defaults to collapsed (see GenreLegend.jsx) since
+   its full card would cover roughly half the map otherwise. A small tab
+   toggles it open on demand. */
+@media (max-width: 700px) {
+  .genre-legend { bottom: 12px; left: 12px; padding: 0; overflow: hidden; }
+  .genre-legend__toggle {
+    display: block;
+    pointer-events: auto;
+    padding: 7px 12px;
+    border: none;
+    background: none;
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .genre-legend__body { padding: 0 14px 12px; }
+  .genre-legend--collapsed .genre-legend__body { display: none; }
 }
 
 .zoom-controls {
@@ -699,6 +767,13 @@ html, body, #root {
 [data-theme="light"] .minimap__view {
   fill: rgba(140,90,28,0.14);
   stroke: #8c5a1c;
+}
+
+/* Shrink toward its bottom-right corner so it clears the collapsed legend
+   tab at the opposite corner on narrow screens (the anchor edge doesn't
+   move, only the freed-up left edge retracts). */
+@media (max-width: 700px) {
+  .minimap { transform: scale(0.72); transform-origin: bottom right; }
 }
 
 /* ── Era intro card (shown after a deliberate era-pill pick) ── */
@@ -811,6 +886,10 @@ html, body, #root {
 }
 .detail-panel.open {
   transform: translateX(0);
+}
+
+@media (max-width: 700px) {
+  .detail-panel { width: min(340px, calc(100% - 20px)); }
 }
 
 .detail-panel__close {
