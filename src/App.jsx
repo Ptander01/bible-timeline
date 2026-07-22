@@ -9,18 +9,62 @@ import ThemeToggle from './components/ThemeToggle';
 import data from './data/bible-data.json';
 
 const ALL_ON = { people: true, events: true, books: true, kings: true, prophets: true, context: true };
+const LAYER_IDS = Object.keys(ALL_ON);
 
 function readUrlParams() {
   const p = new URLSearchParams(window.location.search);
-  return { eraId: p.get('era'), selId: p.get('sel') };
+  return {
+    eraId: p.get('era'),
+    selId: p.get('sel'),
+    selType: p.get('selType'),
+    nt: p.get('nt') === '1',
+    filter: p.get('filter'), // "kind:value"
+    hide: p.get('hide'),     // comma-separated layer ids that are OFF
+  };
 }
 
-function writeUrlParams(eraId, selId) {
+function writeUrlParams({ eraId, selId, selType, nt, legendFilter, visibleLayers }) {
   const p = new URLSearchParams();
   if (eraId) p.set('era', eraId);
-  if (selId) p.set('sel', selId);
+  if (selId) { p.set('sel', selId); p.set('selType', selType); }
+  if (nt) p.set('nt', '1');
+  if (legendFilter) p.set('filter', `${legendFilter.kind}:${legendFilter.value}`);
+  const hidden = LAYER_IDS.filter(id => visibleLayers[id] === false);
+  if (hidden.length) p.set('hide', hidden.join(','));
   const str = p.toString();
   window.history.replaceState(null, '', str ? `?${str}` : window.location.pathname);
+}
+
+// Reconstruct a {item, type} selection from URL id/type — mirrors the shapes
+// each canvas element passes to onSelectBook/onSelectEvent.
+function resolveSelection(selType, selId) {
+  if (!selType || !selId) return null;
+  if (selType === 'book') {
+    const book = data.books.find(b => b.id === selId);
+    return book ? { item: book, type: 'book' } : null;
+  }
+  if (selType === 'event') {
+    const evt = data.events.find(e => e.id === selId);
+    return evt ? { item: evt, type: 'event' } : null;
+  }
+  if (selType === 'figure') {
+    const fig = data.figures.find(f => f.id === selId);
+    return fig ? { item: { ...fig, label: fig.name }, type: 'figure' } : null;
+  }
+  if (selType === 'context') {
+    const ctx = data.worldContext?.find(c => c.id === selId);
+    return ctx ? { item: { ...ctx, label: ctx.name }, type: 'context' } : null;
+  }
+  if (selType === 'king') {
+    const [kingdom, ...rest] = selId.split('-');
+    const name = rest.join('-');
+    const list = kingdom === 'Israel' ? data.kingsIsrael : kingdom === 'Judah' ? data.kingsJudah : null;
+    const king = list?.find(k => k.name === name);
+    return king
+      ? { item: { id: selId, label: king.name, year: king.start, endYear: king.end, eraId: 'divided', kingdom, type: 'king' }, type: 'king' }
+      : null;
+  }
+  return null;
 }
 
 export default function App() {
@@ -61,21 +105,47 @@ export default function App() {
     // preserved transform
     if (urlRestored.current) return;
     urlRestored.current = true;
-    const { eraId, selId } = readUrlParams();
+    const { eraId, selId, selType, nt, filter, hide } = readUrlParams();
     if (eraId) {
       const era = data.eras.find(e => e.id === eraId);
-      if (era) { setActiveEraId(eraId); fn(era); userPickedEra.current = true; }
+      if (era) {
+        // guard must be set before fn(era) — its very first animation frame
+        // fires the pan-era listener synchronously, which would otherwise
+        // stomp this restored era back to whatever's near the default center
+        userPickedEra.current = true;
+        setActiveEraId(eraId);
+        fn(era);
+      }
     }
-    if (selId) {
-      const book = data.books.find(b => b.id === selId);
-      if (book) setSelected({ item: book, type: 'book' });
+    const sel = resolveSelection(selType, selId);
+    if (sel) setSelected(sel);
+    if (nt) setNtExpanded(true);
+    if (filter) {
+      const [kind, ...rest] = filter.split(':');
+      const value = rest.join(':');
+      if ((kind === 'genre' || kind === 'group') && value) setLegendFilter({ kind, value });
+    }
+    if (hide) {
+      const off = new Set(hide.split(','));
+      setVisibleLayers(prev => {
+        const next = { ...prev };
+        LAYER_IDS.forEach(id => { if (off.has(id)) next[id] = false; });
+        return next;
+      });
     }
   }, []);
 
-  // Sync URL whenever era or selection changes
+  // Sync the URL whenever any shareable view-state piece changes
   useEffect(() => {
-    writeUrlParams(activeEraId, selected?.item?.id ?? null);
-  }, [activeEraId, selected]);
+    writeUrlParams({
+      eraId: activeEraId,
+      selId: selected?.item?.id ?? null,
+      selType: selected?.type ?? null,
+      nt: ntExpanded,
+      legendFilter,
+      visibleLayers,
+    });
+  }, [activeEraId, selected, ntExpanded, legendFilter, visibleLayers]);
 
   function handleEraSelect(era) {
     userPickedEra.current = true;
