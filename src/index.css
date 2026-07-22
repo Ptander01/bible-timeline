@@ -458,6 +458,10 @@ html, body, #root {
   cursor: grab;
   touch-action: none; /* let d3.zoom own pinch/pan instead of the browser */
 }
+/* smooth the contemporaries / search cross-highlight dimming */
+.fig-group, .king-group, .proph-group, .book-capsule, .evt-group, .wctx-group {
+  transition: opacity 0.16s ease;
+}
 .timeline-svg:active {
   cursor: grabbing;
 }

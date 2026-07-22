@@ -58,6 +58,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
   const mmDragRef = useRef(false);    // true while scrubbing the minimap
   const prevNtRef = useRef(undefined); // last-rendered ntExpanded, to detect toggles
   const jumpStateRef = useRef({ q: null, i: 0 }); // search-jump cycling position
+  const searchQueryRef = useRef('');   // live search query for D3 event closures
   const [hoveredTip, setHoveredTip] = useState(null); // { label, sub, x, y }
 
 
@@ -332,6 +333,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       const fg = figG.append('g')
         .attr('class', 'fig-group')
         .attr('data-name', fig.name.toLowerCase())
+        .attr('data-start', fig.start).attr('data-end', fig.end)
         .attr('cursor', 'pointer')
         .on('click', (e) => {
           e.stopPropagation();
@@ -380,6 +382,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         const kg = g.append('g')
           .attr('class', 'king-group')
           .attr('data-name', king.name.toLowerCase())
+          .attr('data-start', king.start).attr('data-end', king.end)
           .attr('cursor', 'pointer')
           .on('click', (e) => {
             e.stopPropagation();
@@ -446,6 +449,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       const pg = prophG.append('g')
         .attr('class', 'proph-group')
         .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
+        .attr('data-start', book.dateRange[0]).attr('data-end', book.dateRange[1])
         .attr('cursor', 'pointer')
         .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
         .on('mouseover', function(event) {
@@ -499,6 +503,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
         const wg = wctxG.append('g')
           .attr('class', 'wctx-group')
           .attr('data-name', `${item.name.toLowerCase()} ${item.region.toLowerCase()} ${item.category}`)
+          .attr('data-start', item.start).attr('data-end', item.end)
           .attr('cursor', 'pointer')
           .on('click', (e) => {
             e.stopPropagation();
@@ -553,6 +558,7 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
             .attr('class', 'book-capsule')
             .attr('data-id', book.id)
             .attr('data-name', `${book.name.toLowerCase()} ${(book.abbrev || '').toLowerCase()}`)
+            .attr('data-start', book.dateRange[0]).attr('data-end', book.dateRange[1])
             .attr('cursor', 'pointer')
             .on('click', (e) => { e.stopPropagation(); onSelectBook && onSelectBook(book); })
             .on('mouseenter', function() {
@@ -643,7 +649,8 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       // per-event group so search dimming can target the whole event
       const eg = evtG.append('g')
         .attr('class', 'evt-group')
-        .attr('data-name', evt.label.toLowerCase());
+        .attr('data-name', evt.label.toLowerCase())
+        .attr('data-start', evt.year).attr('data-end', evt.endYear ?? evt.year);
 
       // connector line to axis — lives in the back layer, carries data-name
       // so search dimming can track it independently of the front group.
@@ -748,6 +755,32 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
       });
     }
     layoutEventLabels(d3.zoomIdentity);
+
+    // ── Contemporaries cross-highlight ──
+    // Hovering any dated element dims items across all lanes whose time range
+    // doesn't overlap it, so you can see who/what was contemporary. Delegated
+    // from the svg so it layers on top of each element's own hover handler.
+    // Disabled while a search is active (search owns opacity then).
+    const CONTEMP_DIM = 0.16;
+    function applyContemp(s, e) {
+      root.selectAll('[data-start]').attr('opacity', function() {
+        const a = +this.getAttribute('data-start');
+        const b = +this.getAttribute('data-end');
+        return (a <= e && s <= b) ? null : CONTEMP_DIM;
+      });
+    }
+    function clearContemp() {
+      root.selectAll('[data-start]').attr('opacity', null);
+    }
+    svg.on('mouseover.contemp', (event) => {
+      if (searchQueryRef.current) return;
+      const el = event.target.closest?.('[data-start]');
+      if (el) applyContemp(+el.getAttribute('data-start'), +el.getAttribute('data-end'));
+      else clearContemp();
+    });
+    svg.on('mouseleave.contemp', () => {
+      if (!searchQueryRef.current) clearContemp();
+    });
 
     // ── Zoom behavior ──
     const zoom = d3.zoom()
@@ -1002,11 +1035,12 @@ export default function BibleTimeline({ data, onSelectBook, onSelectEvent, selec
 
   // Search: highlight matching elements, dim everything else
   useEffect(() => {
+    searchQueryRef.current = searchQuery;
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
     const q = (searchQuery || '').trim().toLowerCase();
     if (!q) {
-      svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group')
+      svg.selectAll('.book-capsule, .fig-group, .king-group, .proph-group, .evt-group, .wctx-group')
         .attr('opacity', null);
       svg.selectAll('.evt-lines line').attr('opacity', 0.55);
       onMatchCount?.(null);
