@@ -1,10 +1,34 @@
 // External links to the author's companion apps and study resources, surfaced
 // in the detail panel for the relevant person / book / event.
-const LIBRARY    = { label: 'Bible Study Library',     url: 'https://ptander01.github.io/Bible-Study-Library/',                       kind: 'library' };
-const PAULS      = { label: "Paul's World",            url: 'https://pauls-world.vercel.app',                                         kind: 'app' };
-const JESUS      = { label: 'Jesus World',             url: 'https://jesus-world.vercel.app',                                         kind: 'app' };
-const LEAD_MOSES = { label: 'Leadership Study: Moses', url: 'https://ptander01.github.io/Bible-Study-Library/leadership/moses.html',  kind: 'study' };
-const LEAD_JESUS = { label: 'Leadership Study: Jesus', url: 'https://ptander01.github.io/Bible-Study-Library/leadership/jesus.html',  kind: 'study' };
+const LIB = 'https://ptander01.github.io/Bible-Study-Library';
+const LIBRARY = { label: 'Bible Study Library', url: `${LIB}/`, kind: 'library' };
+const PAULS   = { label: "Paul's World",  url: 'https://pauls-world.vercel.app', kind: 'app' };
+const JESUS   = { label: 'Jesus World',   url: 'https://jesus-world.vercel.app', kind: 'app' };
+
+// Leadership studies keyed by figure id
+const LEADERSHIP = {
+  moses:  { label: 'Leadership Study: Moses',  url: `${LIB}/leadership/moses.html`,  kind: 'study' },
+  joshua: { label: 'Leadership Study: Joshua', url: `${LIB}/leadership/joshua.html`, kind: 'study' },
+  david:  { label: 'Leadership Study: David',  url: `${LIB}/leadership/david.html`,  kind: 'study' },
+  peter:  { label: 'Leadership Study: Peter',  url: `${LIB}/leadership/peter.html`,  kind: 'study' },
+  paul:   { label: 'Leadership Study: Paul',   url: `${LIB}/leadership/paul.html`,   kind: 'study' },
+  jesus:  { label: 'Leadership Study: Jesus',  url: `${LIB}/leadership/jesus.html`,  kind: 'study' },
+};
+
+// Book-specific study / context links keyed by book id
+const TIMOTHY_TITUS = { label: 'Leadership Study: Timothy & Titus', url: `${LIB}/leadership/timothy-titus.html`, kind: 'study' };
+const BOOK_LINKS = {
+  '1timothy': TIMOTHY_TITUS,
+  '2timothy': TIMOTHY_TITUS,
+  titus:      TIMOTHY_TITUS,
+  amos:       { label: 'Study: Amos', url: `${LIB}/standalone/amos.html`, kind: 'study' },
+  philippians:{ label: 'Philippi — City Map', url: 'https://pauls-world.vercel.app/philippians-map.html', kind: 'app' },
+};
+
+// Event-specific study links keyed by event id
+const EVENT_LINKS = {
+  'amos-prophecy': { label: 'Study: Amos', url: `${LIB}/standalone/amos.html`, kind: 'study' },
+};
 
 const GOSPELS = new Set(['matthew', 'mark', 'luke', 'john']);
 const PAULINE = new Set([
@@ -31,17 +55,19 @@ export function resourcesFor(item, type) {
   const out = [];
 
   if (type === 'figure') {
-    if (id === 'jesus') out.push(JESUS, LEAD_JESUS);
+    if (id === 'jesus') out.push(JESUS);
     if (id === 'paul')  out.push(PAULS);
-    if (id === 'moses') out.push(LEAD_MOSES);
+    if (LEADERSHIP[id]) out.push(LEADERSHIP[id]);
     out.push(LIBRARY);
   } else if (type === 'book') {
     if (GOSPELS.has(id)) out.push(JESUS);
     if (PAULINE.has(id) || id === 'acts') out.push(PAULS);
+    if (BOOK_LINKS[id]) out.push(BOOK_LINKS[id]);
     out.push(LIBRARY);
   } else if (type === 'event') {
     if (JESUS_EVENTS.has(id)) out.push(JESUS);
     if (PAUL_EVENTS.has(id))  out.push(PAULS);
+    if (EVENT_LINKS[id])      out.push(EVENT_LINKS[id]);
   }
 
   return out.filter((r, i) => out.findIndex(x => x.url === r.url) === i);
